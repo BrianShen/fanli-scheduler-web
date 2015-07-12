@@ -3,5 +3,10 @@
  */
 
 fanliApp.controller("indexCtrl",function($scope) {
-    $scope.hi = "Hi,I am index"
-})
+    $scope.tabs = [
+        { title:'page1'},
+        { title:'page2'},
+        { title:'page3'},
+        { title:'page4'}
+    ];
+});

@@ -1,7 +1,7 @@
 /**
  * Created by wei.shen on 2015/7/11.
  */
-var fanliApp = angular.module("fanliApp",['ngRoute']);
+var fanliApp = angular.module("fanliApp",['ngRoute','ui.bootstrap']);
 
 fanliApp.config(function($routeProvider){
     $routeProvider.
