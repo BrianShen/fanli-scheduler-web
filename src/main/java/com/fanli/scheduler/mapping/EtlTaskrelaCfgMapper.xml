@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper" >
+  <resultMap id="BaseResultMap" type="com.fanli.scheduler.entity.EtlTaskrelaCfg" >
+    <id column="task_id" property="taskId" jdbcType="INTEGER" />
+    <id column="pre_id" property="preId" jdbcType="INTEGER" />
+    <id column="offset" property="offset" jdbcType="INTEGER" />
+    <result column="if_enable" property="ifEnable" jdbcType="INTEGER" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    task_id, pre_id, offset, if_enable, updatetime, time_stamp
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfgExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from etl_taskrela_cfg
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfgKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from etl_taskrela_cfg
+    where task_id = #{taskId,jdbcType=INTEGER}
+      and pre_id = #{preId,jdbcType=INTEGER}
+      and offset = #{offset,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfgKey" >
+    delete from etl_taskrela_cfg
+    where task_id = #{taskId,jdbcType=INTEGER}
+      and pre_id = #{preId,jdbcType=INTEGER}
+      and offset = #{offset,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfgExample" >
+    delete from etl_taskrela_cfg
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfg" >
+    insert into etl_taskrela_cfg (task_id, pre_id, offset, 
+      if_enable, updatetime, time_stamp
+      )
+    values (#{taskId,jdbcType=INTEGER}, #{preId,jdbcType=INTEGER}, #{offset,jdbcType=INTEGER}, 
+      #{ifEnable,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfg" >
+    insert into etl_taskrela_cfg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="preId != null" >
+        pre_id,
+      </if>
+      <if test="offset != null" >
+        offset,
+      </if>
+      <if test="ifEnable != null" >
+        if_enable,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="preId != null" >
+        #{preId,jdbcType=INTEGER},
+      </if>
+      <if test="offset != null" >
+        #{offset,jdbcType=INTEGER},
+      </if>
+      <if test="ifEnable != null" >
+        #{ifEnable,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfgExample" resultType="java.lang.Integer" >
+    select count(*) from etl_taskrela_cfg
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update etl_taskrela_cfg
+    <set >
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=INTEGER},
+      </if>
+      <if test="record.preId != null" >
+        pre_id = #{record.preId,jdbcType=INTEGER},
+      </if>
+      <if test="record.offset != null" >
+        offset = #{record.offset,jdbcType=INTEGER},
+      </if>
+      <if test="record.ifEnable != null" >
+        if_enable = #{record.ifEnable,jdbcType=INTEGER},
+      </if>
+      <if test="record.updatetime != null" >
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.timeStamp != null" >
+        time_stamp = #{record.timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update etl_taskrela_cfg
+    set task_id = #{record.taskId,jdbcType=INTEGER},
+      pre_id = #{record.preId,jdbcType=INTEGER},
+      offset = #{record.offset,jdbcType=INTEGER},
+      if_enable = #{record.ifEnable,jdbcType=INTEGER},
+      updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
+      time_stamp = #{record.timeStamp,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfg" >
+    update etl_taskrela_cfg
+    <set >
+      <if test="ifEnable != null" >
+        if_enable = #{ifEnable,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=INTEGER}
+      and pre_id = #{preId,jdbcType=INTEGER}
+      and offset = #{offset,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fanli.scheduler.entity.EtlTaskrelaCfg" >
+    update etl_taskrela_cfg
+    set if_enable = #{ifEnable,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+    where task_id = #{taskId,jdbcType=INTEGER}
+      and pre_id = #{preId,jdbcType=INTEGER}
+      and offset = #{offset,jdbcType=INTEGER}
+  </update>
+</mapper>

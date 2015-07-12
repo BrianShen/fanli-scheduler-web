@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fanli.scheduler.mapping.EtlTaskStatusMapper" >
+  <resultMap id="BaseResultMap" type="com.fanli.scheduler.entity.EtlTaskStatus" >
+    <id column="task_status_id" property="taskStatusId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="task_group_id" property="taskGroupId" jdbcType="INTEGER" />
+    <result column="resource" property="resource" jdbcType="VARCHAR" />
+    <result column="command" property="command" jdbcType="VARCHAR" />
+    <result column="log_path" property="logPath" jdbcType="VARCHAR" />
+    <result column="cycle" property="cycle" jdbcType="VARCHAR" />
+    <result column="time_id" property="timeId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="if_wait" property="ifWait" jdbcType="INTEGER" />
+    <result column="if_recall" property="ifRecall" jdbcType="INTEGER" />
+    <result column="if_pre" property="ifPre" jdbcType="INTEGER" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="recall_num" property="recallNum" jdbcType="INTEGER" />
+    <result column="run_num" property="runNum" jdbcType="INTEGER" />
+    <result column="recall_interval" property="recallInterval" jdbcType="INTEGER" />
+    <result column="recall_limit" property="recallLimit" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="cal_dt" property="calDt" jdbcType="VARCHAR" />
+    <result column="freq" property="freq" jdbcType="VARCHAR" />
+    <result column="owner" property="owner" jdbcType="VARCHAR" />
+    <result column="trigger_time" property="triggerTime" jdbcType="BIGINT" />
+    <result column="wait_code" property="waitCode" jdbcType="VARCHAR" />
+    <result column="recall_code" property="recallCode" jdbcType="VARCHAR" />
+    <result column="success_code" property="successCode" jdbcType="VARCHAR" />
+    <result column="job_code" property="jobCode" jdbcType="INTEGER" />
+    <result column="running_prio" property="runningPrio" jdbcType="INTEGER" />
+    <result column="timeout" property="timeout" jdbcType="INTEGER" />
+    <result column="job_codemsg" property="jobCodemsg" jdbcType="VARCHAR" />
+    <result column="task_committer" property="taskCommitter" jdbcType="VARCHAR" />
+    <result column="concurrency" property="concurrency" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    task_status_id, task_id, task_name, task_group_id, resource, command, log_path, cycle, 
+    time_id, status, if_wait, if_recall, if_pre, priority, recall_num, run_num, recall_interval, 
+    recall_limit, start_time, end_time, time_stamp, type, table_name, cal_dt, freq, owner, 
+    trigger_time, wait_code, recall_code, success_code, job_code, running_prio, timeout, 
+    job_codemsg, task_committer, concurrency
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.fanli.scheduler.entity.EtlTaskStatusExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from etl_task_status
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from etl_task_status
+    where task_status_id = #{taskStatusId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from etl_task_status
+    where task_status_id = #{taskStatusId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.fanli.scheduler.entity.EtlTaskStatusExample" >
+    delete from etl_task_status
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.fanli.scheduler.entity.EtlTaskStatus" >
+    insert into etl_task_status (task_status_id, task_id, task_name, 
+      task_group_id, resource, command, 
+      log_path, cycle, time_id, 
+      status, if_wait, if_recall, 
+      if_pre, priority, recall_num, 
+      run_num, recall_interval, recall_limit, 
+      start_time, end_time, time_stamp, 
+      type, table_name, cal_dt, 
+      freq, owner, trigger_time, 
+      wait_code, recall_code, success_code, 
+      job_code, running_prio, timeout, 
+      job_codemsg, task_committer, concurrency
+      )
+    values (#{taskStatusId,jdbcType=VARCHAR}, #{taskId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, 
+      #{taskGroupId,jdbcType=INTEGER}, #{resource,jdbcType=VARCHAR}, #{command,jdbcType=VARCHAR}, 
+      #{logPath,jdbcType=VARCHAR}, #{cycle,jdbcType=VARCHAR}, #{timeId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{ifWait,jdbcType=INTEGER}, #{ifRecall,jdbcType=INTEGER}, 
+      #{ifPre,jdbcType=INTEGER}, #{priority,jdbcType=INTEGER}, #{recallNum,jdbcType=INTEGER}, 
+      #{runNum,jdbcType=INTEGER}, #{recallInterval,jdbcType=INTEGER}, #{recallLimit,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=INTEGER}, #{tableName,jdbcType=VARCHAR}, #{calDt,jdbcType=VARCHAR}, 
+      #{freq,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, #{triggerTime,jdbcType=BIGINT}, 
+      #{waitCode,jdbcType=VARCHAR}, #{recallCode,jdbcType=VARCHAR}, #{successCode,jdbcType=VARCHAR}, 
+      #{jobCode,jdbcType=INTEGER}, #{runningPrio,jdbcType=INTEGER}, #{timeout,jdbcType=INTEGER}, 
+      #{jobCodemsg,jdbcType=VARCHAR}, #{taskCommitter,jdbcType=VARCHAR}, #{concurrency,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fanli.scheduler.entity.EtlTaskStatus" >
+    insert into etl_task_status
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskStatusId != null" >
+        task_status_id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="taskName != null" >
+        task_name,
+      </if>
+      <if test="taskGroupId != null" >
+        task_group_id,
+      </if>
+      <if test="resource != null" >
+        resource,
+      </if>
+      <if test="command != null" >
+        command,
+      </if>
+      <if test="logPath != null" >
+        log_path,
+      </if>
+      <if test="cycle != null" >
+        cycle,
+      </if>
+      <if test="timeId != null" >
+        time_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="ifWait != null" >
+        if_wait,
+      </if>
+      <if test="ifRecall != null" >
+        if_recall,
+      </if>
+      <if test="ifPre != null" >
+        if_pre,
+      </if>
+      <if test="priority != null" >
+        priority,
+      </if>
+      <if test="recallNum != null" >
+        recall_num,
+      </if>
+      <if test="runNum != null" >
+        run_num,
+      </if>
+      <if test="recallInterval != null" >
+        recall_interval,
+      </if>
+      <if test="recallLimit != null" >
+        recall_limit,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="tableName != null" >
+        table_name,
+      </if>
+      <if test="calDt != null" >
+        cal_dt,
+      </if>
+      <if test="freq != null" >
+        freq,
+      </if>
+      <if test="owner != null" >
+        owner,
+      </if>
+      <if test="triggerTime != null" >
+        trigger_time,
+      </if>
+      <if test="waitCode != null" >
+        wait_code,
+      </if>
+      <if test="recallCode != null" >
+        recall_code,
+      </if>
+      <if test="successCode != null" >
+        success_code,
+      </if>
+      <if test="jobCode != null" >
+        job_code,
+      </if>
+      <if test="runningPrio != null" >
+        running_prio,
+      </if>
+      <if test="timeout != null" >
+        timeout,
+      </if>
+      <if test="jobCodemsg != null" >
+        job_codemsg,
+      </if>
+      <if test="taskCommitter != null" >
+        task_committer,
+      </if>
+      <if test="concurrency != null" >
+        concurrency,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskStatusId != null" >
+        #{taskStatusId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskGroupId != null" >
+        #{taskGroupId,jdbcType=INTEGER},
+      </if>
+      <if test="resource != null" >
+        #{resource,jdbcType=VARCHAR},
+      </if>
+      <if test="command != null" >
+        #{command,jdbcType=VARCHAR},
+      </if>
+      <if test="logPath != null" >
+        #{logPath,jdbcType=VARCHAR},
+      </if>
+      <if test="cycle != null" >
+        #{cycle,jdbcType=VARCHAR},
+      </if>
+      <if test="timeId != null" >
+        #{timeId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ifWait != null" >
+        #{ifWait,jdbcType=INTEGER},
+      </if>
+      <if test="ifRecall != null" >
+        #{ifRecall,jdbcType=INTEGER},
+      </if>
+      <if test="ifPre != null" >
+        #{ifPre,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="recallNum != null" >
+        #{recallNum,jdbcType=INTEGER},
+      </if>
+      <if test="runNum != null" >
+        #{runNum,jdbcType=INTEGER},
+      </if>
+      <if test="recallInterval != null" >
+        #{recallInterval,jdbcType=INTEGER},
+      </if>
+      <if test="recallLimit != null" >
+        #{recallLimit,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tableName != null" >
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="calDt != null" >
+        #{calDt,jdbcType=VARCHAR},
+      </if>
+      <if test="freq != null" >
+        #{freq,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerTime != null" >
+        #{triggerTime,jdbcType=BIGINT},
+      </if>
+      <if test="waitCode != null" >
+        #{waitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="recallCode != null" >
+        #{recallCode,jdbcType=VARCHAR},
+      </if>
+      <if test="successCode != null" >
+        #{successCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobCode != null" >
+        #{jobCode,jdbcType=INTEGER},
+      </if>
+      <if test="runningPrio != null" >
+        #{runningPrio,jdbcType=INTEGER},
+      </if>
+      <if test="timeout != null" >
+        #{timeout,jdbcType=INTEGER},
+      </if>
+      <if test="jobCodemsg != null" >
+        #{jobCodemsg,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCommitter != null" >
+        #{taskCommitter,jdbcType=VARCHAR},
+      </if>
+      <if test="concurrency != null" >
+        #{concurrency,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.fanli.scheduler.entity.EtlTaskStatusExample" resultType="java.lang.Integer" >
+    select count(*) from etl_task_status
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update etl_task_status
+    <set >
+      <if test="record.taskStatusId != null" >
+        task_status_id = #{record.taskStatusId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=INTEGER},
+      </if>
+      <if test="record.taskName != null" >
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskGroupId != null" >
+        task_group_id = #{record.taskGroupId,jdbcType=INTEGER},
+      </if>
+      <if test="record.resource != null" >
+        resource = #{record.resource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.command != null" >
+        command = #{record.command,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logPath != null" >
+        log_path = #{record.logPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cycle != null" >
+        cycle = #{record.cycle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeId != null" >
+        time_id = #{record.timeId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.ifWait != null" >
+        if_wait = #{record.ifWait,jdbcType=INTEGER},
+      </if>
+      <if test="record.ifRecall != null" >
+        if_recall = #{record.ifRecall,jdbcType=INTEGER},
+      </if>
+      <if test="record.ifPre != null" >
+        if_pre = #{record.ifPre,jdbcType=INTEGER},
+      </if>
+      <if test="record.priority != null" >
+        priority = #{record.priority,jdbcType=INTEGER},
+      </if>
+      <if test="record.recallNum != null" >
+        recall_num = #{record.recallNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.runNum != null" >
+        run_num = #{record.runNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.recallInterval != null" >
+        recall_interval = #{record.recallInterval,jdbcType=INTEGER},
+      </if>
+      <if test="record.recallLimit != null" >
+        recall_limit = #{record.recallLimit,jdbcType=INTEGER},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.timeStamp != null" >
+        time_stamp = #{record.timeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.tableName != null" >
+        table_name = #{record.tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.calDt != null" >
+        cal_dt = #{record.calDt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.freq != null" >
+        freq = #{record.freq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.owner != null" >
+        owner = #{record.owner,jdbcType=VARCHAR},
+      </if>
+      <if test="record.triggerTime != null" >
+        trigger_time = #{record.triggerTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.waitCode != null" >
+        wait_code = #{record.waitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recallCode != null" >
+        recall_code = #{record.recallCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.successCode != null" >
+        success_code = #{record.successCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jobCode != null" >
+        job_code = #{record.jobCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.runningPrio != null" >
+        running_prio = #{record.runningPrio,jdbcType=INTEGER},
+      </if>
+      <if test="record.timeout != null" >
+        timeout = #{record.timeout,jdbcType=INTEGER},
+      </if>
+      <if test="record.jobCodemsg != null" >
+        job_codemsg = #{record.jobCodemsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskCommitter != null" >
+        task_committer = #{record.taskCommitter,jdbcType=VARCHAR},
+      </if>
+      <if test="record.concurrency != null" >
+        concurrency = #{record.concurrency,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update etl_task_status
+    set task_status_id = #{record.taskStatusId,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=INTEGER},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      task_group_id = #{record.taskGroupId,jdbcType=INTEGER},
+      resource = #{record.resource,jdbcType=VARCHAR},
+      command = #{record.command,jdbcType=VARCHAR},
+      log_path = #{record.logPath,jdbcType=VARCHAR},
+      cycle = #{record.cycle,jdbcType=VARCHAR},
+      time_id = #{record.timeId,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER},
+      if_wait = #{record.ifWait,jdbcType=INTEGER},
+      if_recall = #{record.ifRecall,jdbcType=INTEGER},
+      if_pre = #{record.ifPre,jdbcType=INTEGER},
+      priority = #{record.priority,jdbcType=INTEGER},
+      recall_num = #{record.recallNum,jdbcType=INTEGER},
+      run_num = #{record.runNum,jdbcType=INTEGER},
+      recall_interval = #{record.recallInterval,jdbcType=INTEGER},
+      recall_limit = #{record.recallLimit,jdbcType=INTEGER},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      time_stamp = #{record.timeStamp,jdbcType=TIMESTAMP},
+      type = #{record.type,jdbcType=INTEGER},
+      table_name = #{record.tableName,jdbcType=VARCHAR},
+      cal_dt = #{record.calDt,jdbcType=VARCHAR},
+      freq = #{record.freq,jdbcType=VARCHAR},
+      owner = #{record.owner,jdbcType=VARCHAR},
+      trigger_time = #{record.triggerTime,jdbcType=BIGINT},
+      wait_code = #{record.waitCode,jdbcType=VARCHAR},
+      recall_code = #{record.recallCode,jdbcType=VARCHAR},
+      success_code = #{record.successCode,jdbcType=VARCHAR},
+      job_code = #{record.jobCode,jdbcType=INTEGER},
+      running_prio = #{record.runningPrio,jdbcType=INTEGER},
+      timeout = #{record.timeout,jdbcType=INTEGER},
+      job_codemsg = #{record.jobCodemsg,jdbcType=VARCHAR},
+      task_committer = #{record.taskCommitter,jdbcType=VARCHAR},
+      concurrency = #{record.concurrency,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fanli.scheduler.entity.EtlTaskStatus" >
+    update etl_task_status
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskGroupId != null" >
+        task_group_id = #{taskGroupId,jdbcType=INTEGER},
+      </if>
+      <if test="resource != null" >
+        resource = #{resource,jdbcType=VARCHAR},
+      </if>
+      <if test="command != null" >
+        command = #{command,jdbcType=VARCHAR},
+      </if>
+      <if test="logPath != null" >
+        log_path = #{logPath,jdbcType=VARCHAR},
+      </if>
+      <if test="cycle != null" >
+        cycle = #{cycle,jdbcType=VARCHAR},
+      </if>
+      <if test="timeId != null" >
+        time_id = #{timeId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ifWait != null" >
+        if_wait = #{ifWait,jdbcType=INTEGER},
+      </if>
+      <if test="ifRecall != null" >
+        if_recall = #{ifRecall,jdbcType=INTEGER},
+      </if>
+      <if test="ifPre != null" >
+        if_pre = #{ifPre,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+      <if test="recallNum != null" >
+        recall_num = #{recallNum,jdbcType=INTEGER},
+      </if>
+      <if test="runNum != null" >
+        run_num = #{runNum,jdbcType=INTEGER},
+      </if>
+      <if test="recallInterval != null" >
+        recall_interval = #{recallInterval,jdbcType=INTEGER},
+      </if>
+      <if test="recallLimit != null" >
+        recall_limit = #{recallLimit,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tableName != null" >
+        table_name = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="calDt != null" >
+        cal_dt = #{calDt,jdbcType=VARCHAR},
+      </if>
+      <if test="freq != null" >
+        freq = #{freq,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        owner = #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerTime != null" >
+        trigger_time = #{triggerTime,jdbcType=BIGINT},
+      </if>
+      <if test="waitCode != null" >
+        wait_code = #{waitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="recallCode != null" >
+        recall_code = #{recallCode,jdbcType=VARCHAR},
+      </if>
+      <if test="successCode != null" >
+        success_code = #{successCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobCode != null" >
+        job_code = #{jobCode,jdbcType=INTEGER},
+      </if>
+      <if test="runningPrio != null" >
+        running_prio = #{runningPrio,jdbcType=INTEGER},
+      </if>
+      <if test="timeout != null" >
+        timeout = #{timeout,jdbcType=INTEGER},
+      </if>
+      <if test="jobCodemsg != null" >
+        job_codemsg = #{jobCodemsg,jdbcType=VARCHAR},
+      </if>
+      <if test="taskCommitter != null" >
+        task_committer = #{taskCommitter,jdbcType=VARCHAR},
+      </if>
+      <if test="concurrency != null" >
+        concurrency = #{concurrency,jdbcType=INTEGER},
+      </if>
+    </set>
+    where task_status_id = #{taskStatusId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fanli.scheduler.entity.EtlTaskStatus" >
+    update etl_task_status
+    set task_id = #{taskId,jdbcType=INTEGER},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_group_id = #{taskGroupId,jdbcType=INTEGER},
+      resource = #{resource,jdbcType=VARCHAR},
+      command = #{command,jdbcType=VARCHAR},
+      log_path = #{logPath,jdbcType=VARCHAR},
+      cycle = #{cycle,jdbcType=VARCHAR},
+      time_id = #{timeId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      if_wait = #{ifWait,jdbcType=INTEGER},
+      if_recall = #{ifRecall,jdbcType=INTEGER},
+      if_pre = #{ifPre,jdbcType=INTEGER},
+      priority = #{priority,jdbcType=INTEGER},
+      recall_num = #{recallNum,jdbcType=INTEGER},
+      run_num = #{runNum,jdbcType=INTEGER},
+      recall_interval = #{recallInterval,jdbcType=INTEGER},
+      recall_limit = #{recallLimit,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=INTEGER},
+      table_name = #{tableName,jdbcType=VARCHAR},
+      cal_dt = #{calDt,jdbcType=VARCHAR},
+      freq = #{freq,jdbcType=VARCHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      trigger_time = #{triggerTime,jdbcType=BIGINT},
+      wait_code = #{waitCode,jdbcType=VARCHAR},
+      recall_code = #{recallCode,jdbcType=VARCHAR},
+      success_code = #{successCode,jdbcType=VARCHAR},
+      job_code = #{jobCode,jdbcType=INTEGER},
+      running_prio = #{runningPrio,jdbcType=INTEGER},
+      timeout = #{timeout,jdbcType=INTEGER},
+      job_codemsg = #{jobCodemsg,jdbcType=VARCHAR},
+      task_committer = #{taskCommitter,jdbcType=VARCHAR},
+      concurrency = #{concurrency,jdbcType=INTEGER}
+    where task_status_id = #{taskStatusId,jdbcType=VARCHAR}
+  </update>
+</mapper>

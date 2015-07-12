@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<!--lib js-->
+	<script src="/assert/lib/angular.min.js"></script>
+	<script src="/assert/lib/angular-route.min.js"></script>
+
+	<!--user js-->
+	<script src="/assert/js/app.js"></script>
+
+	<!-- SCROLLS -->
+	<!-- load bootstrap and fontawesome via CDN -->
+	<!--css-->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+</head>
+
+<body ng-app="fanliApp">
+	<header>
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/">数据开发平台</a>
+				</div>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><i class="fa fa-home"></i> page1</a></li>
+					<li><a href="#page2"><i class="fa fa-shield"></i> page2</a></li>
+					<li><a href="#page3/manee"><i class="fa fa-comment"></i> page3</a></li>
+					<li><a href="#page4/2"><i class="fa fa-comment"></i>page4</a></li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+
+
+	<div id="main">
+		<div ng-view></div>
+	</div>
+
+</body>
+</html>
