@@ -22,8 +22,8 @@ public class IndexController {
 	EtlTaskrelaStatusMapper mapper;
 
 	@RequestMapping(value = "/index" ,method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-		return "index";
+	public ModelAndView getView() {
+		return new ModelAndView("redirect:/assets/pages/index.html");
 	}
 
 	@RequestMapping(value = "/test",method = RequestMethod.GET)

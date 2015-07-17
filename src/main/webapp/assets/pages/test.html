@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html ng-app="fanliApp">
+<head>
+
+    <meta charset="utf-8">
+
+
+    <!--lib js-->
+    <script src="/assert/lib/angular.min.js"></script>
+    <script src="/assert/lib/angular-route.min.js"></script>
+    <script src="/assert/lib/ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script src="/assert/lib/ace.min.js"></script>
+    <script src="/assert/lib/bootstrap.min.js"></script>
+
+
+    <!--user js-->
+    <script src="/assert/js/app.js"></script>
+    <script src="/assert/js/controller/indexController.js"></script>
+
+    <!--css lib-->
+    <link rel="stylesheet" href="/assert/lib/bootstrap.min.css" />
+    <!--<link rel="stylesheet" href="/assert/lib/ace.min.css"/>-->
+    <link rel="stylesheet" href="/assert/lib/font-awesome.min.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />-->
+
+    <!--user defined css-->
+    <link href="/assert/css/index.css" rel="stylesheet" type="text/css" />
+    <!--<link href="/assert/css/style.css" rel="stylesheet" media="screen" type="text/css"/>-->
+</head>
+
+<body ng-controller="indexCtrl">
+<div class="navbar navbar-default"  style="background-color: green" id="navbar">
+
+    <div class="navbar-header pull-left">
+        <a href="#/" class="navbar-brand" style="color: white">
+            数据开发平台
+            <!--数据平台-->
+        </a>
+        <!-- /.brand -->
+    </div>
+    <!-- /.navbar-header -->
+    <div class="pull-left">
+        <ul id="nav">
+            <li>
+                <a href="#/">
+                    <i class="icon-eye-open"></i>
+                    任务监控
+                </a>
+            </li>
+            <li>
+                <a href="#/page2">
+                    <i class="icon-exchange"></i>
+                    传输管理
+                </a>
+            </li>
+
+            <li>
+                <a href="#/taskAdd">
+                    <i class="icon-pencil"></i>
+                    任务配置
+                </a>
+            </li>
+            <li>
+                <a href="#/page4/任务id">
+                    <i class="icon-user-md"></i>
+                    我的任务
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="navbar-header pull-right" role="navigation">
+        <ul class="nav">
+            <li>
+                <a data-toggle="dropdown" href="#" target="_self" class="dropdown-toggle" style="background-color: transparent">
+                    <img class="user_photo" style="max-width: 30px" src="/assert/image/horse.png"/>
+            <span class="user-info">
+                                    <small>欢迎</small>
+                                    <span id="userName"></span>
+                                </span>
+
+                    <i class="icon-caret-down"></i>
+                </a>
+
+                <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                    <li>
+                        <a href="#">
+                            <i class="icon-off"></i>
+                            退出
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <!-- /.ace-nav -->
+    </div>
+
+    <div class="pull-right" style="margin:15px;color: white;vertical-align: middle">管理员：张超，沈伟</div>
+
+    <!--<div class="pull-right" style="margin:10px;color: white;" ng-bind="monitorMessage"></div>-->
+
+
+</div>
+
+<!--<div class="sidebar" style="display:inline-block;width:150px;height:300px">-->
+    <!--<ul class="nav">-->
+        <!--<li>-->
+            <!--<a href="#/">-->
+                <!--<i class="icon-eye-open"></i>-->
+                <!--任务监控-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+            <!--<a href="#/page2">-->
+                <!--<i class="icon-exchange"></i>-->
+                <!--传输管理-->
+            <!--</a>-->
+        <!--</li>-->
+
+        <!--<li>-->
+            <!--<a href="#/taskAdd">-->
+                <!--<i class="icon-pencil"></i>-->
+                <!--任务配置-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+            <!--<a href="#/page4/任务id">-->
+                <!--<i class="icon-user-md"></i>-->
+                <!--我的任务-->
+            <!--</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+
+<!--</div>-->
+
+<div class="content" style="display:inline-block">
+    <div ng-view>
+    </div>
+</div>
+
+
+
+</body>
+</html>
