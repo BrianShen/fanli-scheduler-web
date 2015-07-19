@@ -17,9 +17,9 @@ angular.module('job_manage.service', ['ngResource'])
                         method: 'GET',
                         params: {
                             action: 'queryTasks',
-                            group: '@group',
-                            developer: '@developer',
-                            id: '@id'
+                            taskGroupId: '@group',
+                            owner: '@owner',
+                            taskId: '@id'
                         }
                     },
                     //根据taskId获得task

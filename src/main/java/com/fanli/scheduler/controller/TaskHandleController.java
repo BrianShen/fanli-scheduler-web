@@ -1,11 +1,14 @@
 package com.fanli.scheduler.controller;
 
+import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.service.TaskConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by wei.shen on 2015/7/15.
@@ -26,19 +29,32 @@ public class TaskHandleController {
 
     }
 
-    @RequestMapping(value = "/queryTasks")
-    public Result<EtlTaskCfg> getTaskById(@RequestParam(value = "group", defaultValue = "") String group,
-                                          @RequestParam(value = "developer", defaultValue = "") String developer,
-                                          @RequestParam(value = "id", defaultValue = "") String id) {
+    @RequestMapping(value = "/queryTasks",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<EtlTaskCfg> getTaskByParams(@RequestParam(value = "taskId",defaultValue = "") Integer taskId,@RequestParam(value = "taskGroupId",defaultValue = "") Integer taskGroupId,@RequestParam(value = "owner",defaultValue = "") String owner) {
         Result<EtlTaskCfg> result = new Result<EtlTaskCfg>();
-        EtlTaskCfg etlTaskCfg = taskConfigService.getTaskById(id);
-        if(etlTaskCfg != null) {
+        TaskQuery taskQuery = new TaskQuery();
+        taskQuery.setOwner(owner);
+        taskQuery.setTaskGroupId(taskGroupId);
+        taskQuery.setTaskId(taskId);
+        System.out.println(taskQuery);
+        List<EtlTaskCfg> etlTaskCfgs = taskConfigService.getTaskByParams(taskQuery);
+        if (etlTaskCfgs != null) {
             result.setIsSuccess(true);
-            result.setResult(etlTaskCfg);
-        }else {
+            result.setResults(etlTaskCfgs);
+            result.setMessages("获取任务成功");
+        } else {
             result.setIsSuccess(false);
-            result.setMessages("id not found");
         }
+
+        //EtlTaskCfg etlTaskCfg = taskConfigService.getTaskById(id);
+//        if(etlTaskCfg != null) {
+//            result.setIsSuccess(true);
+//            result.setResult(etlTaskCfg);
+//        }else {
+//            result.setIsSuccess(false);
+//            result.setMessages("id not found");
+//        }
         return result;
     }
 

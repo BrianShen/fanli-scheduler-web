@@ -36,18 +36,24 @@ fanliApp.controller("myTaskCtrl",['$scope','JobManageService',function($scope,$J
 
     $scope.submitQuery = function() {
         showLoading("正在查询中...");
+
         var tasks = $JobManageService.queryTasks({},{
             group: $scope.jobGroup,
-            developer: $scope.jobDeveloper,
+            owner: $scope.jobDeveloper,
             id: $scope.jobID
         });
         processQueryResult(tasks);
-    }
+    };
+
 
     function processQueryResult(tasks) {
         tasks.$promise.then(function(data) {
             if(data.isSuccess) {
-                console.log("success");
+                $scope.isLoading = false;
+                $scope.hideTable = false;
+                $scope.displayedDataList = data.results;
+            } else{
+                console.log("没有成功");
             }
         });
     };
