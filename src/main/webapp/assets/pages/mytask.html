@@ -96,76 +96,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!--<tr ng-repeat="job in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">-->
-                        <!--<td style="vertical-align:middle">{{job.taskId}}</td>-->
-                        <!--<td style="vertical-align:middle">{{job.taskName}}</td>-->
-                        <!--<td style="vertical-align:middle">{{owner}}</td>-->
-                        <!--<td style="vertical-align:middle">{{getPrioLvlText(job.prioLvl)}}</td>-->
-                        <!--<td style="vertical-align:middle">-->
-                            <!--<span class="label label-sm {{getStatusLabel(job.ifVal)}}">{{job.ifVal==1?"生效":"失效"}}</span>-->
-                        <!--</td>-->
-                        <!--<td>-->
-                            <!--<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">-->
-
-                                <!--<a class="blue" href="#/jobMonitor/{{job.taskId}}" target="_BLANK"-->
-                                   <!--tooltip-placement="top" tooltip="运行历史">-->
-                                    <!--<i class="icon-book bigger-130"></i>-->
-                                <!--</a>-->
-
-                                <!--<button class="btn-link green" ng-click="editJob($index)"-->
-                                        <!--ng-show="job.ifVal==1 && (job.owner == user.pinyinName || user.isAdmin)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="编辑">-->
-                                    <!--<i class="icon-pencil bigger-130"></i>-->
-                                <!--</button>-->
-
-                                <!--<a class="blue" href="#/jobView/{{job.taskId}}" target="_BLANK"-->
-                                   <!--ng-show="job.ifVal==1 && (job.owner != user.pinyinName && !user.isAdmin)"-->
-                                   <!--tooltip-placement="top"-->
-                                   <!--tooltip="查看">-->
-                                    <!--<i class="icon-camera bigger-130"></i>-->
-                                <!--</a>-->
-
-                                <!--<button class="btn-link " ng-click="invalidJob($index)"-->
-                                        <!--ng-show="job.ifVal==1 && (user.isAdmin || user.pinyinName == job.owner)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="置为失效">-->
-                                    <!--<i class="icon-pause bigger-130"></i>-->
-                                <!--</button>-->
-
-                                <!--<button class="btn-link " ng-click="validJob($index)"-->
-                                        <!--ng-show="job.ifVal!=1 && (user.isAdmin || user.pinyinName == job.owner)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="置为生效">-->
-                                    <!--<i class="icon-play bigger-130"></i>-->
-                                <!--</button>-->
-
-                                <!--<button class="btn-link green" ng-click="preRunJob($index)"-->
-                                        <!--ng-show="job.ifVal==1 && (user.isAdmin || user.pinyinName == job.owner)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="手动运行">-->
-                                    <!--<i class="icon-forward bigger-130"></i>-->
-                                <!--</button>-->
-
-                                <!--<button class="btn-link" ng-click="batchStopJob($index)"-->
-                                        <!--ng-show="job.ifVal==1 && (user.isAdmin || user.pinyinName == job.owner)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="停止所有预跑任务">-->
-                                    <!--<i class="icon-ban-circle bigger-130"></i>-->
-                                <!--</button>-->
-
-                                <!--<button class="btn-link yellow" ng-click="deleteJob($index)"-->
-                                        <!--ng-show="job.ifVal==0 && (user.isAdmin || user.pinyinName == job.owner)"-->
-                                        <!--tooltip-placement="top"-->
-                                        <!--tooltip="删除">-->
-                                    <!--<i class="icon-remove bigger-130"></i>-->
-                                <!--</button>-->
-
-                            <!--</div>-->
-                        <!--</td>-->
-                    <!--</tr>-->
-
-                    <tr ng-repeat="job in displayedDataList">
+                    <tr ng-repeat="job in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">
                         <td style="vertical-align:middle">{{job.taskId}}</td>
                         <td style="vertical-align:middle">{{job.taskName}}</td>
                         <td style="vertical-align:middle">{{job.owner}}</td>
@@ -190,12 +121,12 @@
                                     <i class="icon-camera bigger-130"></i>
                                 </a>
 
-
                                 <button class="btn-link green" ng-click="preRunJob($index)"
                                         tooltip-placement="top"
                                         tooltip="手动运行">
                                     <i class="icon-forward bigger-130"></i>
                                 </button>
+
 
 
                                 <button class="btn-link yellow" ng-click="deleteJob($index)"
@@ -207,6 +138,49 @@
                             </div>
                         </td>
                     </tr>
+
+                    <!--<tr ng-repeat="job in displayedDataList">-->
+                        <!--<td style="vertical-align:middle">{{job.taskId}}</td>-->
+                        <!--<td style="vertical-align:middle">{{job.taskName}}</td>-->
+                        <!--<td style="vertical-align:middle">{{job.owner}}</td>-->
+                        <!--<td style="vertical-align:middle">{{job.priority}}</td>-->
+                        <!--<td>-->
+                            <!--<div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">-->
+
+                                <!--<a class="blue" href="#/jobMonitor/{{job.taskId}}" target="_BLANK"-->
+                                   <!--tooltip-placement="top" tooltip="运行历史">-->
+                                    <!--<i class="icon-book bigger-130"></i>-->
+                                <!--</a>-->
+
+                                <!--<button class="btn-link green" ng-click="editJob($index)"-->
+                                        <!--tooltip-placement="top"-->
+                                        <!--tooltip="编辑">-->
+                                    <!--<i class="icon-pencil bigger-130"></i>-->
+                                <!--</button>-->
+
+                                <!--<a class="blue" href="#/jobView/{{job.taskId}}" target="_BLANK"-->
+                                   <!--tooltip-placement="top"-->
+                                   <!--tooltip="查看">-->
+                                    <!--<i class="icon-camera bigger-130"></i>-->
+                                <!--</a>-->
+
+
+                                <!--<button class="btn-link green" ng-click="preRunJob($index)"-->
+                                        <!--tooltip-placement="top"-->
+                                        <!--tooltip="手动运行">-->
+                                    <!--<i class="icon-forward bigger-130"></i>-->
+                                <!--</button>-->
+
+
+                                <!--<button class="btn-link yellow" ng-click="deleteJob($index)"-->
+                                        <!--tooltip-placement="top"-->
+                                        <!--tooltip="删除">-->
+                                    <!--<i class="icon-remove bigger-130"></i>-->
+                                <!--</button>-->
+
+                            <!--</div>-->
+                        <!--</td>-->
+                    <!--</tr>-->
                     </tbody>
                 </table>
 

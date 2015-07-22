@@ -22,10 +22,12 @@
 	<link rel="stylesheet" href="/assets/lib/ace/css/daterangepicker.css" />
 	<link rel="stylesheet" href="/assets/lib/ace/css/colorpicker.css" />
 
+	<link rel="stylesheet" href="/assets/css/index.css">
+
 	<!-- fonts -->
 
-	<link rel="stylesheet" href="/assets/lib/ace/css/OpenSans.css" />
-
+	<!--<link rel="stylesheet" href="/assets/lib/ace/css/OpenSans.css" />-->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />
 	<!-- ace styles -->
 
 	<link rel="stylesheet" href="/assets/lib/ace/css/ace.min.css" />
@@ -52,7 +54,7 @@
 	<![endif]-->
 </head>
 
-<body ng-controller="indexCtrl">
+<body>
 <div class="navbar navbar-default" id="navbar" style="background-color: green">
 	<script type="text/javascript">
 		try{ace.settings.check('navbar' , 'fixed')}catch(e){}
@@ -138,14 +140,14 @@
 
 				<li>
 					<a href="#/taskAdd">
-						<i class="icon-text-width"></i>
+						<i class="icon-cog"></i>
 						<span class="menu-text"> 新增任务 </span>
 					</a>
 				</li>
 
 				<li>
 					<a href="#/transport">
-						<i class="icon-list-alt"></i>
+						<i class="icon-exchange"></i>
 						<span class="menu-text"> 传输管理 </span>
 					</a>
 				</li>
@@ -675,14 +677,19 @@
 <script src="/assets/lib/angular.min.js"></script>
 <script src="/assets/lib/angular-route.min.js"></script>
 <script src="/assets/lib/angular-resource.min.js"></script>
+<script src="/assets/lib/ui-bootstrap-tpls.js"></script>
 <script src="/assets/js/app.js"></script>
+<script src="/assets/js/service/component_service.js"></script>
 <script src="/assets/js/service/common_service.js"></script>
 <script src="/assets/js/service/job_manage_service.js"></script>
+<script src="/assets/js/service/constant_service.js"></script>
 
-<script src="/assets/js/controller/indexController.js"></script>
+<script src="/assets/js/controller/dialog_ctrl.js"></script>
 <script src="/assets/js/controller/calculate_task_add.js"></script>
 <script src="/assets/js/controller/sidebarCtrl.js"></script>
 <script src="/assets/js/controller/myTaskController.js"></script>
+
+<script src="/assets/js/controller/page1Controller.js"></script>
 <div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
 </body>
 </html>

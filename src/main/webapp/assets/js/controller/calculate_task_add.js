@@ -2,7 +2,8 @@
  * Created by wei.shen on 2015/7/14.
  */
 
-fanliApp.controller("taskAddCtrl",['$scope','$http','JobManageService',function($scope,$http,$JobManageService) {
+fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',function($scope,$http,$modal,JobManageService) {
+    $scope.showImportMsg = false;
     $scope.isLoading = false;
     $scope.developerOptions = [
         {"id":1 , "name":"沈伟", "bu":"数据部"},
@@ -24,8 +25,8 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','JobManageService',function(
             {ID: 2, Text: 'load'},
             {ID: 3, Text: 'dm'},
             {ID: 4, Text: 'dw'},
-            {ID: 5, Text: 'dim'},
-            {ID: 6, Text:'knn'}
+            {ID: 5, Text: 'rpt'},
+            {ID: 6, Text: 'dim'}
     ];
     $scope.priorityOptions = [
         {ID: 1, Text: '高'},
@@ -71,6 +72,8 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','JobManageService',function(
         $http.get("/fanli/dol/checkDol",{params:{dolPath:$scope.dolPath}})
             .success(function(response){
                 $scope.isLoading = false;
+                $scope.showImportMsg = true;
+                $scope.importMsg = "dol导入成功";
                 initConfUI();
                 $scope.showConfig = true;
             }).error(function(response) {
@@ -111,8 +114,8 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','JobManageService',function(
     }
 
     $scope.submitTaskConfig = function() {
-        $JobManageService.addTask({},{
-            taskId:2,
+        JobManageService.addTask({},{
+            //taskId:2,
             taskGroupId:3,
             taskName:"hive##dw.taobao_order",
             resource:"some",
@@ -141,4 +144,24 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','JobManageService',function(
             concurrency:10
         });
     }
+
+
+    //配置依赖
+    $scope.showDependenceDialog = function () {
+
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/taskDependencyDialog.html',
+            controller: 'TaskDependencyCtrl',
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks = data;
+        }, function () {
+        });
+    };
 }]);

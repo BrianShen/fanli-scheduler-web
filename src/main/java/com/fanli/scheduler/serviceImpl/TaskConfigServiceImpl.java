@@ -36,7 +36,6 @@ public class TaskConfigServiceImpl implements TaskConfigService{
     public List<EtlTaskCfg> getTaskByParams(TaskQuery taskQuery) {
         EtlTaskCfgExample etlTaskCfgExample = new EtlTaskCfgExample();
         EtlTaskCfgExample.Criteria criteria = etlTaskCfgExample.createCriteria();
-        System.out.println(taskQuery);
         if (taskQuery.getTaskGroupId() != null) criteria.andTaskGroupIdEqualTo(taskQuery.getTaskGroupId());
         if (!taskQuery.getOwner().equals("")) criteria.andOwnerEqualTo(taskQuery.getOwner());
         if (taskQuery.getTaskId() != null) criteria.andTaskIdEqualTo(taskQuery.getTaskId());

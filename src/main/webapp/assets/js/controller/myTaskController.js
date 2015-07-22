@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/7/16.
  */
 
-fanliApp.controller("myTaskCtrl",['$scope','JobManageService',function($scope,$JobManageService) {
+fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','component',function($scope,$filter,JobManageService,component) {
     $scope.taskGroupOptions= [
         {ID: 1, Text: 'ods'},
         {ID: 2, Text: 'load'},
@@ -37,7 +37,7 @@ fanliApp.controller("myTaskCtrl",['$scope','JobManageService',function($scope,$J
     $scope.submitQuery = function() {
         showLoading("正在查询中...");
 
-        var tasks = $JobManageService.queryTasks({},{
+        var tasks = JobManageService.queryTasks({},{
             group: $scope.jobGroup,
             owner: $scope.jobDeveloper,
             id: $scope.jobID
@@ -49,9 +49,10 @@ fanliApp.controller("myTaskCtrl",['$scope','JobManageService',function($scope,$J
     function processQueryResult(tasks) {
         tasks.$promise.then(function(data) {
             if(data.isSuccess) {
+                $scope.allTaskList = data.results;
+                $scope.table = component.getCustomizedTable($scope, $filter);
                 $scope.isLoading = false;
                 $scope.hideTable = false;
-                $scope.displayedDataList = data.results;
             } else{
                 console.log("没有成功");
             }
@@ -62,6 +63,25 @@ fanliApp.controller("myTaskCtrl",['$scope','JobManageService',function($scope,$J
     function showLoading(msg) {
         $scope.isLoading = true;
         $scope.loadingMsg = msg;
+    }
+
+    $scope.editJob = function (index) {
+        var job = getJobByIndex(index);
+        if (job.type == 2)
+            window.open("#/calculateJobConfig/" + job.taskId);
+        else
+            window.open("#/transferJobConfig/" + job.taskId);
+    };
+
+    //根据实际的index获得job
+    function getJobByIndex(index) {
+        var selectIndex = getSelectedIndex(index);
+        return $scope.table.displayedDataList[selectIndex]; //需要设置的任务
+    }
+
+    //根据当前页的index获得实际的index
+    function getSelectedIndex(index) {
+        return  index + ($scope.table.startIndex - 1);
     }
 
 }]);
