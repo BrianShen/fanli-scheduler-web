@@ -143,6 +143,28 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
             recallLimit:3,
             concurrency:10
         });
+    };
+
+    $scope.returnStep1 = function() {
+        $scope.showConfig = false;
+        $scope.showImportMsg = false;
+        $scope.importMsg = "";
+    };
+
+    $scope.gotoStep3 = function() {
+        getMetaData();
+        $scope.showMetaConfig = true;
+    };
+
+    var getMetaData = function() {
+        $scope.metaIsLoading = true;
+        $scope.metaLoadingMsg = "正在加载元数据信息......";
+        $http.get("/fanli/domain/meta",{params:{
+            db:$scope.db,
+            table:getTableName($scope.dolPath)
+        }}).success(function(data) {
+            
+        });
     }
 
 
