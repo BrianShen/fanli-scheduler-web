@@ -1,27 +1,108 @@
 'use strict';
 
 //任务依赖选择dialog
-fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInstance, component, JobManageService,ConstantService) {
+fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInstance, msg,component, JobManageService,ConstantService) {
 
-    initParams();
-    initScope();
+    //initParams();
+    //initScope();
 
-    function initParams() {
+        $scope.dependenceTasks = msg.data;
         $scope.taskGroups = ConstantService.getGroupOptions();
-    }
+        $scope.alert = {
+            type: '',
+            msg: '',
+            isShow: false
+        };
 
-    function initScope() {
+
+
         $scope.queryPre = function() {
-            console.log($scope.taskid);
-            var preTasks = JobManageService.queryTasks({
-                group: $scope.taskGroup,
-                owner: $scope.taskOwner,
-                id: $scope.taskid
+            var task = this.taskid;
+            var owner = this.taskOwner;
+            var grp = this.taskGroup;
+            var preTasks = JobManageService.queryTasks({},{
+                group: grp,
+                owner: owner,
+                id: task
             });
 
             processResult(preTasks);
+        };
+
+    $scope.ok = function() {
+        $modalInstance.close($scope.dependenceTasks);
+    };
+
+    //显示提示信息
+    function showAlert(type, msg) {
+        $scope.alert.msg = msg;
+        $scope.alert.type = type;
+        $scope.alert.isShow = true;
+    }
+
+    //点击依赖选择框的响应
+    $scope.setDependence = function (index) {
+        //检查依赖是否已经被添加
+        var flag = 1;
+        var selectRowIndex = index + ($scope.table.startIndex - 1);
+        var job = $scope.table.displayedDataList[selectRowIndex];
+        console.log(job.isSelected);
+        if (job.isSelected) {
+            addDependency(job);
+
+        } else {
+            deleteDependency(job);
         }
     };
+
+    //删除依赖
+    function deleteDependency(job) {
+        var index = getDependenceIndex(job.taskId);
+        if (index != -1) {
+            $scope.dependenceTasks.splice(index, 1);
+            showAlert('success', '成功删除依赖(taskId: ' + job.taskId + ', taskName: ' + job.taskName + ')');
+        }
+        else {
+            showAlert('warning', '查找任务失败');
+        }
+    }
+
+    //添加依赖
+    function addDependency(job) {
+        var taskRela = {
+            taskId: job.taskId,
+            taskName: job.taskName,
+            cycle: job.cycle,
+            owner: job.owner,
+            cycleGap: job.cycle + '0'
+        };
+        $scope.dependenceTasks.push(taskRela);
+        showAlert('success', '成功添加依赖(taskId: ' + job.taskId + ', taskName: ' + job.taskName + ')');
+    }
+
+    //根据taskId获得其依赖列表中的index
+    var getDependenceIndex = function (taskId) {
+        for (var i = 0; i < $scope.dependenceTasks.length; i++) {
+            if ($scope.dependenceTasks[i].taskId == taskId) {
+                return i;
+            }
+        }
+        return -1;
+    };
+
+    //根据传入的依赖信息设置默认的选择状态
+    //function setDefaultSelected() {
+    //    //将所有的任务都设置为未选中
+    //    angular.forEach($scope.table.displayedDataList, function (job) {
+    //        job.isSelected = false;
+    //    });
+    //    for (var i = 0; i < $scope.dependenceTasks.length; i++) {
+    //        var index = getQueryResultIndex($scope.dependenceTasks[i].taskId);
+    //        if (index != -1)
+    //            $scope.table.displayedDataList[index].isSelected = true;
+    //    }
+    //}
+
 
     function processResult(result){
         result.$promise.then(
@@ -29,6 +110,7 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
                 if(data.isSuccess) {
                     $scope.allTaskList = data.results;
                     $scope.table = component.getCustomizedTable($scope, $filter);
+                    //setDefaultSelected();
                     $scope.hideTable = false;
                 }
             }

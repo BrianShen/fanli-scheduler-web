@@ -102,11 +102,11 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
 
     }
 
-    $scope.dependenceTasks = []
-    $scope.addPreTask = function() {
-        $scope.dependenceTasks.push({taskId:22,taskName:'hive##dw.taobao_order',cycle:'日',offset:0});
-        $scope.dependenceTasks;
-    }
+    $scope.dependenceTasks = [];
+    //$scope.addPreTask = function() {
+    //    $scope.dependenceTasks.push({taskId:22,taskName:'hive##dw.taobao_order',cycle:'日',offset:0});
+    //    $scope.dependenceTasks;
+    //}
 
     function getTableName(path) {
         var arr = path.split("/");
@@ -148,6 +148,10 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
 
     //配置依赖
     $scope.showDependenceDialog = function () {
+        $scope.message = {
+            headerText: '请选择依赖任务',
+            data: $scope.dependenceTasks // 传入数据，dialog的controller进行修改
+        };
 
         var modalInstance = $modal.open({
             templateUrl: 'dialog/taskDependencyDialog.html',
@@ -161,6 +165,29 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
         });
         modalInstance.result.then(function (data) {
             $scope.dependenceTasks = data;
+        }, function () {
+        });
+    };
+
+    //删除依赖
+    $scope.deleteDependenceTask = function (index) {
+        $scope.message = {
+            headerText: '提示',
+            bodyText: '是否删除任务前驱: ' + $scope.dependenceTasks[index].taskId + ' ?',
+            actionButtonStyle: 'btn-danger',
+            showCancel: true
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/message.html',
+            controller: MessageCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks.splice(index, 1);
         }, function () {
         });
     };
