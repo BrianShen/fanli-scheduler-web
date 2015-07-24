@@ -14,6 +14,13 @@ angular.module("constant.service",[])
                     {ID: 5, Text: 'rpt'},
                     {ID: 6, Text: 'dim'}
                 ];
+            },
+            getTableRefreshCycle:function() {
+                return [
+                    {ID: 'any', Text: '--请选择--'},
+                    {ID: 'full', Text: '全量'},
+                    {ID: 'append', Text: '增量'}
+                ];
             }
         }
     }]);

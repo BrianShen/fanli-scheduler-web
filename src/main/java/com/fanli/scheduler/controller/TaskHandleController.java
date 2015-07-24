@@ -24,9 +24,9 @@ public class TaskHandleController {
     public Result saveTaskConfig(@RequestBody EtlTaskCfg etlTaskCfg) {
         Result result = new Result();
         int ret = taskConfigService.insertTaskConfig(etlTaskCfg);
+        result.setResult(etlTaskCfg);
         result.setIsSuccess(true);
         return result;
-
     }
 
     @RequestMapping(value = "/queryTasks",method = RequestMethod.GET)
@@ -47,14 +47,6 @@ public class TaskHandleController {
             result.setIsSuccess(false);
         }
 
-        //EtlTaskCfg etlTaskCfg = taskConfigService.getTaskById(id);
-//        if(etlTaskCfg != null) {
-//            result.setIsSuccess(true);
-//            result.setResult(etlTaskCfg);
-//        }else {
-//            result.setIsSuccess(false);
-//            result.setMessages("id not found");
-//        }
         return result;
     }
 

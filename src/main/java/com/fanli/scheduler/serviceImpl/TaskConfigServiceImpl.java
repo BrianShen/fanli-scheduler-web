@@ -22,8 +22,7 @@ public class TaskConfigServiceImpl implements TaskConfigService{
     @Override
     public int insertTaskConfig(EtlTaskCfg etlTaskCfg) {
         logger.info("insert etlTaskCfg into database:" + etlTaskCfg.getTaskName());
-        etlTaskCfgMapper.insert(etlTaskCfg);
-        return 0;
+        return etlTaskCfgMapper.insert(etlTaskCfg);
     }
 
     @Override

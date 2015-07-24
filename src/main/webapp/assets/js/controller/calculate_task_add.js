@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/7/14.
  */
 
-fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',function($scope,$http,$modal,JobManageService) {
+fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService',function($scope,$http,$modal,$filter,ConstantService,component,JobManageService) {
     $scope.showImportMsg = false;
     $scope.isLoading = false;
     $scope.developerOptions = [
@@ -64,6 +64,10 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
         {ID: 240, Text: '4小时'}
     ];
 
+    $scope.tableRefreshTypes = ConstantService.getTableRefreshCycle();
+
+    $scope.tableType = 'MANAGED_TABLE';
+
 
     $scope.postDolInfo = function(){
         $scope.loadingMsg = "loading..."
@@ -110,11 +114,12 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
 
     function getTableName(path) {
         var arr = path.split("/");
-        return arr[arr.length - 1];
+        var dol = arr[arr.length - 1];
+        return dol.substring(0,dol.length - 4);
     }
 
     $scope.submitTaskConfig = function() {
-        JobManageService.addTask({},{
+        var result = JobManageService.addTask({},{
             //taskId:2,
             taskGroupId:3,
             taskName:"hive##dw.taobao_order",
@@ -143,6 +148,11 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
             recallLimit:3,
             concurrency:10
         });
+        result.$promise.then(function(data) {
+            if(data.isSuccess) {
+                $scope.generatedTaskId = data.result.taskId;
+            }
+        });
     };
 
     $scope.returnStep1 = function() {
@@ -163,7 +173,10 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
             db:$scope.db.name,
             table:getTableName($scope.dolPath)
         }}).success(function(data) {
-
+            $scope.metatable = data.columns;
+            $scope.showColumnTable = component.getMultiHiveTableColumnTable($filter,data.columns);
+            $scope.metaIsLoading = true;
+            $scope.metaLoadingMsg = "";
         });
     }
 
@@ -213,4 +226,6 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
         }, function () {
         });
     };
+
+
 }]);

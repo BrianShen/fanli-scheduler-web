@@ -124,8 +124,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.fanli.scheduler.entity.EtlTaskCfg" >
-    insert into etl_task_cfg (task_id, task_group_id, task_name, 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="taskId" keyColumn="taskid"  parameterType="com.fanli.scheduler.entity.EtlTaskCfg" >
+    insert into etl_task_cfg (task_group_id, task_name,
       resource, command, cycle, 
       priority, if_recall, if_wait, 
       if_pre, if_enable, freq, 
@@ -135,7 +135,7 @@
       update_user, update_time, type, 
       offset, recall_limit, concurrency
       )
-    values (#{taskId,jdbcType=INTEGER}, #{taskGroupId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, 
+    values (#{taskGroupId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR},
       #{resource,jdbcType=VARCHAR}, #{command,jdbcType=VARCHAR}, #{cycle,jdbcType=VARCHAR}, 
       #{priority,jdbcType=INTEGER}, #{ifRecall,jdbcType=INTEGER}, #{ifWait,jdbcType=INTEGER}, 
       #{ifPre,jdbcType=INTEGER}, #{ifEnable,jdbcType=INTEGER}, #{freq,jdbcType=VARCHAR}, 
