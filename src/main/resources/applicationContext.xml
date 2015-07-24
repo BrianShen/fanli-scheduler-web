@@ -65,6 +65,12 @@
     </bean>
 
 
+    <bean id="mdsItemtableMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.fanli.scheduler.mapping.MdsItemtableMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+
+
 </beans>
 
 

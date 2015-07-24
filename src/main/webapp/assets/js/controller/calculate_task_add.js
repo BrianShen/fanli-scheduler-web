@@ -160,10 +160,10 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','JobManageService',
         $scope.metaIsLoading = true;
         $scope.metaLoadingMsg = "正在加载元数据信息......";
         $http.get("/fanli/domain/meta",{params:{
-            db:$scope.db,
+            db:$scope.db.name,
             table:getTableName($scope.dolPath)
         }}).success(function(data) {
-            
+
         });
     }
 

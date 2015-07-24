@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fanli.scheduler.mapping.MdsItemtableMapper" >
+  <resultMap id="BaseResultMap" type="com.fanli.scheduler.entity.MdsItemtable" >
+    <id column="table_id" property="tableId" jdbcType="INTEGER" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="blood_relation" property="bloodRelation" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.fanli.scheduler.entity.MdsItemtableWithBLOBs" extends="BaseResultMap" >
+    <result column="create_table_info" property="createTableInfo" jdbcType="LONGVARCHAR" />
+    <result column="column_description" property="columnDescription" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    table_id, table_name, description, blood_relation
+  </sql>
+  <sql id="Blob_Column_List" >
+    create_table_info, column_description
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.fanli.scheduler.entity.MdsItemtableExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mds_itemtable
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.fanli.scheduler.entity.MdsItemtableExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mds_itemtable
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mds_itemtable
+    where table_id = #{tableId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mds_itemtable
+    where table_id = #{tableId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.fanli.scheduler.entity.MdsItemtableExample" >
+    delete from mds_itemtable
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.fanli.scheduler.entity.MdsItemtableWithBLOBs" >
+    insert into mds_itemtable (table_id, table_name, description, 
+      blood_relation, create_table_info, column_description
+      )
+    values (#{tableId,jdbcType=INTEGER}, #{tableName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{bloodRelation,jdbcType=VARCHAR}, #{createTableInfo,jdbcType=LONGVARCHAR}, #{columnDescription,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fanli.scheduler.entity.MdsItemtableWithBLOBs" >
+    insert into mds_itemtable
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tableId != null" >
+        table_id,
+      </if>
+      <if test="tableName != null" >
+        table_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="bloodRelation != null" >
+        blood_relation,
+      </if>
+      <if test="createTableInfo != null" >
+        create_table_info,
+      </if>
+      <if test="columnDescription != null" >
+        column_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tableId != null" >
+        #{tableId,jdbcType=INTEGER},
+      </if>
+      <if test="tableName != null" >
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodRelation != null" >
+        #{bloodRelation,jdbcType=VARCHAR},
+      </if>
+      <if test="createTableInfo != null" >
+        #{createTableInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="columnDescription != null" >
+        #{columnDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.fanli.scheduler.entity.MdsItemtableExample" resultType="java.lang.Integer" >
+    select count(*) from mds_itemtable
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update mds_itemtable
+    <set >
+      <if test="record.tableId != null" >
+        table_id = #{record.tableId,jdbcType=INTEGER},
+      </if>
+      <if test="record.tableName != null" >
+        table_name = #{record.tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null" >
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bloodRelation != null" >
+        blood_relation = #{record.bloodRelation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTableInfo != null" >
+        create_table_info = #{record.createTableInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.columnDescription != null" >
+        column_description = #{record.columnDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update mds_itemtable
+    set table_id = #{record.tableId,jdbcType=INTEGER},
+      table_name = #{record.tableName,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      blood_relation = #{record.bloodRelation,jdbcType=VARCHAR},
+      create_table_info = #{record.createTableInfo,jdbcType=LONGVARCHAR},
+      column_description = #{record.columnDescription,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update mds_itemtable
+    set table_id = #{record.tableId,jdbcType=INTEGER},
+      table_name = #{record.tableName,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      blood_relation = #{record.bloodRelation,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.fanli.scheduler.entity.MdsItemtableWithBLOBs" >
+    update mds_itemtable
+    <set >
+      <if test="tableName != null" >
+        table_name = #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodRelation != null" >
+        blood_relation = #{bloodRelation,jdbcType=VARCHAR},
+      </if>
+      <if test="createTableInfo != null" >
+        create_table_info = #{createTableInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="columnDescription != null" >
+        column_description = #{columnDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where table_id = #{tableId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.fanli.scheduler.entity.MdsItemtableWithBLOBs" >
+    update mds_itemtable
+    set table_name = #{tableName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      blood_relation = #{bloodRelation,jdbcType=VARCHAR},
+      create_table_info = #{createTableInfo,jdbcType=LONGVARCHAR},
+      column_description = #{columnDescription,jdbcType=LONGVARCHAR}
+    where table_id = #{tableId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fanli.scheduler.entity.MdsItemtable" >
+    update mds_itemtable
+    set table_name = #{tableName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      blood_relation = #{bloodRelation,jdbcType=VARCHAR}
+    where table_id = #{tableId,jdbcType=INTEGER}
+  </update>
+</mapper>

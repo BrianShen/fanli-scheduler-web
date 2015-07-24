@@ -23,7 +23,7 @@ public class TaskHandleController {
     @ResponseBody
     public Result saveTaskConfig(@RequestBody EtlTaskCfg etlTaskCfg) {
         Result result = new Result();
-        taskConfigService.insertTaskConfig(etlTaskCfg);
+        int ret = taskConfigService.insertTaskConfig(etlTaskCfg);
         result.setIsSuccess(true);
         return result;
 
