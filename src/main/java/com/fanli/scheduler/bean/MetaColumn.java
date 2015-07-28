@@ -7,9 +7,19 @@ public class MetaColumn {
     private String name;
     private String type;
     private String comment;
+    private String index;
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
+    }
 
     public String getName() {
         return name;
+
     }
 
     public void setName(String name) {

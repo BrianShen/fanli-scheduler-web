@@ -2,6 +2,7 @@ package com.fanli.scheduler.service;
 
 import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.entity.EtlTaskCfg;
+import com.fanli.scheduler.entity.EtlTaskrelaCfg;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface TaskConfigService {
     int insertTaskConfig(EtlTaskCfg etlTaskCfg);
     EtlTaskCfg getTaskById(Integer id);
     List<EtlTaskCfg> getTaskByParams(TaskQuery taskQuery);
+    int insertTaskRela(EtlTaskrelaCfg etlTaskrelaCfg);
 }

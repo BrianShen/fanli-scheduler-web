@@ -8,6 +8,25 @@ import java.util.List;
 public class TableMeta {
     private String database;
     private String table;
+
+    public List<MetaColumn> getPartitions() {
+        return partitions;
+    }
+
+    public void setPartitions(List<MetaColumn> partitions) {
+        this.partitions = partitions;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    private String source;
+    private List<MetaColumn> partitions;
     private List<MetaColumn> columns;
 
     public String getDatabase() {

@@ -15,17 +15,15 @@ import java.io.IOException;
 @Service
 public class TableMetaService {
     private static Logger logger = Logger.getLogger(TableMetaService.class);
-    private static final String META_SERVICE_HOST = "http://api.bi.51fanli.it";
+    private static final String META_SERVICE_HOST = "http://localhost:3434";
 
     public TableMeta getTableMeta(String dbname,String tablename) {
         TableMeta meta = null;
         try {
-            System.out.println(dbname);
             String url = META_SERVICE_HOST + "/" + dbname + "/" + tablename;
-            System.out.println(url);
-
-            String metaStr = Jsoup.connect(url).ignoreContentType(true).get().body().toString();
-            System.out.println(metaStr);
+            logger.info("Url of request to mds is : " + url);
+            //String metaStr = Jsoup.connect(url).header("Content-Type","application/json;charset=UTF-8").get().toString();
+            String metaStr = Jsoup.connect(url).ignoreContentType(true).execute().body();
             if (metaStr != null) {
                 logger.info("Get Table MetaData info ,dbname = " + dbname + ",tablename= " + tablename  +"; the returned json is " + metaStr);
             } else logger.error("Failed to get Table MetaData info ,dbname = " + dbname + ",tablename= " + tablename +" ,error");
