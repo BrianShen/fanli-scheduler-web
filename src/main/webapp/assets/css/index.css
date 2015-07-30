@@ -2,3 +2,51 @@
     width: 60%;
     min-width: 800px;
 }
+
+.tag {
+    width: 70%;
+    height: 23px;
+    border: solid 1px white;
+    border-radius: 0px;
+    display: block;
+}
+
+.statusFont {
+    font-size: 16px;
+}
+
+.tag.success {
+    background-color: #458B00;
+}
+
+.tag.fail {
+    background-color: #FF3030;
+}
+
+.tag.init {
+    background-color: #E3E3E3;
+}
+
+.tag.running {
+    background-color: #63B8FF;
+}
+
+.tag.suspend {
+    background-color: #878787;
+}
+
+.tag.init-error {
+    background-color: #EEEE00;
+}
+
+.tag.wait {
+    background-color: #EEAD0E;
+}
+
+.tag.ready {
+    background-color: #FFFCC7;
+}
+
+.tag.timeout {
+    background-color: #0000FF;
+}

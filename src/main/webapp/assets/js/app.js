@@ -7,13 +7,15 @@ var fanliApp = angular.module("fanliApp",[
     'job_manage.service',
     'component.service',
     'ui.bootstrap',
-    'constant.service']);
+    'constant.service',
+    'fanli.filter'
+]);
 
 fanliApp.config(function($routeProvider){
     $routeProvider.
         when('/',{
-            templateUrl : 'page1.html',
-            controller:'page1Ctrl'
+            templateUrl : 'monitor.html',
+            controller:'MonitorCtrl'
         }).
         when('/mytask',{
             templateUrl : 'mytask.html',
@@ -26,6 +28,10 @@ fanliApp.config(function($routeProvider){
         when('/transport',{
             templateUrl : 'transport.html',
             //controller : 'page4Ctrl'
+        })
+        .when('/job_log/:instanceId',{
+            templateUrl : 'job_log.html',
+            controller:'jobLogCtrl'
         });
 
 });

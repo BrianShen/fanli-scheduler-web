@@ -1,3 +1,7 @@
+/**
+ * Created by wei.shen on 2015/7/21.
+ */
+
 angular.module('component.service', []).
     value('component', {
         getCustomizedTable: function (scope, filter) {

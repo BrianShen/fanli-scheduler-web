@@ -28,7 +28,7 @@ public class DomainCrossController {
     public TableMeta getMetaInfo(@RequestParam("db") String db,@RequestParam("table") String table) {
         if ("".equals(db)) logger.error("warning,db is an empty String");
         if ("".equals(table)) logger.error("warning,table is an empty String");
-        return tableMetaService.getTableMeta("dimvw","dim_shop_sub_shop");
+        return tableMetaService.getTableMeta("test",table);
 //        TableMeta tableMeta = new TableMeta();
 //        tableMeta.setTable("dim_shop_sub_shop");
 //        tableMeta.setDatabase("dimvw");

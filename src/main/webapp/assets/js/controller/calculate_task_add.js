@@ -321,7 +321,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         //$http.get("/fanli/table/buildTable",data).success(function(data) {
         //    sql = data.result;
         //});
-        var sql = "use " + data.database + ";\n" + "drop table if exists " + data.table + ";\n" +
+        var sql = "use " + $scope.db.name + ";\n" + "drop table if exists " + data.table + ";\n" +
                 "create table " + data.table + "(\n";
         var columns = data.columns;
         var partitions = data.partitions;
@@ -334,7 +334,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
             for(var i = 0;i < partitions.length - 1;i ++) {
                 sql = sql + partitions[i].name + " " + partitions[i].type + ","
             }
-            sql = sql + partitions[partitions.length].name + " " + partitions[partitions.length].type + ")\n"
+            sql = sql + partitions[partitions.length - 1].name + " " + partitions[partitions.length - 1].type + ")\n"
         }
         sql = sql + "STORED AS ORC;";
         return sql;
@@ -368,12 +368,12 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     $scope.publish = function() {
         $scope.message = {
             headerText: '提示',
-            bodyText: '请确认是否执行如下建表语句，如有疑问请联系开发人员：沈伟，张超: <br>' + getBuildTableSql($scope.metatable),
+            bodyText: '请确认是否执行如下建表语句，如有疑问请联系开发人员：沈伟，张超: <pre>' + getBuildTableSql($scope.metatable) + '</pre>',
             actionButtonStyle: 'btn-danger',
             showCancel: true
         };
         var modalInstance = $modal.open({
-            templateUrl: 'dialog/message.html',
+            templateUrl: 'dialog/publish.html',
             controller: MessageCtrl,
             resolve: {
                 msg: function () {
@@ -382,9 +382,13 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
             }
         });
         modalInstance.result.then(function (data) {
-
+            var sql = getBuildTableSql($scope.metatable);
+            $http.post("/fanli/table/build",{sql:sql}).success(function(data) {
+                console.log("建表成功");
+            });
         }, function () {
         });
+
     }
 
     var getMetaData = function() {

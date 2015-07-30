@@ -15,6 +15,9 @@ import java.io.IOException;
 @Service
 public class TableMetaService {
     private static Logger logger = Logger.getLogger(TableMetaService.class);
+    //测试环境
+//    private static final String META_SERVICE_HOST = "http://api.bi.51fanli.it";
+    //线上环境
     private static final String META_SERVICE_HOST = "http://localhost:3434";
 
     public TableMeta getTableMeta(String dbname,String tablename) {

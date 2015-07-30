@@ -1,11 +1,16 @@
 package com.fanli.scheduler.controller;
 
+import com.fanli.scheduler.bean.BuildTableSql;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.bean.TableMeta;
+import com.fanli.scheduler.service.SSHService;
 import com.fanli.scheduler.service.TableService;
+import com.jcraft.jsch.JSchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * Created by wei.shen on 2015/7/17.
@@ -14,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/table")
 public class TableController {
+    @Autowired
+    private SSHService sshService;
     @Autowired
     private TableService tableService;
     @ResponseBody
@@ -28,9 +35,17 @@ public class TableController {
 
     @ResponseBody
     @RequestMapping(value = "/build",method = RequestMethod.POST)
-    public Result buildTableOnline(@RequestParam("sql") String sql) {
+    public Result buildTableOnline(@RequestBody BuildTableSql buildTableSql) {
         Result result = new Result();
-        result.setIsSuccess(tableService.buildTable(sql));
+        try {
+            boolean ret = sshService.isRunSSHCommandSuccessful("sh /home/hadoop/scheduler-core/bin/hive_command.sh " + "\"" + buildTableSql.getSql() + "\"");
+            result.setIsSuccess(ret);
+        } catch (JSchException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        result.setIsSuccess(tableService.buildTable(sql));
         return result;
     }
 
