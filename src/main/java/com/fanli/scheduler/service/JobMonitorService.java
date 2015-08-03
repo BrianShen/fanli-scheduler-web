@@ -22,10 +22,15 @@ public class JobMonitorService {
         List<EtlTaskStatus> list = null;
         EtlTaskStatusExample etlTaskStatusExample = new EtlTaskStatusExample();
         EtlTaskStatusExample.Criteria criteria = etlTaskStatusExample.createCriteria();
-        if (taskId != null && taskId != 100) criteria.andTaskIdEqualTo(taskId);
+        if (taskId != null) criteria.andTaskIdEqualTo(taskId);
         if (!developer.equals("")) criteria.andOwnerEqualTo(developer);
-        if (status != null) criteria.andStatusEqualTo(status);
-        if (startDate != null&&endDate!= null) criteria.andCalDtBetween(startDate,endDate);
+        if (status != null&& status != 100) criteria.andStatusEqualTo(status);
+//        if (startDate != null&&endDate!= null) {
+//            criteria.andCalDtBetween(startDate,endDate);
+//        };
+        if (startDate != null&&endDate!= null) {
+            criteria.andCalDtBetween(startDate,endDate);
+        };
         list = etlTaskStatusMapper.selectByExample(etlTaskStatusExample);
         return list;
     }

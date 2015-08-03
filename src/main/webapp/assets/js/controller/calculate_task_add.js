@@ -2,15 +2,30 @@
  * Created by wei.shen on 2015/7/14.
  */
 
-fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService',function($scope,$http,$modal,$filter,ConstantService,component,JobManageService) {
+fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService','DimService',function($scope,$http,$modal,$filter,ConstantService,component,JobManageService,DimService) {
     $scope.showImportMsg = false;
     $scope.isLoading = false;
-    $scope.developerOptions = [
-        {"id":1 , "name":"鲍时祥", "bu":"数据部"},
-        {"id":2 , "name":"汤晓磊", "bu":"数据部"},
-        {"id":3 , "name":"吴良东", "bu":"数据部"},
-        {"id":4 , "name":"徐翔宇", "bu":"数据部"}
-    ];
+    //$scope.developerOptions = [
+    //    {"id":1 , "name":"鲍时祥", "bu":"数据部"},
+    //    {"id":2 , "name":"汤晓磊", "bu":"数据部"},
+    //    {"id":3 , "name":"吴良东", "bu":"数据部"},
+    //    {"id":4 , "name":"徐翔宇", "bu":"数据部"}
+    //];
+
+     var getDevelopers = function() {
+         var rep = DimService.queryAllDevelopers({},{});
+         rep.$promise.then(function(data) {
+             if(data.isSuccess) {
+                 $scope.developerOptions = data.results;
+             }
+
+         },function() {
+
+         })
+     }
+
+    getDevelopers();
+
     $scope.hiveDatabases = [
         {"id":1,name:"dw",desc:""},
         {"id":2,name:"ods",desc:""},
@@ -92,7 +107,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
             })
     }
     $scope.change = function() {
-        console.log($scope.developer.name);
+        console.log($scope.developer.chName);
     }
 
 
@@ -109,7 +124,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     }
     function initConfUI () {
         $scope.conf_taskName = "hive##" +$scope.db.name + "." + getTableName($scope.dolPath);
-        $scope.conf_developer = $scope.developer.name;
+        $scope.conf_developer = $scope.developer.chName;
         $scope.conf_frequency ='0 5 0 * * ?';
         $scope.conf_taskGroup = $scope.taskGroupOptions[1].ID;
         $scope.conf_cycle = 'D';
@@ -213,6 +228,12 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
                                 $scope.cfgSaveIsLoading = false;
                                 console.log("add pre success")
                             })
+                        } else {
+                            $scope.saveSuccessMsg = "保存成功";
+                            $scope.showSaveSucess = true;
+                            setButtonClickable(true,true,false);
+                            $scope.cfgSaveLoadingMsg = "";
+                            $scope.cfgSaveIsLoading = false;
                         }
                     }
                 });
@@ -290,15 +311,20 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     $scope.gotoStep3 = function() {
         setButtonClickable(true,true,true);
         getMetaData();
+        setButtonState(false,false,true);
         $scope.showMetaConfig = true;
     };
 
     $scope.returnStep2 = function() {
         $scope.showMetaConfig = false;
+
     };
 
     $scope.saveMeta = function() {
         console.log($scope.tableComment);
+        setButtonState(true,true,true);
+        $scope.publishSuccess = true;
+        $scope.publishLoadingMsg = "正在保存HIVE META信息......";
         $http.post("/fanli/mdm/saveMeta",{
             tableName:getTableName($scope.dolPath),
             description:$scope.tableComment,
@@ -307,9 +333,22 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
             bloodRelation:getBloodRela(),
             tableType:$scope.refreshType
         }).success(function(data) {
+            $scope.publishSuccess = false;
+            $scope.publishLoadingMsg = "";
+            setButtonState(true,true,false);
             console.log("save success");
-        })
+        }).error(function(data) {
+            setButtonState(false,false,true);
+            $scope.publishSuccess = false;
+            $scope.publishLoadingMsg = "";
+        });
     };
+
+    var setButtonState = function(a,b,c) {
+        $scope.preThree = a;
+        $scope.saveThree = b;
+        $scope.publishThree = c;
+    }
 
     $scope.changeComment = function(index) {
         //console.log("change " + (parseInt(index) + ($scope.showColumnTable.currentPage - 1)*($scope.showColumnTable.selectedRecordPerPage)) + "  " + $scope.showColumnTable.displayedDataList[index + ($scope.showColumnTable.currentPage - 1)*($scope.showColumnTable.selectedRecordPerPage)].comment)
@@ -383,8 +422,22 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         });
         modalInstance.result.then(function (data) {
             var sql = getBuildTableSql($scope.metatable);
+            $scope.publishSuccess = true;
+            $scope.publishLoadingMsg = "正在建表...";
             $http.post("/fanli/table/build",{sql:sql}).success(function(data) {
+                $scope.publishStatusClass = 'alert-success';
+                $scope.publishSuccess = false;
+                $scope.publishLoadingMsg = '';
+                $scope.showPublishResultMsg = true;
+                $scope.publishResultMsg = '建表已成功';
+                setButtonState(true,true,true);
                 console.log("建表成功");
+            }).error(function(data) {
+                $scope.publishStatusClass = 'alert-danger';
+                $scope.showPublishResultMsg = true;
+                $scope.publishResultMsg = '建表失败，请联系调度开发人员';
+                $scope.publishSuccess = false;
+                $scope.publishLoadingMsg = '';
             });
         }, function () {
         });

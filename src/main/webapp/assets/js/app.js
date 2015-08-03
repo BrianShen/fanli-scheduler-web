@@ -3,6 +3,7 @@
  */
 var fanliApp = angular.module("fanliApp",[
     'ngRoute',
+    'ngResource',
     'common.service',
     'job_manage.service',
     'component.service',
