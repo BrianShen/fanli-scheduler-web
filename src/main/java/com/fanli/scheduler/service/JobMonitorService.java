@@ -6,9 +6,9 @@ import com.fanli.scheduler.mapping.EtlTaskStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by wei.shen on 2015/7/29.
@@ -36,7 +36,20 @@ public class JobMonitorService {
 //            criteria.andCalDtBetween(startDate,endDate);
 //        };
         if (startDate != null&&endDate!= null) {
-            criteria.andCalDtBetween(startDate,endDate);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date sd = null;
+            Date ed = null;
+            try {
+                sd = simpleDateFormat.parse(startDate);
+                ed = simpleDateFormat.parse(endDate);
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(ed);
+                calendar.add(calendar.DATE,1);
+                ed = calendar.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            criteria.andStartTimeBetween(sd, ed);
         };
         list = etlTaskStatusMapper.selectByExample(etlTaskStatusExample);
         return list;
