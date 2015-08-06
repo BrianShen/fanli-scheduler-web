@@ -2,7 +2,7 @@
     <div class="col-xs-12  col-sm-12">
         <h4 class="header smaller lighter blue">
             <span>
-                <strong>传输任务调度配置</strong>
+                <strong>传输任务修改</strong>
             </span>
         </h4>
     </div>
@@ -43,16 +43,16 @@
             <label class="col-sm-1 control-label textRight">开发者</label>
 
             <div class="col-sm-3">
-                <!--<span class="block input-icon input-icon-right">-->
-					<!--<input type="text" placeholder="不限"-->
-                           <!--class="width-80" ng-model="conf_developer">-->
+                <span class="block input-icon input-icon-right">
+                <input type="text" placeholder="不限"
+                class="width-80" ng-model="conf_developer" ng-disabled="true">
 
-			    <!--</span>-->
-                <select ng-model="conf_developer"
-                        id="form-field-select-1" class="width-80"
-                        ng-options="dev as dev.chName for dev in developerOptions">
+                </span>
+                <!--<select ng-model="conf_developer"-->
+                        <!--id="form-field-select-1" class="width-80"-->
+                        <!--ng-options="dev as dev.chName for dev in developerOptions">-->
 
-                </select>
+                <!--</select>-->
             </div>
 
             <label class="col-sm-1 control-label padding0 textRight">执行频率</label>
@@ -168,10 +168,10 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-danger col-xs-12" ng-show="showCfgMsg">
-        <button type="button" class="close" data-dismiss="alert">
-            <i class="icon-remove"></i>
-        </button>
+    <div class="alert alert-danger col-xs-12" ng-show="errorShow">
+        <!--<button type="button" class="close" data-dismiss="alert">-->
+            <!--<i class="icon-remove"></i>-->
+        <!--</button>-->
         <strong>{{cfgMsg}}</strong>
     </div>
 
@@ -180,14 +180,14 @@
     </div>
 
     <div class="alert alert-success col-xs-12" ng-show="showSaveSucess">
-        <button type="button" class="close" data-dismiss="alert">
-            <i class="icon-remove"></i>
-        </button>
+        <!--<button type="button" class="close" data-dismiss="alert">-->
+            <!--<i class="icon-remove"></i>-->
+        <!--</button>-->
         <strong>{{saveSuccessMsg}}</strong>
     </div>
 
     <p class=" text-right">
-        <button class="btn btn-success col-xs-1 " style="float: right;margin: 10px" ng-hide="Loading" ng-click="submitTaskCfg()">新增传输</button>
+        <button class="btn btn-success col-xs-1 " style="float: right;margin: 10px" ng-hide="Loading" ng-click="submitTaskCfg()">确认修改</button>
     </p>
 
 

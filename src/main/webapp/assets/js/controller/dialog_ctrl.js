@@ -48,7 +48,19 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
         var job = $scope.table.displayedDataList[selectRowIndex];
         console.log(job.isSelected);
         if (job.isSelected) {
-            addDependency(job);
+            var isExists = false;
+            for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                if(job.taskId == $scope.dependenceTasks[i].taskId) {
+                    isExists = true;
+                }
+            }
+            if(isExists) {
+                showAlert('warning','该依赖任务已存在，不能重复配置')
+                $scope.table.displayedDataList[selectRowIndex].isSelected = false;
+            } else{
+                addDependency(job);
+            }
+
 
         } else {
             deleteDependency(job);
@@ -76,8 +88,22 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
             owner: job.owner,
             cycleGap: job.cycle + '0'
         };
+        //var isExists = false;
+        //for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+        //    if(taskRela.taskId == $scope.dependenceTasks[i].taskId) {
+        //        isExists = true;
+        //    }
+        //}
+        //if(!isExists) {
+        //    $scope.dependenceTasks.push(taskRela);
+        //    showAlert('success', '成功添加依赖(taskId: ' + job.taskId + ', taskName: ' + job.taskName + ')');
+        //} else {
+        //    showAlert('warning','该依赖任务已存在，不能重复配置')
+        //}
+
         $scope.dependenceTasks.push(taskRela);
         showAlert('success', '成功添加依赖(taskId: ' + job.taskId + ', taskName: ' + job.taskName + ')');
+
     }
 
     //根据taskId获得其依赖列表中的index

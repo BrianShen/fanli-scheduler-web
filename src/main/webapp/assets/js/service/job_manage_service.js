@@ -21,6 +21,51 @@ angular.module('job_manage.service', ['ngResource'])
                             owner: '@owner',
                             taskId: '@id'
                         }
+                    },
+                    updateTask:{
+                        method:'POST',
+                        params:{
+                            action:'updateTask'
+                        }
+                    },
+                    queryTaskById:{
+                        method:'GET',
+                        params:{
+                            action:'task',
+                            taskid:'@taskid'
+                        }
+                    },
+                    queryPreTaskById:{
+                        method:'GET',
+                        params:{
+                            action:'queryPre',
+                            taskid:'@taskid'
+                        }
+                    },
+                    updatePre:{
+                        method:'POST',
+                        params:{
+                            action:'updateTaskRela'
+                        }
+                    },
+                    addTransferTask:{
+                        method:'POST',
+                        params:{
+                            action:'transferTaskAdd'
+                        }
+                    },
+                    getTransferTaskById:{
+                        method:'GET',
+                        params:{
+                            action:'queryTransferById',
+                            taskid:'@taskid'
+                        }
+                    },
+                    updateTransferTask:{
+                        method:'POST',
+                        params:{
+                            action:'updateTransfer'
+                        }
                     }
                 });
         }

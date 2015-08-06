@@ -1,9 +1,7 @@
 package com.fanli.scheduler.serviceImpl;
 
 import com.fanli.scheduler.bean.TaskQuery;
-import com.fanli.scheduler.entity.EtlTaskCfg;
-import com.fanli.scheduler.entity.EtlTaskCfgExample;
-import com.fanli.scheduler.entity.EtlTaskrelaCfg;
+import com.fanli.scheduler.entity.*;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
@@ -51,4 +49,36 @@ public class TaskConfigServiceImpl implements TaskConfigService{
 
         return etlTaskrelaCfgMapper.insert(etlTaskrelaCfg);
     }
+
+    @Override
+    public int updateTask(EtlTaskCfg etlTaskCfg) {
+        return etlTaskCfgMapper.updateByPrimaryKeySelective(etlTaskCfg);
+    }
+
+    @Override
+    public int deleteTaskRela(Integer taskid) {
+        EtlTaskrelaCfgExample etlTaskrelaCfgExample = new EtlTaskrelaCfgExample();
+        EtlTaskrelaCfgExample.Criteria criteria = etlTaskrelaCfgExample.createCriteria();
+        if (taskid != null) criteria.andTaskIdEqualTo(taskid);
+        return etlTaskrelaCfgMapper.deleteByExample(etlTaskrelaCfgExample);
+    }
+
+    @Override
+    public int insertTransferTask(EtlTaskCfg etlTaskCfg) {
+        return etlTaskCfgMapper.insert(etlTaskCfg);
+    }
+
+    @Override
+    public EtlTaskCfg getTransferById(Integer taskid) {
+        if (taskid == null) return null;
+        return etlTaskCfgMapper.selectByPrimaryKey(taskid);
+    }
+
+    @Override
+    public int updateTransfer(EtlTaskCfg etlTaskCfg) {
+
+        return etlTaskCfgMapper.updateByPrimaryKeySelective(etlTaskCfg);
+    }
+
+
 }

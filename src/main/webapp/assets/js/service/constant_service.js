@@ -5,16 +5,7 @@
 angular.module("constant.service",[])
     .factory("ConstantService",[function(){
         return {
-            getGroupOptions:function() {
-                return [
-                    {ID: 1, Text: 'ods'},
-                    {ID: 2, Text: 'load'},
-                    {ID: 3, Text: 'dm'},
-                    {ID: 4, Text: 'dw'},
-                    {ID: 5, Text: 'rpt'},
-                    {ID: 6, Text: 'dim'}
-                ];
-            },
+
             getTableRefreshCycle:function() {
                 return [
                     {ID: 'any', Text: '--请选择--'},
@@ -25,6 +16,7 @@ angular.module("constant.service",[])
             getJobMonitorStatus:function() {
                 return [
                     {ID: 100, Text: '不限'},
+                    {ID: 99,  Text:'unsuccess'},
                     {ID: 1, Text: 'success'},
                     {ID: -1, Text: 'fail'},
                     {ID: 0, Text: 'init'},
@@ -51,6 +43,76 @@ angular.module("constant.service",[])
                         return 'label-purple';
                 }
             },
+
+            getCycleOptions:function(){
+                return {
+                    mi: '分', H: '时', D: '日', W: '周', M: '月', Y: '年'
+                };
+            },
+            getTaskGroupOption:function() {
+              return [
+                  {ID: 1, Text: 'ods'},
+                  {ID: 2, Text: 'load'},
+                  {ID: 3, Text: 'dm'},
+                  {ID: 4, Text: 'dw'},
+                  {ID: 5, Text: 'rpt'},
+                  {ID: 6, Text: 'dim'}
+              ];
+            },
+
+            getPriorityOption:function() {
+              return [
+                  {ID: 1, Text: '高'},
+                  {ID: 2, Text: '中'},
+                  {ID: 3, Text: '低'}
+              ];
+            },
+
+            getIfRecallOption:function() {
+              return [
+                  {ID: 1, Text: '是'},
+                  {ID: 0, Text: '否'}
+              ];
+            },
+
+            getRecallLimitOption:function() {
+              return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            },
+
+            getRecallIntervalOption:function() {
+              return [
+                  {ID: 1, Text: '1分钟'},
+                  {ID: 2, Text: '2分钟'},
+                  {ID: 3, Text: '3分钟'},
+                  {ID: 4, Text: '4分钟'},
+                  {ID: 5, Text: '5分钟'},
+                  {ID: 6, Text: '6分钟'},
+                  {ID: 7, Text: '7分钟'},
+                  {ID: 8, Text: '8分钟'},
+                  {ID: 9, Text: '9分钟'},
+                  {ID: 10, Text: '10分钟'}
+              ];
+            },
+
+            getOffsetOption:function() {
+              return ['D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10',
+                  'M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10'];
+            },
+
+            getTimeOutOption:function() {
+              return [
+                  {ID: 30, Text: '30分钟'},
+                  {ID: 60, Text: '1小时'},
+                  {ID: 90, Text: '1.5小时'},
+                  {ID: 120, Text: '2小时'},
+                  {ID: 150, Text: '2.5小时'},
+                  {ID: 180, Text: '3小时'},
+                  {ID: 210, Text: '3.5小时'},
+                  {ID: 240, Text: '4小时'}
+              ];
+            },
+
+
             statusToText: function (status) {
                 switch (status) {
                     case 1:

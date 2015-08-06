@@ -24,7 +24,14 @@ public class JobMonitorService {
         EtlTaskStatusExample.Criteria criteria = etlTaskStatusExample.createCriteria();
         if (taskId != null) criteria.andTaskIdEqualTo(taskId);
         if (!developer.equals("")) criteria.andOwnerEqualTo(developer);
-        if (status != null&& status != 100) criteria.andStatusEqualTo(status);
+        if (status != null&& status != 100) {
+            if (status == 99) {
+                criteria.andStatusNotEqualTo(1);
+            } else {
+                criteria.andStatusEqualTo(status);
+            }
+
+        }
 //        if (startDate != null&&endDate!= null) {
 //            criteria.andCalDtBetween(startDate,endDate);
 //        };

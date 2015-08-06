@@ -14,4 +14,9 @@ public interface TaskConfigService {
     EtlTaskCfg getTaskById(Integer id);
     List<EtlTaskCfg> getTaskByParams(TaskQuery taskQuery);
     int insertTaskRela(EtlTaskrelaCfg etlTaskrelaCfg);
+    int updateTask(EtlTaskCfg etlTaskCfg);
+    int deleteTaskRela(Integer taskid);
+    int insertTransferTask(EtlTaskCfg etlTaskCfg);
+    EtlTaskCfg getTransferById(Integer taskid);
+    int updateTransfer(EtlTaskCfg etlTaskCfg);
 }

@@ -18,7 +18,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,ConstantService)
     $scope.startDate = initDate();
     $scope.endDate = initDate();
     $scope.executionStatusOptions = ConstantService.getJobMonitorStatus();
-    $scope.jobStatus = $scope.executionStatusOptions[2].ID;
+    $scope.jobStatus = $scope.executionStatusOptions[1].ID;
 
     $scope.submitSearch = function() {
         $http.get("/fanli/monitor/query",{params:{

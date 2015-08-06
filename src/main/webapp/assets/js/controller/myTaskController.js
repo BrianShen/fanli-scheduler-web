@@ -68,9 +68,9 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
     $scope.editJob = function (index) {
         var job = getJobByIndex(index);
         if (job.type == 2)
-            window.open("#/calculateJobConfig/" + job.taskId);
+            window.open("#/calculate_task_edit/" + job.taskId);
         else
-            window.open("#/transferJobConfig/" + job.taskId);
+            window.open("#/transfer_task_edit/" + job.taskId);
     };
 
     //根据实际的index获得job

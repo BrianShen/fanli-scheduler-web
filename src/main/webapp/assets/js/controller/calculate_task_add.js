@@ -208,7 +208,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
                     logFile:"/home/hadoop/applog",
                     addUser:$scope.conf_developer,
                     updateUser:$scope.conf_developer,
-                    type:1,
+                    type:2,
                     offset:$scope.conf_offset,
                     recallLimit:$scope.conf_recallLimit,
                     concurrency:1
@@ -241,8 +241,6 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         },function() {
             ensure = false;
         });
-
-
 
     };
 

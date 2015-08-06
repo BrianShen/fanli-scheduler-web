@@ -28,11 +28,17 @@ fanliApp.config(function($routeProvider){
         }).
         when('/transport',{
             templateUrl : 'transport.html',
-            //controller : 'page4Ctrl'
+            controller : 'transportTaskAddCtrl'
         })
         .when('/job_log/:instanceId',{
             templateUrl : 'job_log.html',
             controller:'jobLogCtrl'
+        }).when('/calculate_task_edit/:taskid',{
+            templateUrl:'calculate_task_edit.html',
+            controller:'taskEditCtrl'
+        }).when('/transfer_task_edit/:taskid',{
+            templateUrl:'transport_edit.html',
+            controller:'transferEditCtrl'
         });
 
 });
