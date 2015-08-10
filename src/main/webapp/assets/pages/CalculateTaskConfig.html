@@ -16,7 +16,7 @@
             <span> <strong>导入脚本</strong></span>
         </h4>
     </div>
-    <div class="alert alert-success col-xs-12" ng-show="showImportMsg">
+    <div class="alert {{alertType}} col-xs-12" ng-show="showImportMsg">
         <button type="button" class="close" data-dismiss="alert">
             <i class="icon-remove"></i>
         </button>
@@ -40,7 +40,7 @@
             <label class="col-sm-1 control-label padding0 textRight">dol脚本</label>
 
             <div class="col-xs-12  col-sm-3">
-                <input ng-model="dolPath" data-rel="tooltip" type="text" id="form-field-6" placeholder="dol文件名，xxx.dol"
+                <input ng-model="dolPath" data-rel="tooltip" type="text" id="form-field-6" placeholder="dol相对fanli_dw文件路径，/xx/xxx.dol"
                        title="balabala" data-placement="bottom" class="width-80"/>
             </div>
 

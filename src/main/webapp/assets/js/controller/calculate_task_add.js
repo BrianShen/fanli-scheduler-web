@@ -5,6 +5,7 @@
 fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService','DimService',function($scope,$http,$modal,$filter,ConstantService,component,JobManageService,DimService) {
     $scope.showImportMsg = false;
     $scope.isLoading = false;
+    $scope.dolPath = '';
     //$scope.developerOptions = [
     //    {"id":1 , "name":"鲍时祥", "bu":"数据部"},
     //    {"id":2 , "name":"汤晓磊", "bu":"数据部"},
@@ -90,24 +91,68 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         $scope.taskConfNext = c;
     }
     $scope.postDolInfo = function(){
+        $scope.showImportMsg = false;
+        if(!checkDolPath()) {
+            return;
+        }
         $scope.loadingMsg = "loading..."
         $scope.isLoading = true;
 
-        $http.get("/fanli/dol/checkDol",{params:{dolPath:$scope.dolPath}})
+        $http.get("/fanli/dol/importDol",{params:{dolPath:$scope.dolPath}})
             .success(function(response){
-                $scope.isLoading = false;
-                $scope.showImportMsg = true;
-                $scope.importMsg = "dol导入成功";
-                initConfUI();
-                setButtonClickable(false,false,true);
-                $scope.showConfig = true;
+                if(response.isSuccess) {
+                    $scope.isLoading = false;
+                    $scope.showImportMsg = true;
+                    $scope.alertType = 'alert-success';
+                    $scope.importMsg = "dol导入成功";
+                    initConfUI();
+                    setButtonClickable(false,false,true);
+                    $scope.showConfig = true;
+                } else {
+                    $scope.isLoading = false;
+                    $scope.showImportMsg = true;
+                    $scope.importMsg = response.messages;
+                }
+
             }).error(function(response) {
                 console.log("not success")
                 $scope.isLoading = false;
+                $scope.showImportMsg = true;
+                $scope.importMsg = response.messages;
             })
     }
     $scope.change = function() {
         console.log($scope.developer.chName);
+    }
+
+    function checkDolPath() {
+        if($scope.dolPath == ''||$scope.dolPath ==undefined) {
+            $scope.showImportMsg = true;
+            $scope.alertType = 'alert-danger';
+            $scope.importMsg = "dol路径不能为空";
+            return false;
+        }
+        if($scope.developer == ''||$scope.developer ==undefined) {
+            $scope.showImportMsg = true;
+            $scope.alertType = 'alert-danger';
+            $scope.importMsg = "开发者不能为空";
+            return false;
+        }
+        if($scope.db == ''||$scope.db ==undefined) {
+            $scope.showImportMsg = true;
+            $scope.alertType = 'alert-danger';
+            $scope.importMsg = "目标库不能为空";
+            return false;
+        }
+
+        var arr = $scope.dolPath.split('.');
+        if(arr[arr.length - 1] != 'dol') {
+            $scope.showImportMsg = true;
+            $scope.alertType = 'alert-danger';
+            $scope.importMsg = "请检查dol路径，文件必须以.dol结尾";
+            return false;
+        }
+        return true;
     }
 
 
