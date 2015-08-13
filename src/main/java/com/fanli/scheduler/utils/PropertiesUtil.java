@@ -10,12 +10,7 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    /**
-     * Ôö¼ÓÊôĞÔÎÄ¼şÖµ
-     *
-     * @param key
-     * @param value
-     */
+
     public static void addProperties(String key[], String value[], String file) {
         Properties iniFile = getProperties(file);
         FileOutputStream oFile = null;
@@ -38,11 +33,7 @@ public class PropertiesUtil {
         }
     }
 
-    /**
-     * ¶ÁÈ¡ÅäÖÃÎÄ¼ş
-     *
-     * @return
-     */
+
     public static Properties getProperties(String file) {
         Properties pro = null;
         InputStream in = PropertiesUtil.class.getClassLoader().getResourceAsStream(file);
@@ -65,7 +56,7 @@ public class PropertiesUtil {
     }
 
     /**
-     * ±£´æÊôĞÔµ½ÎÄ¼şÖĞ
+     * ä¿å­˜å±æ€§åˆ°æ–‡ä»¶ä¸­
      *
      * @param pro
      * @param file
@@ -94,13 +85,13 @@ public class PropertiesUtil {
     }
 
     /**
-     * ĞŞ¸ÄÊôĞÔÎÄ¼ş
+     * ä¿®æ”¹å±æ€§æ–‡ä»¶
      *
      * @param key
      * @param value
      */
     public static void updateProperties(String key, String value, String file) {
-        // keyÎª¿ÕÔò·µ»Ø
+        // keyä¸ºç©ºåˆ™è¿”å›
         if (key == null || "".equalsIgnoreCase(key)) {
             return;
         }
@@ -110,7 +101,7 @@ public class PropertiesUtil {
         }
         pro.put(key, value);
 
-        // ±£´æÊôĞÔµ½ÎÄ¼şÖĞ
+        // ä¿å­˜å±æ€§åˆ°æ–‡ä»¶ä¸­
         saveProperties(pro, file);
     }
 

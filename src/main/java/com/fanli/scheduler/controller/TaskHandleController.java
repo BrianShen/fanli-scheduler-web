@@ -2,6 +2,7 @@ package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.TaskAdder;
 import com.fanli.scheduler.bean.TaskQuery;
+import com.fanli.scheduler.entity.EtlLoadCfg;
 import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.EtlTaskrelaCfg;
@@ -160,6 +161,7 @@ public class TaskHandleController {
         etlTaskCfg.setAddTime(date);
         etlTaskCfg.setUpdateTime(date);
         taskConfigService.insertTransferTask(etlTaskCfg);
+        result.setResult(etlTaskCfg);
         result.setIsSuccess(true);
         return result;
     }
@@ -179,6 +181,17 @@ public class TaskHandleController {
         taskConfigService.updateTransfer(etlTaskCfg);
         result.setIsSuccess(true);
         return  result;
+    }
+
+    @RequestMapping(value = "/insertTransferParam",method = RequestMethod.POST)
+    @ResponseBody
+    public Result insertReaderAndWriter(@RequestBody EtlLoadCfg etlLoadCfg) {
+        Result result = new Result();
+        Date date = new Date();
+        etlLoadCfg.setCreateTime(date);
+        etlLoadCfg.setUpdateTime(date);
+
+        return result;
     }
 
     @RequestMapping(value = "/test",method = RequestMethod.GET)

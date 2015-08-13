@@ -1,5 +1,4 @@
 package com.fanli.scheduler.controller;
-
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.service.DolService;
 import com.fanli.scheduler.utils.PropertiesUtil;
@@ -16,6 +15,7 @@ import java.util.Properties;
 /**
  * Created by wei.shen on 2015/7/15.
  */
+
 @Controller
 @RequestMapping("/dol")
 public class DolController {

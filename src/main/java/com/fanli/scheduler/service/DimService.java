@@ -2,6 +2,7 @@ package com.fanli.scheduler.service;
 
 import com.fanli.scheduler.entity.DimDateDeveloper;
 import com.fanli.scheduler.entity.DimTargetHiveDb;
+import com.fanli.scheduler.entity.EtlSourceDim;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ import java.util.List;
 public interface DimService {
     List<DimDateDeveloper> getAllDevelopers();
     List<DimTargetHiveDb> getAllTargetDbs();
+    List<EtlSourceDim> getSourceByType(String type);
 }

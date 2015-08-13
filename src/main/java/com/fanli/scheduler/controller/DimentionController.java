@@ -3,11 +3,13 @@ package com.fanli.scheduler.controller;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.DimDateDeveloper;
 import com.fanli.scheduler.entity.DimTargetHiveDb;
+import com.fanli.scheduler.entity.EtlSourceDim;
 import com.fanli.scheduler.service.DimService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -38,6 +40,15 @@ public class DimentionController {
     public Result<DimTargetHiveDb> getTargetDatabases() {
         Result<DimTargetHiveDb> result = new Result<DimTargetHiveDb>();
         result.setResults(dimService.getAllTargetDbs());
+        result.setIsSuccess(true);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/dbSource",method = RequestMethod.GET)
+    public Result<EtlSourceDim> getSourceByType(@RequestParam("type") String type) {
+        Result<EtlSourceDim> result = new Result<EtlSourceDim>();
+        result.setResults(dimService.getSourceByType(type));
         result.setIsSuccess(true);
         return result;
     }

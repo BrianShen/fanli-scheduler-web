@@ -491,7 +491,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         $scope.metaIsLoading = true;
         $scope.metaLoadingMsg = "正在加载元数据信息......";
         $http.get("/fanli/domain/meta",{params:{
-            db:$scope.db.name,
+            db:'test',
             table:getTableName($scope.dolPath)
         }}).success(function(data) {
             $scope.tableLocation = data.source;

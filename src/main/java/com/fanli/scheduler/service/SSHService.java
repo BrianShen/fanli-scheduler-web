@@ -62,7 +62,7 @@ public class SSHService {
         InputStream in = channel.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String buf;
-        while ((buf = reader.readLine()) != null) {} // 等待任务执行完成
+        while ((buf = reader.readLine()) != null) {}
         if (channel.getExitStatus() != 0 ) {
             channel.disconnect();
             session.disconnect();

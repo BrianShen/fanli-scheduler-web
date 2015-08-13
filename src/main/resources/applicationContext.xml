@@ -79,6 +79,11 @@
         <property name="mapperInterface" value="com.fanli.scheduler.mapping.DimTargetHiveDbMapper"/>
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
     </bean>
+    <bean id="etlSourceDimMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.fanli.scheduler.mapping.EtlSourceDimMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+
 
 
 

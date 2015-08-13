@@ -8,23 +8,11 @@ angular.module('table.service', ['ngResource'])
             return $resource(serverAddress + "/table/:action",
                 {},
                 {
-                    ////查询表的信息
-                    //getTableMeta: {
-                    //    method: 'GET',
-                    //    params: {
-                    //        action: 'getTableInfo',
-                    //        DBType: '@DBType',
-                    //        DBName: '@DBName',
-                    //        tableName: '@tableName'
-                    //    }
-                    //},
-
-                    //查询建表语句
                     queryCreateTableSql: {
                         method: 'POST',
                         params: { action: 'queryCreateTableSql' }
                     },
-                    //建表
+
                     buildTable: {
                         method: 'POST',
                         params: { action: 'buildTable' }

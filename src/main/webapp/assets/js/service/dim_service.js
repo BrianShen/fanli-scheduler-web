@@ -17,6 +17,13 @@ fanliApp.factory("DimService",['$resource', 'serverAddress',function($resource,s
                 params:{
                     action:'targetDBs'
                 }
+            },
+            querySourceDB:{
+                method:'GET',
+                params:{
+                    action:'dbSource',
+                    type:'@type'
+                }
             }
         }
     )
