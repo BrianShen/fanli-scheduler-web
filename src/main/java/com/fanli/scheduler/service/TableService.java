@@ -1,7 +1,9 @@
 package com.fanli.scheduler.service;
 
+import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.MetaColumn;
 import com.fanli.scheduler.bean.TableMeta;
+import com.fanli.scheduler.utils.TableCreator;
 import org.apache.ibatis.metadata.Column;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,8 @@ import java.util.List;
 @Service
 public class TableService {
 
-    public String getSql(TableMeta tableMeta) {
-        return generateBuildTable(tableMeta.getDatabase(),tableMeta.getTable(),tableMeta.getColumns(),tableMeta.getPartitions()).toString();
-
+    public String getSql(GeneralTable generalTable) {
+        return TableCreator.generateCreateTableSentence(generalTable);
     }
 
     public Boolean buildTable(String sql) {

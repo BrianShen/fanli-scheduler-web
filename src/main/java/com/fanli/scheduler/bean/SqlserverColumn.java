@@ -1,11 +1,9 @@
 package com.fanli.scheduler.bean;
 
-import javax.swing.text.StyledEditorKit;
-
 /**
  * Created by wei.shen on 2015/8/13.
  */
-public class SqlserverColumn extends GeneralColume{
+public class SqlserverColumn extends GeneralColumn {
     private Boolean isPrimary;
     private int columeSize;
 

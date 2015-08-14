@@ -3,7 +3,7 @@
  * Created by wei.shen on 2015/8/5.
  */
 
-fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,ConstantService,JobManageService) {
+fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,DimService,ConstantService,JobManageService) {
 
     initUI();
 
@@ -86,6 +86,10 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
         })
     };
 
+    $scope.ensureSql = function() {
+
+    }
+
 
     $scope.incrFieldChange = function() {
 
@@ -125,12 +129,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
             }
         }).success(function(data) {
             if(data.isSuccess) {
-                $scope.fieldOptions = data.columns;
-                //var a = [];
-                //a = data.columns;
-                //for(var i = 0;i < a.length;i ++) {
-                //    $scope.fieldOptions.push(a[i].name);
-                //}
+                $scope.fieldOptions = data.result.columns;
             }
         })
     }
@@ -142,18 +141,91 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
                     table:$scope.conf_src_table.trim()
                 }}).success(function(data) {
                         $scope.fieldOptions = data.partitions;
-                        //var p = [];
-                        //p = data.partitions;
-                        //for(var i = 0;i < p.length;i ++) {
-                        //    $scope.fieldOptions.push(p[i].name);
-                        //}
 
                 })
     }
 
 
     $scope.saveTargetInfo = function() {
-        console.log($scope.conf_target + '  ' + $scope.conf_incr_field );
+        getTransferSql();
+        getCommonCreateTableSql();
+        $scope.step2 = false;
+        $scope.step3 = true;
+    }
+
+    function getCommonCreateTableSql() {
+        if($scope.conf_src == 'hive') {
+            $http.get("/fanli/domain/meta",{
+                params:{
+                    db:$scope.conf_src_db,
+                    table:$scope.conf_src_table.trim()
+                }}).success(function(data) {
+                var src_partition = data.partitions;
+                var src_column = data.columns;
+                $scope.SRCColumn = mergeHiveColumns(src_partition,src_column);
+                requestTogetSql();
+
+            })
+        } else{
+            $http.get("/fanli/db/columns",{
+                params:{
+                    tableName:$scope.conf_src_table.trim(),
+                    connectProp:$scope.conf_src_domain,
+                    db:$scope.conf_src_db
+                }
+            }).success(function(data) {
+                if(data.isSuccess) {
+                    $scope.SRCColumn = data.columns;
+                    requestTogetSql();
+                }
+            })
+        }
+
+
+    }
+
+    function requestTogetSql() {
+        var buildSql = TableService.queryCreateTableSql({},{
+            name:$scope.conf_targetTable,
+            columns:$scope.SRCColumn,
+            partitions:getPartitions(),
+            dbType:$scope.conf_target
+        });
+        buildSql.$promise.then(function(data) {
+            $scope.conf_create_table_sql = data.result;
+        },function() {})
+    }
+
+    function getTransferSql() {
+        var sql = 'select * from ' + $scope.conf_src_table;
+        if($scope.conf_target_table_type == 'append') {
+            sql = sql + ' where ' + $scope.conf_incr_field;
+        }
+        $scope.conf_transfer_sql = sql;
+    }
+
+    function getSourceColumns() {
+
+    }
+
+    function mergeHiveColumns(p,c) {
+        var merged = c;
+        for(var i = 0;i < p.length;i ++) {
+            merged.push(p[i]);
+        }
+        return merged;
+
+    }
+
+    function getPartitions() {
+        var pt = [];
+        var arr = $scope.conf_hive_partition.trim().split(',');
+        for(var i = 0;i < arr.length;i ++) {
+            var sp = arr[i].split(/\s+/);
+            var ele = {name:sp[0],type:sp[1],comment:sp[3]};
+            pt.push(ele);
+        }
+        return pt;
     }
 
     function getSourceTableInfo() {
@@ -281,7 +353,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
         $scope.step1 = true;
         $scope.conf_src = '';
         $scope.conf_target = '';
-        $scope.conf_targetTable = ''
+        $scope.conf_targetTable = '';
+        $scope.conf_hive_partition = '';
         $scope.setTaskName = function() {
             $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
         }

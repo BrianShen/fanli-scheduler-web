@@ -1,6 +1,6 @@
 package com.fanli.scheduler.service;
 
-import com.fanli.scheduler.bean.GeneralColume;
+import com.fanli.scheduler.bean.GeneralColumn;
 import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.utils.ConnectMan;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DatabaseService {
     public GeneralTable getDateTimeIncreaseField(String conn,String db,String table) {
         GeneralTable gt = getTableDetail(conn,db,table);
-        List<GeneralColume> list = gt.getColumns();
+        List<GeneralColumn> list = gt.getColumns();
         for (int i = 0;i < list.size();i ++) {
             if (!"datetime".equalsIgnoreCase(list.get(i).getType()) && !"timestamp".equalsIgnoreCase(list.get(i).getType())) {
                 list.remove(i);

@@ -6,19 +6,10 @@ import java.util.List;
  * Created by wei.shen on 2015/8/13.
  */
 public class GeneralTable {
-    private String db;
     private String name;
-    private List<GeneralColume> columns;
-    private List<GeneralColume> partitions;
+    private List<GeneralColumn> columns;
+    private List<GeneralColumn> partitions;
     private String dbType;
-
-    public String getDb() {
-        return db;
-    }
-
-    public void setDb(String db) {
-        this.db = db;
-    }
 
     public String getName() {
         return name;
@@ -28,11 +19,11 @@ public class GeneralTable {
         this.name = name;
     }
 
-    public List<GeneralColume> getPartitions() {
+    public List<GeneralColumn> getPartitions() {
         return partitions;
     }
 
-    public void setPartitions(List<GeneralColume> partitions) {
+    public void setPartitions(List<GeneralColumn> partitions) {
         this.partitions = partitions;
     }
 
@@ -44,11 +35,11 @@ public class GeneralTable {
         this.dbType = dbType;
     }
 
-    public List<GeneralColume> getColumns() {
+    public List<GeneralColumn> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<GeneralColume> columns) {
+    public void setColumns(List<GeneralColumn> columns) {
         this.columns = columns;
     }
 }

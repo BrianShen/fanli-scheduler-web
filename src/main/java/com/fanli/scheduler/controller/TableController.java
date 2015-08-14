@@ -1,6 +1,7 @@
 package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.BuildTableSql;
+import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.bean.TableMeta;
 import com.fanli.scheduler.service.SSHService;
@@ -23,15 +24,15 @@ public class TableController {
     private SSHService sshService;
     @Autowired
     private TableService tableService;
-    @ResponseBody
-    @RequestMapping(value = "/sql",method = RequestMethod.GET)
-    public Result<String> getBuildTableSql(@RequestBody TableMeta tableMeta) {
-        Result<String> result = new Result<String>();
-        String sql = tableService.getSql(tableMeta);
-        result.setResult(sql);
-        result.setIsSuccess(true);
-        return result;
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "/sql",method = RequestMethod.GET)
+//    public Result<String> getBuildTableSql(@RequestBody TableMeta tableMeta) {
+//        Result<String> result = new Result<String>();
+//        String sql = tableService.getSql(tableMeta);
+//        result.setResult(sql);
+//        result.setIsSuccess(true);
+//        return result;
+//    }
 
     @ResponseBody
     @RequestMapping(value = "/build",method = RequestMethod.POST)
@@ -46,6 +47,16 @@ public class TableController {
             e.printStackTrace();
         }
 //        result.setIsSuccess(tableService.buildTable(sql));
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/buildTableSql",method = RequestMethod.POST)
+    public Result<String> getBuildSql(@RequestBody GeneralTable generalTable) {
+        Result<String> result = new Result<String>();
+        String sql = tableService.getSql(generalTable);
+        result.setResult(sql);
+        result.setIsSuccess(true);
         return result;
     }
 

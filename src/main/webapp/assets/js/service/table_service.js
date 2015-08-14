@@ -10,13 +10,14 @@ angular.module('table.service', ['ngResource'])
                 {
                     queryCreateTableSql: {
                         method: 'POST',
-                        params: { action: 'queryCreateTableSql' }
+                        params: { action: 'buildTableSql' }
                     },
 
                     buildTable: {
                         method: 'POST',
                         params: { action: 'buildTable' }
                     }
+
                 }
             );
         }

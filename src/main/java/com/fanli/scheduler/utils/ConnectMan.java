@@ -1,9 +1,8 @@
 package com.fanli.scheduler.utils;
 
-import com.fanli.scheduler.bean.GeneralColume;
+import com.fanli.scheduler.bean.GeneralColumn;
 import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.JdbcObject;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,9 +137,9 @@ public enum ConnectMan {
         try {
             connection = getConnetion(conn);
             rs = connection.getMetaData().getColumns(db, null, table, null);
-            List<GeneralColume> list = new ArrayList<GeneralColume>();
+            List<GeneralColumn> list = new ArrayList<GeneralColumn>();
             while (rs.next()) {
-                GeneralColume gc = new GeneralColume();
+                GeneralColumn gc = new GeneralColumn();
                 gc.setName(rs.getString("COLUMN_NAME"));
                 gc.setType(rs.getString("TYPE_NAME"));
                 gc.setIndex(rs.getString("ORDINAL_POSITION"));
@@ -162,7 +161,6 @@ public enum ConnectMan {
             }
         }
         gt.setName(table);
-        gt.setDb(db);
         return gt;
 
     }

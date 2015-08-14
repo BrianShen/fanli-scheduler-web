@@ -3,7 +3,7 @@ package com.fanli.scheduler.bean;
 /**
  * Created by wei.shen on 2015/8/13.
  */
-public class GeneralColume {
+public class GeneralColumn {
     private String name;
     private String type;
     private String index;

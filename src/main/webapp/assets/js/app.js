@@ -9,7 +9,8 @@ var fanliApp = angular.module("fanliApp",[
     'component.service',
     'ui.bootstrap',
     'constant.service',
-    'fanli.filter'
+    'fanli.filter',
+    'table.service'
 ]);
 
 fanliApp.config(function($routeProvider){
