@@ -1,5 +1,7 @@
 package com.fanli.scheduler.utils;
 
+import com.fanli.scheduler.bean.GeneralColume;
+import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.JdbcObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -102,6 +104,69 @@ public enum ConnectMan {
 
         return false;
     }
+
+    public List<String> getTablesInfo(String conn,String db,String table) {
+        Connection connection = null;
+        ResultSet rs = null;
+        List<String> list = new ArrayList<String>();
+        try {
+            connection = getConnetion(conn);
+            rs = connection.getMetaData().getTables(db, null, table, null);
+            while (rs.next()) {
+                list.add(rs.getString("TABLE_NAME"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            assert rs != null;
+            try {
+                rs.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    public GeneralTable getTableDetails(String conn,String db,String table) {
+        GeneralTable gt = new GeneralTable();
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            connection = getConnetion(conn);
+            rs = connection.getMetaData().getColumns(db, null, table, null);
+            List<GeneralColume> list = new ArrayList<GeneralColume>();
+            while (rs.next()) {
+                GeneralColume gc = new GeneralColume();
+                gc.setName(rs.getString("COLUMN_NAME"));
+                gc.setType(rs.getString("TYPE_NAME"));
+                gc.setIndex(rs.getString("ORDINAL_POSITION"));
+                gc.setComment(rs.getString("REMARKS"));
+                list.add(gc);
+            }
+            gt.setColumns(list);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            assert rs != null;
+            try {
+                rs.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        gt.setName(table);
+        gt.setDb(db);
+        return gt;
+
+    }
+
 
 
 }

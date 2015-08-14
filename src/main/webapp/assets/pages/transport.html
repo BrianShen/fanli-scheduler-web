@@ -1,4 +1,9 @@
-<div ng-show="step1">
+<div class="col-xs-12 col-sm-12">
+    <div class="alert alert-danger col-xs-12" ng-show="formInvalid">
+        <strong>{{formCheckMsg}}</strong>
+    </div>
+</div>
+<div>
     <form class="form-vertical">
         <div class="col-xs-12  col-sm-12">
             <h4 class="header smaller lighter blue">
@@ -7,232 +12,199 @@
             </span>
             </h4>
         </div>
-        <div class="alert alert-danger col-xs-12" ng-show="formInvalid">
-            <strong>{{formCheckMsg}}</strong>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <div class="widget-box">
-                    <div class="widget-header">
-                        <h4>源配置</h4>
-                    </div>
-                    <div class="widget-body">
-                        <div class="widget-main">
-                            <div>
-                                <label class="control-label">源介质</label>
-                                <select ng-model="conf_src" ng-change="sourceSelect()" class=" form-control">
-                                    <option value="hive">hive</option>
-                                    <option value="sqlserver">sqlserver</option>
-                                    <option value="mysql">mysql</option>
-                                </select>
 
+        <div class="row" ng-show="step1">
+            <div class="col-xs-12 col-sm-12">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <form class="form-vertical">
+                            <!--<div class="col-sm-11">-->
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">源介质:</label>
+
+                                <div class="col-sm-8">
+                                    <select ng-model="conf_src" ng-change="sourceSelect()" class=" form-control">
+                                        <option value="hive">hive</option>
+                                        <option value="sqlserver">sqlserver</option>
+                                        <option value="mysql">mysql</option>
+                                    </select>
+                                </div>
                             </div>
-                            <hr>
-                            <div ng-show="conf_src == 'sqlserver'||conf_src =='mysql'">
-                                <label class=" control-label">域名</label>
-                                <select ng-model="conf_src_domain" class=" form-control" ng-change="src_domain_select()"
-                                        ng-options="value.connectProperty as value.sourceDomain for value in src_domain_options">
-                                </select>
+
+                            <div ng-show="conf_src == 'sqlserver'||conf_src =='mysql'" class="col-xs-3">
+                                <label class=" col-sm-4 inputFloat control-label textRight">域名:</label>
+
+                                <div class="col-sm-8">
+                                    <select ng-model="conf_src_domain" class=" form-control" ng-change="src_domain_select()"
+                                            ng-options="value.connectProperty as value.sourceDomain for value in src_domain_options">
+                                    </select>
+                                </div>
                                 <hr>
                             </div>
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">源库名:</label>
+                                <div class="col-sm-8" >
+                                    <select ng-model="conf_src_db" class=" form-control"
+                                            ng-options="value as value for value in src_database_options">
+                                    </select>
+                                </div>
 
-                            <div>
-                                <label class=" control-label">源库名</label>
-                                <select ng-model="conf_src_db" class=" form-control"
-                                        ng-options="value as value for value in src_database_options">
-                                </select>
                             </div>
-                            <hr>
-                            <div>
-                                <label class="control-label">源表名</label>
-                                <input type="text" class=" form-control"  ng-model="conf_src_table">
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">源表名:</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class=" form-control"  ng-model="conf_src_table">
+                                </div>
                             </div>
-                            <hr>
-                        </div>
+                            <!--</div>-->
+                        </form>
                     </div>
                 </div>
+
             </div>
-            <div class="col-xs-12 col-sm-4">
-                <div class="widget-box">
-                    <div class="widget-header">
-                        <h4>目标配置</h4>
+
+            <div class="row">
+                <button ng-click="submitForm()" class="btn btn-success col-xs-1" style="float: right;margin: 20px">查询
+                </button>
+
+            </div>
+
+            <div class="col-sm-12">
+                <div class="table-header">查询结果</div>
+                <table class="table table-striped table-bordered table-hover dataTable">
+                    <thead>
+                    <tr>
+                        <th>表名</th>
+                        <th>库名</th>
+                        <th>数据库类型</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="table in src_tables">
+                        <td>{{table}}</td>
+                        <td>{{conf_src_db}}</td>
+                        <td>{{conf_src}}</td>
+                        <td>
+                            <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
+
+                                <button class="btn-link green" ng-click="add_transfer($index)"
+                                        tooltip-placement="top"
+                                        tooltip="新增传输">
+                                    <i class="icon-pencil bigger-130"></i>
+                                    新增传输
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="row" ng-show="step2">
+            <div class="col-xs-12 col-sm-12">
+                <div class="col-xs-12">
+
+                    <div class="row">
+                        <form class="form-vertical">
+                            <!--<div class="col-sm-11">-->
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">目标介质:</label>
+
+                                <div class="col-sm-8">
+                                    <select ng-model="conf_target" ng-change="targetSelect()" class=" form-control"
+                                            ng-options="value as value for value in targetOptions">
+                                        <!--<option value="hive">hive</option>-->
+                                        <!--<option value="sqlserver">sqlserver</option>-->
+                                        <!--<option value="mysql">mysql</option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div ng-show="conf_target == 'sqlserver'||conf_target =='mysql'" class="col-xs-3">
+                                <label class=" col-sm-4 inputFloat control-label textRight">域名:</label>
+
+                                <div class="col-sm-8">
+                                    <select ng-model="conf_target_domain" class=" form-control" ng-change="target_domain_select()"
+                                    ng-options="value.connectProperty as value.sourceDomain for value in target_domain_options">
+
+                                    </select>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">目标库名:</label>
+                                <div class="col-sm-8" >
+                                    <select ng-model="conf_target_db" class=" form-control"
+                                    ng-options="value as value for value in target_database_options">
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-xs-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">目标表名:</label>
+                                <div class="col-sm-8">
+                                    <input type="text"  class=" form-control" ng-model="conf_targetTable" ng-change="setTaskName()">
+                                </div>
+                            </div>
+                            <!--</div>-->
+                        </form>
                     </div>
-                    <div class="widget-body">
-                        <div class="widget-main">
-                            <div>
-                                <label class="control-label">目标介质</label>
-                                <select ng-model="conf_target" ng-change="targetSelect()" class=" form-control">
-                                    <option value="hive">hive</option>
-                                    <option value="sqlserver">sqlserver</option>
-                                </select>
+                    <div class="space-10"></div>
+                    <div class="row" >
+                        <div class="col-xs-3" ng-show="conf_target=='hive'">
+                            <label class="col-sm-4 inputFloat control-label textRight">hive分区:</label>
+                            <div class="col-sm-8">
+                                <textarea ng-model="conf_hive_partition" class="form-control" rows="2" placeholder="请输入分区，如有多个以逗号分隔"></textarea>
                             </div>
-                            <hr>
-                            <div ng-show="conf_target == 'sqlserver'">
-                                <label class=" control-label">域名</label>
-                                <select ng-model="conf_target_domain" class=" form-control" ng-change="target_domain_select()"
-                                        ng-options="value.connectProperty as value.sourceDomain for value in target_domain_options">
-
-                                </select>
-                            </div>
-                            <hr ng-show="conf_target == 'sqlserver'">
-                            <div>
-                                <label class="control-label">目标库名</label>
-                                <select ng-model="conf_target_db" class=" form-control"
-                                        ng-options="value as value for value in target_database_options">
-
-                                </select>
-                            </div>
-                            <hr>
-                            <div>
-                                <label class="control-label">目标表名</label>
-                                <input type="text"  class=" form-control" ng-model="conf_targetTable" ng-change="setTaskName()">
-                            </div>
-                            <hr>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4">
-                <div class="widget-box">
-                    <div class="widget-header">
-                        <h4>传输过程</h4>
-                    </div>
-                    <div class="widget-body">
-                        <div class="widget-main">
-                            <div >
-                                <label class="control-label">传输类型</label>
-                                <select ng-model="conf_target_table_type"  class="form-control">
+                        <div class="col-xs-3">
+                            <label class="col-sm-4 inputFloat control-label textRight">传输类型</label>
+                            <div class="col-sm-8">
+                                <select ng-model="conf_target_table_type"  class="form-control" ng-change="getIncrField()">
                                     <option value="full">全量</option>
                                     <option value="append">增量</option>
                                     <option value="snapshot">快照</option>
                                 </select>
-                                <hr>
-
                             </div>
-                            <div ng-show="conf_target_table_type === 'append'&&conf_src!=''">
-                                <label class="control-label">增量字段</label>
+                        </div>
+                        <div class="col-xs-3" ng-show="conf_target_table_type=='append'">
+                            <label class="col-sm-4 inputFloat control-label textRight">增量字段</label>
+                            <div class="col-sm-8">
                                 <select ng-model="conf_incr_field"  class="form-control" ng-change="incrFieldChange()"
-                                        ng-options="value as value for value in fieldOptions">
+                                        ng-options="value.name as value.name for value in fieldOptions">
 
                                 </select>
-                                <hr>
-
-                            </div>
-                            <!--<div>-->
-                                <!--<label class="control-label">SQL</label>-->
-                                <!--<textarea ng-model="conf_transfer_sql" class="form-control" rows="3" placeholder="请输入传输sql"></textarea>-->
-                                <!--<hr>-->
-                            <!--</div>-->
-                            <div ng-show="(conf_target_table_type=='append'||conf_target_table_type=='snapshot')&&conf_target == 'hive'">
-                                <label class="control-label">hive分区</label>
-                                <textarea ng-model="conf_hive_partition" class="form-control" rows="2" placeholder="请输入分区，如有多个以逗号分隔"></textarea>
-                                <hr>
                             </div>
                         </div>
                     </div>
+                    <div class="space-10"></div>
+                    <div class="row">
+                            <div class="col-xs-3 col-sm-3">
+                                <label class="col-sm-4 inputFloat control-label textRight">sql:</label>
+                                <div class="col-sm-8">
+                                    <textarea ng-model="conf_transfer_sql" class="form-control" rows="3" placeholder="请输入传输sql"></textarea>
+                                </div>
+                            </div>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <button ng-click="saveTargetInfo()" class="btn btn-success col-xs-1" style="float: right;margin: 20px">提交
+                </button>
+
+            </div>
         </div>
-        <div class="row">
-            <p class="text-right">
-                <button ng-click="submitForm()" class="btn btn-success col-xs-1" style="float: right;margin: 10px">提交</button>
-            </p>
-
-
-        </div>
-
-        <!--<div class="col-xs-12">-->
-        <!--<div class="col-xs-12 form-group">-->
-        <!--<label class="col-sm-1 control-label padding0 textRight">源介质</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--&lt;!&ndash;<input type="text" class="width-80" ng-change="setTaskName()" ng-model="conf_src" ng-trim="true">&ndash;&gt;-->
-        <!--<select ng-change="setTaskName()" ng-model="conf_src"  class="width-80 form-control">-->
-        <!--<option value="sqlserver">sqlserver</option>-->
-        <!--<option value="hive">hive</option>-->
-        <!--<option value="mysql">mysql</option>-->
-        <!--</select>-->
-        <!--</div>-->
-
-        <!--<label class="col-sm-1 control-label textRight">源库名</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--<select ng-model="conf_src_db" ng-change="setTaskName()" class="width-80 form-control">-->
-        <!--<option value="hive">hive</option>-->
-        <!--<option value="sqlserver">sqlserver</option>-->
-        <!--</select>-->
-        <!--</div>-->
-
-        <!--<label class="col-sm-1 control-label padding0 textRight">源表名</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--<input type="text" class="width-80"  ng-model="conf_src_table" ng-change="setTaskName()">-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="col-xs-12 form-group">-->
-        <!--<label class="col-sm-1 control-label textRight">目标介质</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--&lt;!&ndash;<span class="block input-icon input-icon-right">&ndash;&gt;-->
-        <!--&lt;!&ndash;<input type="text"&ndash;&gt;-->
-        <!--&lt;!&ndash;class="width-80" ng-model="conf_target" ng-change="setTaskName()">&ndash;&gt;-->
-
-        <!--&lt;!&ndash;</span>&ndash;&gt;-->
-        <!--<select ng-model="conf_target" ng-change="targetSelect()" class="width-80 form-control">-->
-        <!--<option value="hive">hive</option>-->
-        <!--<option value="sqlserver">sqlserver</option>-->
-        <!--</select>-->
-        <!--</div>-->
-        <!--<label class="col-sm-1 control-label textRight">目标库名</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--&lt;!&ndash;<span class="block input-icon input-icon-right">&ndash;&gt;-->
-        <!--&lt;!&ndash;<input type="text"&ndash;&gt;-->
-        <!--&lt;!&ndash;class="width-80" ng-model="conf_target" ng-change="setTaskName()">&ndash;&gt;-->
-
-        <!--&lt;!&ndash;</span>&ndash;&gt;-->
-        <!--<select ng-model="conf_target_db" ng-change="setTaskName()" class="width-80 form-control">-->
-        <!--<option value="hive">hive</option>-->
-        <!--<option value="sqlserver">sqlserver</option>-->
-        <!--</select>-->
-        <!--</div>-->
-        <!--<label class="col-sm-1 control-label padding0 textRight">目标表名</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--<input type="text" class="width-80"  ng-model="conf_targetTable" ng-change="setTaskName()">-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div class="space-10"></div>-->
-        <!--<div class="col-xs-12 form-group">-->
-        <!--<label class="col-sm-1 control-label textRight">目标表类型</label>-->
-
-        <!--<div class="col-sm-3">-->
-        <!--<select ng-model="conf_target_table_type"  class="width-80 form-control">-->
-        <!--<option value="full">全量</option>-->
-        <!--<option value="append">增量</option>-->
-        <!--<option value="snapshot">快照</option>-->
-        <!--</select>-->
-        <!--</div>-->
-        <!--<label class="col-xs-1 control-label padding0 textRight">SQL</label>-->
-        <!--<div class="col-sm-3">-->
-        <!--<textarea class="form-control width-80 " rows="3" placeholder="请输入传输sql"></textarea>-->
-        <!--</div>-->
-        <!--<div ng-show="conf_target_table_type=='append'||conf_target_table_type=='snapshot'">-->
-        <!--<label class="col-xs-1 control-label padding0 textRight">目标表分区</label>-->
-        <!--<div class="col-sm-3">-->
-        <!--<textarea class="form-control width-80" rows="2" placeholder="请输入分区，以逗号分隔"></textarea>-->
-        <!--</div>-->
-        <!--</div>-->
-
-        <!--</div>-->
-
-        <!--</div>-->
     </form>
 </div>
 
 
 
-<form class="form-vertical" ng-show="step2"  novalidate>
+
+
+
+<form class="form-vertical" ng-show="step3" novalidate>
     <div class="col-xs-12  col-sm-12">
         <h4 class="header smaller lighter blue">
             <span>
@@ -248,17 +220,17 @@
             <label class="col-sm-1 control-label padding0 textRight">任务名称</label>
 
             <div class="col-sm-3">
-                <input type="text" class="width-80" ng-model="conf_taskName"  ng-trim="true" ng-disabled="true">
+                <input type="text" class="width-80" ng-model="conf_taskName" ng-trim="true" ng-disabled="true">
             </div>
 
             <label class="col-sm-1 control-label textRight">开发者</label>
 
             <div class="col-sm-3">
                 <!--<span class="block input-icon input-icon-right">-->
-					<!--<input type="text" placeholder="不限"-->
-                           <!--class="width-80" ng-model="conf_developer">-->
+                <!--<input type="text" placeholder="不限"-->
+                <!--class="width-80" ng-model="conf_developer">-->
 
-			    <!--</span>-->
+                <!--</span>-->
                 <select ng-model="conf_developer"
                         id="form-field-select-1" class="width-80"
                         ng-options="dev as dev.chName for dev in developerOptions">
@@ -372,10 +344,10 @@
             <!--<label class="col-sm-1 control-label padding0 textRight">执行命令</label>-->
 
             <!--<div class="col-sm-7">-->
-                <!--<input type="text" class="width-95" ng-model="conf_para1" ng-trim="true">-->
-                <!--<strong>*</strong>-->
-                <!--&lt;!&ndash;<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">&ndash;&gt;-->
-                <!--&lt;!&ndash;</textarea>&ndash;&gt;-->
+            <!--<input type="text" class="width-95" ng-model="conf_para1" ng-trim="true">-->
+            <!--<strong>*</strong>-->
+            <!--&lt;!&ndash;<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">&ndash;&gt;-->
+            <!--&lt;!&ndash;</textarea>&ndash;&gt;-->
             <!--</div>-->
         </div>
     </div>
@@ -398,9 +370,10 @@
     </div>
 
     <p class=" text-right">
-        <button class="btn btn-success col-xs-1 " style="float: right;margin: 10px" ng-hide="Loading" ng-click="submitTaskCfg()">新增传输</button>
+        <button class="btn btn-success col-xs-1 " style="float: right;margin: 10px" ng-hide="Loading"
+                ng-click="submitTaskCfg()">新增传输
+        </button>
     </p>
-
 
 
 </form>

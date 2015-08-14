@@ -1,5 +1,7 @@
 package com.fanli.scheduler.controller;
 
+import com.fanli.scheduler.bean.GeneralColume;
+import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class DatebaseController {
     @Autowired
     private DatabaseService databaseService;
+
+
     @ResponseBody
     @RequestMapping(value = "/tables",method = RequestMethod.GET)
     public Result<String> getTables(@RequestParam("connectProp")String connectProp) {
@@ -32,5 +36,32 @@ public class DatebaseController {
         Result result = new Result();
         result.setIsSuccess(databaseService.checkTableExists(connectProp,db,table));
         return  result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/tableInfo",method = RequestMethod.GET)
+    public Result<String> getTableByName(@RequestParam("connectProp")String connectProp,@RequestParam("db")String db,@RequestParam("tableName") String tableName) {
+        Result<String> result = new Result<String>();
+        result.setResults(databaseService.getTableInfo(connectProp,db,tableName));
+        result.setIsSuccess(true);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/incrField",method = RequestMethod.GET)
+    public Result<GeneralTable> getJdbcIncreaseField(@RequestParam("connectProp")String connectProp,@RequestParam("db")String db,@RequestParam("tableName") String tableName) {
+        Result<GeneralTable> result = new Result<GeneralTable>();
+        result.setResult(databaseService.getDateTimeIncreaseField(connectProp, db, tableName));
+        result.setIsSuccess(true);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/columns",method = RequestMethod.GET)
+    public Result<GeneralTable> getTableColumns(@RequestParam("connectProp")String connectProp,@RequestParam("db")String db,@RequestParam("tableName") String tableName) {
+        Result<GeneralTable> result = new Result<GeneralTable>();
+        result.setResult(databaseService.getTableDetail(connectProp, db, tableName));
+        result.setIsSuccess(true);
+        return result;
     }
 }

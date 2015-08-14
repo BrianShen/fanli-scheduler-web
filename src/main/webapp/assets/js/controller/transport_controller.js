@@ -41,6 +41,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
 
     $scope.sourceSelect = function() {
         //setLoading(true,"正在查询...");
+        $scope.src_database_options = [];
         if($scope.conf_src == 'hive') {
             $scope.src_database_options = ['load','ods','dw','dm','dim','tmpdb'];
         }else {
@@ -85,6 +86,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
         })
     };
 
+
     $scope.incrFieldChange = function() {
 
     }
@@ -93,9 +95,123 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
         if(!checkForm()) {
             return;
         }
-        checkSourceTableExists();
+        getSourceTableInfo();
+
+        //checkSourceTableExists();
 
 
+
+    }
+
+    $scope.getIncrField = function() {
+        if($scope.conf_target_table_type == 'full'||$scope.conf_target_table_type == 'snapshot') {
+            return;
+        }else if($scope.conf_target_table_type == 'append') {
+            $scope.fieldOptions = [];
+            if($scope.conf_src=='hive') {
+                getHiveTablePartitionField();
+            } else {
+                getJdbcIncreaseField();
+            }
+        }
+    }
+
+    function getJdbcIncreaseField() {
+        $http.get("/fanli/db/columns",{
+            params:{
+                tableName:$scope.conf_src_table.trim(),
+                connectProp:$scope.conf_src_domain,
+                db:$scope.conf_src_db
+            }
+        }).success(function(data) {
+            if(data.isSuccess) {
+                $scope.fieldOptions = data.columns;
+                //var a = [];
+                //a = data.columns;
+                //for(var i = 0;i < a.length;i ++) {
+                //    $scope.fieldOptions.push(a[i].name);
+                //}
+            }
+        })
+    }
+
+    function getHiveTablePartitionField() {
+        $http.get("/fanli/domain/meta",{
+                params:{
+                    db:$scope.conf_src_db,
+                    table:$scope.conf_src_table.trim()
+                }}).success(function(data) {
+                        $scope.fieldOptions = data.partitions;
+                        //var p = [];
+                        //p = data.partitions;
+                        //for(var i = 0;i < p.length;i ++) {
+                        //    $scope.fieldOptions.push(p[i].name);
+                        //}
+
+                })
+    }
+
+
+    $scope.saveTargetInfo = function() {
+        console.log($scope.conf_target + '  ' + $scope.conf_incr_field );
+    }
+
+    function getSourceTableInfo() {
+        if($scope.conf_src == ''|| $scope.conf_src_table == ''||$scope.conf_src_table==undefined) {
+            return;
+        };
+        if($scope.conf_src == 'mysql' || $scope.conf_src == 'sqlserver'){
+            getJdbcTableInfo();
+        }else if($scope.conf_src = 'hive') {
+            getHiveTableInfo();
+        }
+
+
+    }
+
+    function getHiveTableInfo() {
+        $http.get("/fanli/domain/meta",{
+            params:{
+                db:$scope.conf_src_db,
+                table:$scope.conf_src_table.trim()
+            }
+        }).success(function(data) {
+            $scope.src_tables = [];
+            var table = data.table;
+            $scope.src_tables.push(table);
+        })
+    }
+
+    function getJdbcTableInfo() {
+        $http.get("/fanli/db/tableInfo",{
+            params:{
+                tableName:$scope.conf_src_table.trim(),
+                connectProp:$scope.conf_src_domain,
+                db:$scope.conf_src_db
+            }
+        }).success(function(data) {
+            if(data.isSuccess) {
+                $scope.src_tables = data.results;
+            }
+        });
+    }
+
+    $scope.add_transfer = function(index) {
+        //$scope.src_tables[index]
+        initTargetScope();
+        $scope.step1 = false;
+        $scope.step2 = true;
+
+    }
+    function initTargetScope() {
+        if($scope.conf_src == 'hive') {
+            $scope.targetOptions=[];
+            $scope.targetOptions.push('sqlserver');
+
+        }else if($scope.conf_src == 'mysql'||$scope.conf_src == 'sqlserver') {
+            $scope.targetOptions = [];
+            $scope.targetOptions.push('hive');
+        }
 
     }
     function checkSourceTableExists(){
@@ -126,31 +242,22 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,DimService,Cons
             {name:'源介质',value:$scope.conf_src},
             {name:'源域名',value:$scope.conf_src_domain},
             //{name:'源库名',value:$scope.conf_src_db},
-            {name:'源表名',value:$scope.conf_src_table},
-            {name:'目标介质',value:$scope.conf_target},
-            {name:'目标域名',value:$scope.conf_target_domain},
-            //{name:'目标库名',value:$scope.conf_target_db},
-            {name:'目标表名',value:$scope.conf_targetTable},
-            //{name:'sql',value:$scope.conf_transfer_sql},
-            {name:'刷新类型',value:$scope.conf_target_table_type},
-            {name:'增量字段',value:$scope.conf_target_table_type},
-            {name:'hive分区',value:$scope.conf_hive_partition}];
+            {name:'源表名',value:$scope.conf_src_table}
+            //{name:'目标介质',value:$scope.conf_target},
+            //{name:'目标域名',value:$scope.conf_target_domain},
+            ////{name:'目标库名',value:$scope.conf_target_db},
+            //{name:'目标表名',value:$scope.conf_targetTable},
+            ////{name:'sql',value:$scope.conf_transfer_sql},
+            //{name:'刷新类型',value:$scope.conf_target_table_type},
+            //{name:'增量字段',value:$scope.conf_target_table_type},
+            //{name:'hive分区',value:$scope.conf_hive_partition}];
+        ];
         var keepGoing = true;
         angular.forEach(params,function(data) {
             if(keepGoing) {
                 if(data.value == ''|| data.value == undefined) {
                     if(data.name == '源域名') {
                         if($scope.conf_src == 'mysql'||$scope.conf_src == 'sqlserver') {
-                            setAlertMessage(true,data.name + '不能为空');
-                            keepGoing = false;
-                        }
-                    }else if(data.name == '目标域名') {
-                        if($scope.conf_target=='sqlserver') {
-                            setAlertMessage(true,data.name + '不能为空');
-                            keepGoing = false;
-                        }
-                    } else if(data.name == 'hive分区') {
-                        if($scope.conf_target == 'hive'&& ($scope.conf_target_table_type=='append'||$scope.conf_target_table_type=='snapshot')) {
                             setAlertMessage(true,data.name + '不能为空');
                             keepGoing = false;
                         }
