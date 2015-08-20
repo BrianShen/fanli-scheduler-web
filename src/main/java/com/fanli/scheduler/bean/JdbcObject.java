@@ -25,6 +25,16 @@ public class JdbcObject {
         this.port = port;
     }
 
+    @Override
+    public String toString() {
+        return "JdbcObject{" +
+                "ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
     public String getUsername() {
         return username;
     }

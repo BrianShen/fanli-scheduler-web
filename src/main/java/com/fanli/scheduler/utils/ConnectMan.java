@@ -3,6 +3,7 @@ package com.fanli.scheduler.utils;
 import com.fanli.scheduler.bean.GeneralColumn;
 import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.JdbcObject;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,8 @@ import java.util.Properties;
  */
 public enum ConnectMan {
     INSTANCE;
+
+    private static Logger logger = Logger.getLogger(ConnectMan.class);
 
     private static Properties config;
     static {
@@ -63,6 +66,22 @@ public enum ConnectMan {
         return DriverManager.getConnection(jdbcUri, jdbcObject.getUsername(), jdbcObject.getPassword());
     }
 
+    public static void main(String[] args) {
+        String connectProperty = "sqlserver80";
+        String ip = config.getProperty(connectProperty +".ip");
+        String port = config.getProperty(connectProperty + ".port");
+        String username = config.getProperty(connectProperty + ".username");
+        String password = config.getProperty(connectProperty + ".password");
+
+        JdbcObject jdbcObject = new JdbcObject();
+        jdbcObject.setIp(ip);
+        jdbcObject.setPort(port);
+        jdbcObject.setUsername(username);
+        jdbcObject.setPassword(password);
+        System.out.println(jdbcObject);
+
+    }
+
     public List<String> getAllDatabases (String connectProperty) throws SQLException, ClassNotFoundException {
         Connection con = getConnetion(connectProperty);
         DatabaseMetaData meta = con.getMetaData();
@@ -83,7 +102,7 @@ public enum ConnectMan {
         try {
             conn = getConnetion(connProp);
             DatabaseMetaData meta = conn.getMetaData();
-            rs = meta.getTables(db,null,table,null);
+            rs = meta.getTables(db, null, table, null);
             if (rs.next()) {
                 return true;
             }
@@ -121,8 +140,13 @@ public enum ConnectMan {
         }finally {
             assert rs != null;
             try {
-                rs.close();
-                connection.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (connection!=null) {
+                    connection.close();
+                }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -165,6 +189,40 @@ public enum ConnectMan {
 
     }
 
+    public int createTable(String conn,String db,String sql) {
+        int ret = -1;
+        Connection connection = null;
+        Statement stmt = null;
+        try {
+            JdbcObject jdbcObject = getJdbcObject(conn);
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://" + jdbcObject.getIp() + ":" + jdbcObject.getPort() + ";" + "DatabaseName=" + db;
+            logger.info("jdbc sqlserver url is: " + url);
+            connection = DriverManager.getConnection(url,jdbcObject.getUsername(),jdbcObject.getPassword());
+            logger.info("The jdbc connection instance is: " + connection);
+            stmt = connection.createStatement();
+            ret = stmt.executeUpdate(sql);
+            logger.info("execute create table return code is :" + ret);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            try{
+                if(stmt!=null)
+                    stmt.close();
+            }catch(SQLException se){
+                se.printStackTrace();
+            }// do nothing
+            try{
+                if(connection!=null)
+                    connection.close();
+            }catch(SQLException se){
+                se.printStackTrace();
+            }//end finally try
+        }
+        return ret;
+    }
 
 
 }

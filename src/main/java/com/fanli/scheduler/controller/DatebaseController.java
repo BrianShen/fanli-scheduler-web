@@ -1,14 +1,12 @@
 package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.GeneralTable;
+import com.fanli.scheduler.bean.JdbcBuildTable;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by wei.shen on 2015/8/11.
@@ -63,4 +61,17 @@ public class DatebaseController {
         result.setIsSuccess(true);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/buildTables",method = RequestMethod.POST)
+    public Result buildJdbcTable(@RequestBody JdbcBuildTable jdbcBuildTable) {
+        Result result = new Result();
+        int ret = databaseService.build(jdbcBuildTable.getConnectProp(),jdbcBuildTable.getDb(),jdbcBuildTable.getSql());
+        if (ret == 0) {
+            result.setIsSuccess(true);
+        }else result.setIsSuccess(false);
+        return result;
+    }
+
+
 }

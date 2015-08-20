@@ -3,7 +3,7 @@
  * Created by wei.shen on 2015/8/5.
  */
 
-fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,DimService,ConstantService,JobManageService) {
+fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,DimService,ConstantService,JobManageService,JobMonitorService) {
 
     initUI();
 
@@ -87,6 +87,40 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     };
 
     $scope.ensureSql = function() {
+        setLoading(true,"正在建表...");
+
+        if($scope.conf_target == 'sqlserver') {
+            console.log($scope.conf_create_table_sql);
+            $http.post("/fanli/db/buildTables",{
+                connectProp:$scope.conf_target_domain,
+                db:$scope.conf_target_db,
+                sql:$scope.conf_create_table_sql
+            }).success(function(data) {
+                if(data.isSuccess) {
+                    setLoading(false,"");
+                    setAlert(true,'alert-success','建表成功');
+                    $scope.buildBtn = true;
+                    $scope.step4 = true;
+                } else {
+                    setLoading(false,"");
+                    setAlert(true,'alert-danger','建表失败');
+                }
+            })
+        } else if($scope.conf_target == 'hive') {
+            var createTable = 'use ' + $scope.conf_target_db + ';' +'\n' + $scope.conf_create_table_sql + '\n';
+            console.log(createTable);
+            var res = TableService.buildHiveTable({},{
+                sql:createTable
+            });
+            res.$promise.then(function(data) {
+                if(data.isSuccess) {
+                    setLoading(false,"");
+                    $scope.buildBtn = true;
+                    $scope.step4 = true;
+                }
+
+            },function(){})
+        }
 
     }
 
@@ -115,12 +149,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
             if($scope.conf_src=='hive') {
                 getHiveTablePartitionField();
             } else {
-                getJdbcIncreaseField();
+                getJdbcColumns();
             }
         }
     }
 
-    function getJdbcIncreaseField() {
+    function getJdbcColumns() {
         $http.get("/fanli/db/columns",{
             params:{
                 tableName:$scope.conf_src_table.trim(),
@@ -175,7 +209,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 }
             }).success(function(data) {
                 if(data.isSuccess) {
-                    $scope.SRCColumn = data.columns;
+                    $scope.SRCColumn = data.result.columns;
                     requestTogetSql();
                 }
             })
@@ -218,10 +252,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     }
 
     function getPartitions() {
+        if($scope.conf_hive_partition == ''|| $scope.conf_hive_partition === undefined) return [];
         var pt = [];
         var arr = $scope.conf_hive_partition.trim().split(',');
         for(var i = 0;i < arr.length;i ++) {
             var sp = arr[i].split(/\s+/);
+
             var ele = {name:sp[0],type:sp[1],comment:sp[3]};
             pt.push(ele);
         }
@@ -358,6 +394,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         $scope.setTaskName = function() {
             $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
         }
+
+
         getDevelopers();
         $scope.taskGroupOptions = ConstantService.getTaskGroupOption();
         $scope.cycleOptions = ConstantService.getCycleOptions();
@@ -367,6 +405,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         $scope.recallIntervalOptions = ConstantService.getRecallIntervalOption();
         $scope.offsetOptions = ConstantService.getOffsetOption();
         $scope.timeoutOptions = ConstantService.getTimeOutOption();
+        $scope.hivePartitionOptions = ConstantService.getTransferHivePartition();
 
         $scope.conf_frequency = '0 5 0 * * ?';
         $scope.conf_taskGroup = $scope.taskGroupOptions[1].ID;
@@ -381,14 +420,16 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         $scope.conf_timeout = 90;
         $scope.conf_para1 = '';
 
+
+
         $scope.submitTaskCfg = function() {
             generateReaderAndWriterByType();
             setLoading(true,'正在新增传输任务......');
             var req = JobManageService.addTransferTask({},{
                 taskGroupId:$scope.conf_taskGroup,
                 taskName:$scope.conf_taskName,
-                resource:"mysql",
-                command:$scope.conf_para1,
+                resource:$scope.conf_src,
+                command:'',
                 cycle:$scope.conf_cycle,
                 priority:$scope.conf_priority,
                 ifRecall:$scope.conf_ifRecall,
@@ -414,35 +455,108 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
             req.$promise.then(function(data) {
                 if(data.isSuccess) {
                     var taskid = data.result.taskId;
+                    updateCommand(taskid);
                     addTransferParamToDatabase(taskid);
-                    showAlert('新增传输成功');
-                    setLoading(false,'')
-                }
-            },function() {
 
+
+                }
+            },function(data) {
+                setLoading(false,'');
             })
         }
     }
 
-    function addTransferParamToDatabase(taskid) {
-        $http.post("/")
+    function updateCommand(taskid) {
+        var res = JobManageService.updateTransferTask({},{
+            taskId:taskid,
+            command:'sh /home/hadoop/wormhole/release/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} '  + $scope.conf_offset
+        });
+        console.log('sh /home/hadoop/wormhole/release/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} ' + $scope.conf_offset);
+        res.$promise.then(function(data) {
+            if(data.isSuccess) {
+                console.log("更新command成功");
+            }
+        },function(){})
     }
+
+    function addTransferParamToDatabase(taskid) {
+        setLoading(true,'正在保存传输参数......');
+        var read = JobManageService.addEtlLoadCfg({},{
+            taskId:taskid,
+            parameterMap:JSON.stringify($scope.reader),
+            type:'reader',
+            isValid:1
+        });
+        read.$promise.then(function(data) {
+            if(data.isSuccess) {
+
+                var writer = JobManageService.addEtlLoadCfg({},{
+                    taskId:taskid,
+                    parameterMap:JSON.stringify($scope.writer),
+                    type:'writer',
+                    isValid:1
+                });
+                writer.$promise.then(function(data) {
+                    if(data.isSuccess) {
+                        showAlert('新增传输成功');
+                        setLoading(false,'');
+                    }
+                },function(){})
+            }
+        },function(){})
+    }
+
+
 
     function generateReaderAndWriterByType() {
         if($scope.conf_src == 'hive'&& $scope.conf_target == 'sqlserver') {
             getHiveToSqlserverReaderAndWriter();
         }else if($scope.conf_src == 'mysql'&& $scope.conf_target == 'hive') {
-            getOtherToHiveReaderAndWriter();
+            getMysqlToHiveReaderAndWriter();
+        }else if($scope.conf_src == 'sqlserver'&&$scope.conf_target == 'hive') {
+            getSqlserverTohiveReaderAndWriter();
         }
+    }
+
+    function getSqlserverTohiveReaderAndWriter() {
+        $scope.reader = {
+            plugin: "sqlserverreader",
+            connectProps:$scope.conf_src_domain ,
+            dbname:$scope.conf_src_db,
+            encoding: "UTF-8",
+            sql: $scope.conf_transfer_sql,
+            concurrency: "1",
+            needSplit: "false"
+        };
+        $scope.writer = {
+            plugin: "hdfswriter",
+            dir: getHiveDir(),
+            prefix_filename: $scope.conf_targetTable,
+            field_split: "\t",
+            line_split: "\n",
+            encoding: "UTF-8",
+            buffer_size: "4096",
+            file_type: "TXT",
+            concurrency: "1",
+            hive_table_add_partition_switch : hasPartitions(),
+            hive_table_add_partition_condition : hivePartitionCondition()
+        }
+    }
+
+    function hasPartitions() {
+        var hasp = getPartitions();
+        if(hasp.length > 0) return true;
+        else {return false;}
     }
 
     function getHiveToSqlserverReaderAndWriter() {
          $scope.reader = {
-            plugin:'hive',
-            mode:'READ_FROM_LOCAL',
-            dataDir:'hdfs://namenode171:54310/tmp',
-            reduceNumber:'-1',
-            concurrency:'1'
+             plugin:'hive',
+             sql:$scope.conf_transfer_sql,
+             mode:'READ_FROM_LOCAL',
+             dataDir:'hdfs://namenode171:54310/tmp',
+             reduceNumber:'-1',
+             concurrency:'1'
         }
         $scope.writer = {
             plugin: "sqlserverwriter",
@@ -451,14 +565,82 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
             encoding: "UTF-8",
             concurrency: "1",
             tableName: $scope.conf_targetTable,
-            columns: "orderid,fromorderid,orderstatus,orderdate,ds",
-            pre: "delete from ctrip_dd_test"
+            columns: getHiveColumns(),
+            pre: ""
         }
     }
 
-    function getOtherToHiveReaderAndWriter() {
+    function getHiveColumns() {
+        var s = $scope.SRCColumn;
+        var col = "";
+        col = col + s[0].name;
+        for(var i = 1;i < s.length;i ++) {
+            col = col + "," + s[i].name;
+        }
+        return col;
+        //$http.get("/fanli/db/columns",{
+        //    params:{
+        //        tableName:$scope.conf_src_table.trim(),
+        //        connectProp:$scope.conf_src_domain,
+        //        db:$scope.conf_src_db
+        //    }
+        //}).success(function(data) {
+        //    if(data.isSuccess) {
+        //
+        //    }
+        //})
+    }
+
+    function getMysqlToHiveReaderAndWriter() {
+        $scope.reader = {
+            plugin: "mysqlreader",
+            connectProps: $scope.conf_src_domain,
+            dbname:$scope.conf_src_db,
+            encoding: "UTF-8",
+            sql: $scope.conf_transfer_sql,
+            concurrency: "1",
+            needSplit: "false"
+        };
+        $scope.writer = {
+            plugin: "hdfswriter",
+            dir: getHiveDir(),
+            prefix_filename: $scope.conf_targetTable,
+            field_split: "\t",
+            line_split: "\n",
+            encoding: "UTF-8",
+            buffer_size: "4096",
+            file_type: "TXT",
+            concurrency: "1",
+            hive_table_add_partition_switch : hasPartitions(),
+            hive_table_add_partition_condition : hivePartitionCondition()
+        }
+    }
+
+    function hivePartitionCondition() {
+        if (!hasPartitions()) return "";
+        return "ds='" + "${CAL_YYYYMMDD_YESTERDAY}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;
 
     }
+
+    function getHiveDir() {
+        var dir = "";
+        if($scope.conf_target_db == 'tmpdb') {
+            dir = "hdfs://namenode171:54310/tmp/tmp.db/" + $scope.conf_targetTable;
+        } else{
+            dir = "hdfs://namenode171:54310/user/hive/bi_warehouse/" + $scope.conf_target_db.toUpperCase() + ".db/" + $scope.conf_targetTable;
+        }
+
+        var p = getPartitions();
+        if(p.length > 0) {
+            for(var i = 0;i < p.length;i ++) {
+
+            }
+            dir = dir + "/" + "ds=" + "${CAL_YYYYMMDD_YESTERDAY}";
+        }
+
+        return dir;
+    }
+
 
     function hasPre() {
         if($scope.conf_src == 'hive') {
@@ -471,6 +653,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     function showAlert(msg){
         $scope.showSaveSucess = true;
         $scope.saveSuccessMsg = msg;
+    }
+
+    function setAlert(a,b,c) {
+        $scope.sucShow = a;
+        $scope.alerttype = b;
+        $scope.sucMsg = c;
     }
 
     function setLoading(a,b){

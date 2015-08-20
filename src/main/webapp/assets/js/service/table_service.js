@@ -13,9 +13,9 @@ angular.module('table.service', ['ngResource'])
                         params: { action: 'buildTableSql' }
                     },
 
-                    buildTable: {
+                    buildHiveTable: {
                         method: 'POST',
-                        params: { action: 'buildTable' }
+                        params: { action: 'build' }
                     }
 
                 }

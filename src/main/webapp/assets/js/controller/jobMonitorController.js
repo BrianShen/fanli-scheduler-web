@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/7/29.
  */
 
-fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,ConstantService) {
+fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantService,JobMonitorService) {
     var dateToStr = function (x, y) {
         var z = {M: x.getMonth() + 1, d: x.getDate(), h: x.getHours(), m: x.getMinutes(), s: x.getSeconds()};
         y = y.replace(/(M+|d+|h+|m+|s+)/g, function (v) {
@@ -21,6 +21,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,ConstantService)
     $scope.jobStatus = $scope.executionStatusOptions[1].ID;
 
     $scope.submitSearch = function() {
+        setAlert(false,'','');
         $http.get("/fanli/monitor/query",{params:{
             taskId:$scope.taskId,
             owner:$scope.developer,
@@ -32,17 +33,17 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,ConstantService)
             console.log("success");
         })
     };
-    //获得周期的css
+
     $scope.getExecutionCycleLabel = function (cycle) {
         return ConstantService.getCycleCss(cycle);
     };
 
-    //获得状态的文字描述
+
     $scope.getStatusText = function (status) {
         return ConstantService.statusToText(status);
     };
 
-    //获得周期的文字描述
+
     $scope.getCycleText = function (cycle) {
         return ConstantService.cycleToText(cycle);
     };
@@ -54,6 +55,47 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,ConstantService)
 
     var getJobByIndex = function(index) {
         return $scope.jobInstanses[index];
+    }
+
+    //閲嶈窇浠诲姟
+    $scope.reRunJob = function (index) {
+        var job = getJobByIndex(index);
+        $scope.message = {
+            headerText: '鎻愮ず',
+            bodyText: '浣犳槸鍚﹁閲嶈窇浠诲姟瀹炰緥: ' + job.taskStatusId + " ?",
+            actionButtonStyle: 'btn-danger',
+            showCancel: true
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/messageEnsure.html',
+            controller: MessageCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            var result = JobMonitorService.recallInstance({
+                    'instanceId': job.taskStatusId
+                }
+            );
+            $scope.isLoading = true;
+            result.$promise.then(function(data) {
+                $scope.isLoading = false;
+                $scope.jobInstanses[index].status = 0;
+                setAlert(true,'alert-success','鎴愬姛娣诲姞閲嶈窇浠诲姟' + job.taskStatusId + ':' + job.taskName);
+
+            },function(){})
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
+    };
+
+    var setAlert = function(a,b,c) {
+        $scope.alertShow = a;
+        $scope.alertType = b;
+        $scope.AlertMsg = c;
     }
 
 

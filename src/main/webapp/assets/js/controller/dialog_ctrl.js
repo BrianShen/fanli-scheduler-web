@@ -7,7 +7,7 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
     //initScope();
 
         $scope.dependenceTasks = msg.data;
-        $scope.taskGroups = ConstantService.getGroupOptions();
+        $scope.taskGroups = ConstantService.getTaskGroupOption();
         $scope.alert = {
             type: '',
             msg: '',

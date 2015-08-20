@@ -66,6 +66,12 @@ angular.module('job_manage.service', ['ngResource'])
                         params:{
                             action:'updateTransfer'
                         }
+                    },
+                    addEtlLoadCfg:{
+                        method:'POST',
+                        params:{
+                            action:'insertTransferParam'
+                        }
                     }
                 });
         }

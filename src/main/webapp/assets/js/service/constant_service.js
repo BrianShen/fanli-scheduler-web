@@ -46,7 +46,7 @@ angular.module("constant.service",[])
 
             getCycleOptions:function(){
                 return {
-                    mi: '分', H: '时', D: '日', W: '周', M: '月', Y: '年'
+                    H: '时', D: '日', W: '周', M: '月', Y: '年'
                 };
             },
             getTaskGroupOption:function() {
@@ -151,6 +151,13 @@ angular.module("constant.service",[])
                     case 'mi':
                         return '分';
                 }
+            },
+            getTransferHivePartition:function() {
+                return [
+                    {id:1,name:'无分区',partition:''},
+                    {id:2,name:'ds',partition:'ds string'},
+                    {id:3,name:'ds,hour',partition:'ds string,hour string'}
+                ]
             }
 
         }

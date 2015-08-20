@@ -4,6 +4,7 @@ import com.fanli.scheduler.bean.BuildTableSql;
 import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.bean.TableMeta;
+import com.fanli.scheduler.exception.BuildTableException;
 import com.fanli.scheduler.service.SSHService;
 import com.fanli.scheduler.service.TableService;
 import com.jcraft.jsch.JSchException;
@@ -36,16 +37,18 @@ public class TableController {
 
     @ResponseBody
     @RequestMapping(value = "/build",method = RequestMethod.POST)
-    public Result buildTableOnline(@RequestBody BuildTableSql buildTableSql) {
+    public Result buildTableOnline(@RequestBody BuildTableSql buildTableSql){
         Result result = new Result();
         try {
             boolean ret = sshService.isRunSSHCommandSuccessful("sh /home/hadoop/scheduler-core/bin/hive_command.sh " + "\"" + buildTableSql.getSql() + "\"");
+//            if (!ret) throw new BuildTableException("create table ssh process failed!");
             result.setIsSuccess(ret);
         } catch (JSchException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 //        result.setIsSuccess(tableService.buildTable(sql));
         return result;
     }

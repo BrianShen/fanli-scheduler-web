@@ -45,6 +45,9 @@ public class DatabaseService {
     }
 
     public List<String> getTableInfo(String conn, String db, String table) {
-        return ConnectMan.INSTANCE.getTablesInfo(conn,db,table);
+        return ConnectMan.INSTANCE.getTablesInfo(conn, db, table);
+    }
+    public int build(String conn,String db,String sql) {
+       return ConnectMan.INSTANCE.createTable(conn,db,sql);
     }
 }

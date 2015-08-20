@@ -36,7 +36,7 @@ public class TableCreator {
             builder = buildBody(builder, columnName, columnType, columnComment);
         }
         List<GeneralColumn> partitions = generalTable.getPartitions();
-        if (null != partitions) {
+        if (partitions.size() > 0) {
             builder = buildPartition(deleteRedundancy(builder), partitions);
         }
         builder = buildTail(deleteRedundancy(builder), TYPE_HIVE);
@@ -50,7 +50,7 @@ public class TableCreator {
             String columnName = column.getName();
             String columnType = TypeTransformer.transformHive(column.getType());
             String columnComment = column.getComment();
-            builder = buildBody(builder, columnName, columnType, columnComment);
+            builder = buildSqlserverBody(builder, columnName, columnType, columnComment);
         }
 
         builder = buildTail(deleteRedundancy(builder), TYPE_SQLSERVER);
@@ -58,22 +58,29 @@ public class TableCreator {
     }
 
     private static StringBuilder buildHead (StringBuilder builder, String name) {
-        return builder.append("CREATE TABLE `").append(name).append("` ( \n");
+        return builder.append("CREATE TABLE ").append(name).append(" ( \n");
     }
 
+    private static StringBuilder buildSqlserverBody (StringBuilder builder, String name, String type, String comment) {
+        return builder.append("    ").append(name).append(" ")
+                .append(type).append(",\n");
+    }
+
+
+
     private static StringBuilder buildBody (StringBuilder builder, String name, String type, String comment) {
-        return builder.append("    ").append("`").append(name).append("`").append(" ")
+        return builder.append("    ").append(name).append(" ")
                 .append(type).append(" ")
-                .append("COMMENT '").append(comment).append("'").append(",\n");
+                .append("COMMENT '").append(comment==null?"":comment).append("'").append(",\n");
     }
 
     private static StringBuilder buildPartition(StringBuilder builder, List<GeneralColumn> partitions) {
         builder.append("\n").append(")");
         builder.append(" PARTITIONED BY (").append("\n");
         for (GeneralColumn generalColumn : partitions) {
-            builder.append("    ").append("`").append(generalColumn.getName()).append("`").append(" ")
+            builder.append("    ").append(generalColumn.getName()).append(" ")
                     .append(generalColumn.getType()).append(" ")
-                    .append("COMMENT '").append(generalColumn.getComment()).append("'").append(",\n");
+                    .append("COMMENT '").append(generalColumn.getComment()==null?"":generalColumn.getComment()).append("'").append(",\n");
         }
         return builder;
     }

@@ -83,6 +83,10 @@
         <property name="mapperInterface" value="com.fanli.scheduler.mapping.EtlSourceDimMapper"/>
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
     </bean>
+    <bean id="etlLoadCfgMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.fanli.scheduler.mapping.EtlLoadCfgMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
 
 
 

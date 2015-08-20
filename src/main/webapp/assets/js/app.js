@@ -6,6 +6,7 @@ var fanliApp = angular.module("fanliApp",[
     'ngResource',
     'common.service',
     'job_manage.service',
+    'job_monitor.service',
     'component.service',
     'ui.bootstrap',
     'constant.service',

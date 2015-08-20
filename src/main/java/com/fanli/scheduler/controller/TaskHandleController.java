@@ -7,6 +7,7 @@ import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.EtlTaskrelaCfg;
 import com.fanli.scheduler.entity.EtlTaskrelaCfgExample;
+import com.fanli.scheduler.mapping.EtlLoadCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
@@ -32,6 +33,9 @@ public class TaskHandleController {
 
     @Autowired
     private EtlTaskCfgMapper etlTaskCfgMapper;
+
+    @Autowired
+    private EtlLoadCfgMapper etlLoadCfgMapper;
 
     @RequestMapping(value = "/taskConfAdd" ,method = RequestMethod.POST)
     @ResponseBody
@@ -190,7 +194,8 @@ public class TaskHandleController {
         Date date = new Date();
         etlLoadCfg.setCreateTime(date);
         etlLoadCfg.setUpdateTime(date);
-
+        etlLoadCfgMapper.insert(etlLoadCfg);
+        result.setIsSuccess(true);
         return result;
     }
 

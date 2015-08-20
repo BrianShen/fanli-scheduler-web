@@ -3,6 +3,7 @@ package com.fanli.scheduler.controller;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.EtlTaskStatus;
 import com.fanli.scheduler.service.JobMonitorService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import java.util.List;
 public class JobMonitorController {
     @Autowired
     private JobMonitorService jobMonitorService;
+
+    private static Logger logger = Logger.getLogger(JobMonitorController.class);
 
     @ResponseBody
     @RequestMapping(value = "/query",method = RequestMethod.GET)
@@ -35,5 +38,26 @@ public class JobMonitorController {
         System.out.println(owner);
         return result;
 
+    }
+
+    /**
+     * 置为重跑
+     */
+    @RequestMapping(value = "/recallInstance", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Result recallInstance(@RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
+        logger.info(" recall instance: instanceId(" + instanceId + ")");
+        Result result = new Result();
+        try {
+            int row = jobMonitorService.handleRerun(instanceId);
+            if (row == 1) {
+                result.setIsSuccess(true);
+            }else result.setIsSuccess(false);
+            return result;
+        } catch (Exception e) {
+            logger.error("recall instance error", e);
+        }
+        return result;
     }
 }
