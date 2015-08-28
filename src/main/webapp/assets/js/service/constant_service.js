@@ -158,6 +158,43 @@ angular.module("constant.service",[])
                     {id:2,name:'ds',partition:'ds string'},
                     {id:3,name:'ds,hour',partition:'ds string,hour string'}
                 ]
+            },
+            getStoragePattern:function() {
+                return [
+                    {id: 1,pattern:'incr'},
+                    {id: 2,pattern:'snapshot'},
+                    {id: 3,pattern:'zip'},
+                    {id: 4,pattern:'full'},
+                    {id: 5,pattern:'chage'}
+                ]
+            },
+            getPartitionDesc:function() {
+                return [
+                    {id:1 ,name:'h'},
+                    {id:2 ,name:'d'},
+                    {id:3 ,name:'w'},
+                    {id:4 ,name:'m'},
+                    {id:5 ,name:'y'},
+                    {id:6 ,name:'o'},
+                    {id:7 ,name:'n'}
+                ]
+            },
+            getTopic:function() {
+                return [
+                    {id:1,name:'common',ab:'com'},
+                    {id:2,name:'user',ab:'usr'},
+                    {id:3,name:'order',ab:'odr'},
+                    {id:4,name:'traffic',ab:'tra'}
+                ]
+            },
+            getPartitionByCycle:function() {
+                return {
+                    H:"/ds=${yyyy-MM-dd}/hour=${HH;P1H}",
+                    D:"/ds=${yyyy-MM-dd;P1D}",
+                    W:"/week=${yyyy-MM-dd;F1W}",
+                    M:"/month=${yyyy-MM;P1M}",
+                    Y:"/year=${yyyy;P1Y}"
+                }
             }
 
         }

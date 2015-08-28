@@ -72,6 +72,15 @@ angular.module('job_manage.service', ['ngResource'])
                         params:{
                             action:'insertTransferParam'
                         }
+                    },
+                    //失效任务
+                    invalidTask: {
+                        method: 'POST',
+                        params: {
+                            action: 'invalidTask',
+                            taskId: '@taskId',
+                            type: '@type'
+                        }
                     }
                 });
         }

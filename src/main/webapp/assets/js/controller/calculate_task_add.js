@@ -2,7 +2,8 @@
  * Created by wei.shen on 2015/7/14.
  */
 
-fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService','DimService',function($scope,$http,$modal,$filter,ConstantService,component,JobManageService,DimService) {
+fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','ConstantService','component','JobManageService','DimService','DolService',
+    function($scope,$http,$modal,$filter,ConstantService,component,JobManageService,DimService,DolService) {
     $scope.showImportMsg = false;
     $scope.isLoading = false;
     $scope.dolPath = '';
@@ -95,22 +96,19 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         if(!checkDolPath()) {
             return;
         }
-        $scope.loadingMsg = "loading..."
+        $scope.loadingMsg = "loading...";
         $scope.isLoading = true;
 
         $http.get("/fanli/dol/importDol",{params:{dolPath:$scope.dolPath}})
             .success(function(response){
                 if(response.isSuccess) {
-                    $scope.isLoading = false;
-                    $scope.showImportMsg = true;
-                    $scope.alertType = 'alert-success';
-                    $scope.importMsg = "dol导入成功";
-                    initConfUI();
-                    setButtonClickable(false,false,true);
-                    $scope.showConfig = true;
+
+                    parseTargetTable();
+
                 } else {
                     $scope.isLoading = false;
                     $scope.showImportMsg = true;
+                    $scope.alertType = 'alert-danger';
                     $scope.importMsg = response.messages;
                 }
 
@@ -118,11 +116,40 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
                 console.log("not success")
                 $scope.isLoading = false;
                 $scope.showImportMsg = true;
+                $scope.alertType = 'alert-danger';
                 $scope.importMsg = response.messages;
             })
     }
     $scope.change = function() {
         console.log($scope.developer.chName);
+    }
+
+    function parseTargetTable() {
+        var table = DolService.parseDolToGetTable({
+            dolName:getDolName()
+        });
+        table.$promise.then(function(data) {
+            if(data.isSuccess) {
+                $scope.table_name = data.result;
+                initConfUI();
+                $scope.isLoading = false;
+                $scope.showImportMsg = true;
+                $scope.alertType = 'alert-success';
+                $scope.importMsg = "dol导入成功";
+                setButtonClickable(false,false,true);
+                $scope.showConfig = true;
+            } else {
+                $scope.isLoading = false;
+                $scope.showImportMsg = true;
+                $scope.alertType = 'alert-danger';
+                $scope.importMsg = "dol导入成功，但表名解析失败";
+            }
+        },function(data) {
+            $scope.isLoading = false;
+            $scope.showImportMsg = true;
+            $scope.alertType = 'alert-danger';
+            $scope.importMsg = "dol导入成功，但表名解析失败";
+        })
     }
 
     function checkDolPath() {
@@ -168,7 +195,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         return dol.substring(0,dol.length - 4);
     }
     function initConfUI () {
-        $scope.conf_taskName = "hive##" +$scope.db.name + "." + getTableName($scope.dolPath);
+        $scope.conf_taskName = "hive##" +$scope.db.name + "." + $scope.table_name;
         $scope.conf_developer = $scope.developer.chName;
         $scope.conf_frequency ='0 5 0 * * ?';
         $scope.conf_taskGroup = $scope.taskGroupOptions[1].ID;
@@ -186,11 +213,11 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     }
 
     var checkFormValid = function() {
-        if($scope.conf_para1 === "") {
-            $scope.showCfgMsg = true;
-            $scope.cfgMsg = "执行命令不能为空";
-            return false;
-        }
+        //if($scope.conf_para1 === "") {
+        //    $scope.showCfgMsg = true;
+        //    $scope.cfgMsg = "执行命令不能为空";
+        //    return false;
+        //}
         if($scope.successCode ==="") {
             $scope.showCfgMsg = true;
             $scope.cfgMsg = "成功返回码不能为空";
@@ -236,7 +263,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
                     taskGroupId:$scope.conf_taskGroup,
                     taskName:$scope.conf_taskName,
                     resource:"hive",
-                    command:$scope.conf_para1,
+                    command:getCalCommand(),
                     cycle:$scope.conf_cycle,
                     priority:$scope.conf_priority,
                     ifRecall:$scope.conf_ifRecall,
@@ -289,6 +316,20 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
 
     };
 
+    function getCalCommand() {
+        var command;
+        var dol =getDolName() ;
+        if($scope.conf_cycle == 'H') {
+            command = "canaan -dol " + dol + " -t " + "${unix_timestamp} ";
+        } else {
+            command = "canaan -dol " + dol + " -d " + "${date}";
+        }
+        return command;
+    };
+    function getDolName() {
+        var arr = $scope.dolPath.split('/');
+        return arr[arr.length - 1];
+    }
     var getPreTasks = function() {
         var pre = '';
         if($scope.dependenceTasks.length > 0){
@@ -369,7 +410,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         $scope.publishSuccess = true;
         $scope.publishLoadingMsg = "正在保存HIVE META信息......";
         $http.post("/fanli/mdm/saveMeta",{
-            tableName:getTableName($scope.dolPath),
+            tableName:$scope.table_name,
             description:$scope.tableComment,
             createTableInfo:getBuildTableSql($scope.metatable),
             columnDescription:getColumnDesc($scope.showColumnTable),
@@ -492,7 +533,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         $scope.metaLoadingMsg = "正在加载元数据信息......";
         $http.get("/fanli/domain/meta",{params:{
             db:'test',
-            table:getTableName($scope.dolPath)
+            table:$scope.table_name
         }}).success(function(data) {
             $scope.tableLocation = data.source;
             $scope.metatable = data;

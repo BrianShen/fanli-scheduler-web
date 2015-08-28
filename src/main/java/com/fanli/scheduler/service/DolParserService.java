@@ -1,5 +1,7 @@
 package com.fanli.scheduler.service;
 
+import org.apache.log4j.Logger;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,12 +13,15 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2015/8/8.
  */
 public class DolParserService {
+    private static Logger logger = Logger.getLogger(DolParserService.class);
+
     private static List<String> allTable = new ArrayList<String>();
     private static List<String> sourceTable = new ArrayList<String>();
     private static List<String> tempTable = new ArrayList<String>();
     private static final String REG_FROM = "from[\\s]+([^\\(\\s]+)";
     private static final String REG_JOIN = "join[\\s]+([^\\(\\s]+)";
     private static final String REG_TEMP_TABLE = "create[\\s]+table[\\s]+([^\\s]+)";
+    private static final String REG_TARGET_TABLE = "insert[\\s]+overwrite[\\s]+table[\\s]+([^\\s]+)";
 
 
     /**
@@ -26,7 +31,9 @@ public class DolParserService {
     public static List<String> parseSourceTables(File file) {
         if(!isExists(file)) return null;
         List<String> commands =  splitToCommand(getStringDol(file));
-        System.out.println(commands);
+//        for(String com :commands) {
+//            System.out.println(com);
+//        }
         allTable = getAllTable(commands);
         tempTable = getTempTable(commands);
 
@@ -35,10 +42,32 @@ public class DolParserService {
 //                if (sourceTable.get(i).equals(tempTable.get(j))) sourceTable.remove(i);
 //            }
 //        }
-        if (allTable.removeAll(tempTable)) {
-            sourceTable = allTable;
-        }
+        if (tempTable.size() > 0) {
+            if (allTable.removeAll(tempTable)) {
+                sourceTable = allTable;
+            }
+        } else sourceTable = allTable;
         return sourceTable;
+    }
+
+    public static List<String> parseSourceTables(String path) {
+        if ("".equals(path) || path == null) return null;
+        return parseSourceTables(new File(path));
+    }
+
+    public static String getTargetTableName(String path) {
+        String table = "";
+        String dol = getStringDol(new File(path));
+        Pattern pattern = Pattern.compile(REG_TARGET_TABLE, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(dol);
+        if (matcher.find()) {
+            if (matcher.group(1).split("\\.").length > 1) {
+                table = matcher.group(1).split("\\.")[1];
+            } else {
+                table = matcher.group(1);
+            }
+        }
+        return table;
     }
 
     private static List<String> getAllTable(List<String> commands) {
@@ -48,7 +77,7 @@ public class DolParserService {
             Matcher fromMatcher = from.matcher(commands.get(i));
             while (fromMatcher.find()) {
                 String str = "";
-                System.out.println(fromMatcher.group(1).split("."));
+                //System.out.println(fromMatcher.group(1).split("."));
                 if (fromMatcher.group(1).split("\\.").length > 1) {
                     str = fromMatcher.group(1).split("\\.")[1];
                 } else str = fromMatcher.group(1);
@@ -69,6 +98,9 @@ public class DolParserService {
                 }
             }
         }
+        for (String a:all) {
+            System.out.println(a);
+        }
         return all;
     }
 
@@ -85,6 +117,9 @@ public class DolParserService {
                 if (!temp.contains(str))
                 temp.add(str);
             }
+        }
+        for(String t:temp) {
+            System.out.println(t);
         }
         return temp;
     }
@@ -110,8 +145,33 @@ public class DolParserService {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             sb = new StringBuffer();
             String line = null;
+            boolean windowOpen = false;
             while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line + " ");
+                if (line.trim().startsWith("*#") ) {
+                    windowOpen = false;
+                    continue;
+                }
+                if (windowOpen == true||line.trim().startsWith("##")||line.trim().startsWith("--")) {
+                    continue;
+                }
+                if (line.trim().startsWith("#*")){
+                    windowOpen = true;
+                    continue;
+                }
+                if (line.trim().contains("--")) {
+                    line = line.trim().substring(0,line.trim().indexOf("--")) + " ";
+                    sb.append(line);
+                    System.out.println();
+                } else {
+                    line = line.trim() + " ";
+                    sb.append(line);
+                }
+                System.out.println(line);
+
+            }
+
+            if (windowOpen) {
+                logger.error("Invalid annotation type,with #* start,while no *# found");
             }
 
         } catch (Exception e) {
@@ -124,8 +184,8 @@ public class DolParserService {
                 }
             }
         }
+        logger.info(sb.toString());
         return sb.toString();
-
     }
 
     private static Boolean isExists(File file) {
@@ -135,9 +195,22 @@ public class DolParserService {
     }
 
     public static void main(String[] args) {
-        String path = "D:" + File.separator + "DW_UserDB.Fact_User.job.sql";
+        String path = "D:" + File.separator + "dwdev.om.dprpt_trade_user_dp_point1.dol";
         File file = new File(path);
-        System.out.println(DolParserService.parseSourceTables(file));
+        //System.out.println(DolParserService.parseSourceTables(file));
+        System.out.println(DolParserService.getTargetTableName(path));
+//        List<String> l1 = new ArrayList<String>();
+//        l1.add("dpdw_op_push_base");
+//        l1.add("dpmid_dp_dpid");
+//        l1.add("dpdim_dp_user");
+//        l1.add("dpdim_op_push");
+//        List<String> l2 = new ArrayList<String>();
+//        l2.add("dpdw_op_push_baseee");
+//        boolean l3 = l1.removeAll(l2);
+//        System.out.println(l3);
+//        System.out.println(l1.size());
+//        String a = "drop table if exists dpstg_trade_user_dp_point_tmp1_${env.YYYY}${env.MM}${env.DD}; -- 新建temp表";
+//        System.out.println(a.trim().substring(0,a.trim().indexOf("--")));
 
 
 //        Pattern pattern = Pattern.compile("b+g");

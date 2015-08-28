@@ -199,6 +199,26 @@ public class TaskHandleController {
         return result;
     }
 
+    /**
+     * 失效任务
+     */
+//    @RequestMapping(value = "/invalidTask", method = RequestMethod.POST)
+//    public
+//    @ResponseBody
+//    Result invalidTask(@RequestParam(value = "taskId", defaultValue = "") String taskId,
+//            @RequestParam(value = "type", defaultValue = "") String type) {
+//        try {
+//            String nowTimeStamp = GalaxyDateUtils.getCurrentTimeStampStr();
+//            if (type.equals("transfer"))
+//                return jobManageUrlHandler.handleInvalidTransferTask(Integer.parseInt(taskId), nowTimeStamp, user);
+//            else
+//                return jobManageUrlHandler.handleInvalidCalculateTask(Integer.parseInt(taskId), nowTimeStamp, user);
+//        } catch (Exception e) {
+//            logger.error("User: (" + user.getEmployPinyin() + ") invalid task error", e);
+//            return getExceptionResult("系统错误");
+//        }
+//    }
+
     @RequestMapping(value = "/test",method = RequestMethod.GET)
     @ResponseBody
     public Result<String> getTest() {

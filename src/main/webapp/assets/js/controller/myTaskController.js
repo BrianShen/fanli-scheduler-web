@@ -46,6 +46,8 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
     };
 
 
+
+
     function processQueryResult(tasks) {
         tasks.$promise.then(function(data) {
             if(data.isSuccess) {
@@ -65,6 +67,11 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
         $scope.loadingMsg = msg;
     }
 
+    /**
+     * *******************************************************任务操作***************************************************************
+     * @param index
+     */
+    //编辑任务
     $scope.editJob = function (index) {
         var job = getJobByIndex(index);
         if (job.type == 2)
@@ -72,6 +79,41 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
         else
             window.open("#/transfer_task_edit/" + job.taskId);
     };
+
+    //失效任务
+    $scope.invalidJob = function (index) {
+        var job = getJobByIndex(index);
+        $scope.message = {
+            headerText: '警告: 以下任务将会受到影响，请确认是否失效任务' + job.taskId + '?',
+            actionButtonStyle: 'btn-danger',
+            taskId: job.taskId
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/influencedTasksDialog.html',
+            controller: InfluencedTaskCtrl,
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            var result = JobManageService.invalidTask({
+                'taskId': job.taskId,
+                'type': job.type == 2 ? 'calculate' : 'transfer'
+            });
+            $scope.isLoading = true;
+            $scope.closeAlert();
+            processValid(result, 0);
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
+    };
+
+
+    // * *******************************************************任务操作***************************************************************
+
 
     //根据实际的index获得job
     function getJobByIndex(index) {

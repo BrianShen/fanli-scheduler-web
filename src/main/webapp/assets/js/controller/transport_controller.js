@@ -18,13 +18,14 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
 
         })
-    }
+    };
+
 
     $scope.targetSelect  = function () {
-        $scope.showPartition = true;
         //setLoading(true,"正在查询...");
+        console.log('target select is ' + $scope.conf_target);
         if($scope.conf_target == 'hive') {
-            $scope.target_database_options = ['load','ods','dw','dm','dim','tmpdb'];
+            $scope.target_database_options = ['load','ods'];
         }else {
             var source= DimService.querySourceDB({
                 type:$scope.conf_target
@@ -36,11 +37,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 }
             },function(){})
         }
-        $scope.setTaskName();
+        console.log($scope.conf_target)
     }
 
     $scope.sourceSelect = function() {
         //setLoading(true,"正在查询...");
+        console.log('src select is :' + $scope.conf_src);
         $scope.src_database_options = [];
         if($scope.conf_src == 'hive') {
             $scope.src_database_options = ['load','ods','dw','dm','dim','tmpdb'];
@@ -55,7 +57,6 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 }
             },function(){})
         }
-        $scope.setTaskName();
     }
     $scope.src_domain_select = function() {
         setLoading(true,'正在获取表...');
@@ -88,7 +89,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
     $scope.ensureSql = function() {
         setLoading(true,"正在建表...");
-
+        initTaskName();
         if($scope.conf_target == 'sqlserver') {
             console.log($scope.conf_create_table_sql);
             $http.post("/fanli/db/buildTables",{
@@ -124,6 +125,10 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
     }
 
+    function initTaskName() {
+        $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
+    }
+
 
     $scope.incrFieldChange = function() {
 
@@ -133,12 +138,31 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         if(!checkForm()) {
             return;
         }
+        $scope.getTargetTableName();
         getSourceTableInfo();
 
         //checkSourceTableExists();
 
+    }
 
-
+    $scope.getTargetTableName = function () {
+        if($scope.conf_src == 'hive') {
+            $scope.conf_targetTable = $scope.conf_src_table;
+            return;
+        }
+        var conf_storage_pattern = $scope.conf_storage_pattern!=undefined?$scope.conf_storage_pattern:"";
+        var conf_partition_desc = $scope.conf_partition_desc!=undefined?$scope.conf_partition_desc:"";
+        var conf_src_db_ab = $scope.conf_src_db_ab!=undefined?$scope.conf_src_db_ab:"";
+        var conf_topic = $scope.conf_topic!=undefined?$scope.conf_topic:"";
+        var conf_table_name_desc = $scope.conf_table_name_desc!=undefined?$scope.conf_table_name_desc:"";
+        if($scope.conf_target=='hive'&&($scope.conf_target_db=='load'||$scope.conf_target_db == 'ods')) {
+            $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_src_db_ab+'_'+$scope.conf_src_table;
+        } else if($scope.conf_target=='hive'&&($scope.conf_target_db=='dw'||$scope.conf_target_db == 'dm')) {
+            $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_topic+'_'+conf_table_name_desc;
+        } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='dim') {
+            $scope.conf_targetTable = conf_src_db_ab+$scope.conf_src_table+conf_topic+conf_table_name_desc;
+        };
+        console.log($scope.conf_targetTable);
     }
 
     $scope.getIncrField = function() {
@@ -181,13 +205,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
 
     $scope.saveTargetInfo = function() {
-        getTransferSql();
-        getCommonCreateTableSql();
+        getCommonCreateTableSqlAndTransferSql();
         $scope.step2 = false;
         $scope.step3 = true;
     }
 
-    function getCommonCreateTableSql() {
+    function getCommonCreateTableSqlAndTransferSql() {
         if($scope.conf_src == 'hive') {
             $http.get("/fanli/domain/meta",{
                 params:{
@@ -196,9 +219,10 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 }}).success(function(data) {
                 var src_partition = data.partitions;
                 var src_column = data.columns;
+                $scope.commonColumn = src_column;
+                getTransferSql();
                 $scope.SRCColumn = mergeHiveColumns(src_partition,src_column);
                 requestTogetSql();
-
             })
         } else{
             $http.get("/fanli/db/columns",{
@@ -209,6 +233,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 }
             }).success(function(data) {
                 if(data.isSuccess) {
+                    $scope.commonColumn = data.result.columns;
+                    getTransferSql();
                     $scope.SRCColumn = data.result.columns;
                     requestTogetSql();
                 }
@@ -227,15 +253,91 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         });
         buildSql.$promise.then(function(data) {
             $scope.conf_create_table_sql = data.result;
+            console.log($scope.conf_create_table_sql);
         },function() {})
     }
 
     function getTransferSql() {
-        var sql = 'select * from ' + $scope.conf_src_table;
+        var col = $scope.commonColumn;
+        var sql = 'select ';
+        sql = sql +'`' + col[0].name + '`';
+        for(var i = 1;i < col.length;i ++) {
+            sql = sql + ','+'`'+ col[i].name + '`';
+        }
+        sql = sql + ' from ' + $scope.conf_src_table ;
         if($scope.conf_target_table_type == 'append') {
-            sql = sql + ' where ' + $scope.conf_incr_field;
+            var incr = getColumnInfo($scope.conf_incr_field);
+            console.log('增量字段是:' + incr);
+            var where = handleWhere($scope.conf_src,incr.type);
+            sql = sql  + where;
         }
         $scope.conf_transfer_sql = sql;
+        console.log('查询sql是：' + sql);
+    }
+
+    function handleWhere(src,type) {
+        var ret;
+        if(src == 'hive') {
+            switch ($scope.conf_cycle){
+                case 'H':ret = "ds='${yyyy-MM-dd}' and hour='${HH;P1H}'";break;
+                case 'D':ret = $scope.conf_incr_field + "='${yyyy-MM-dd;P1D}'";break;
+                case 'M':ret = $scope.conf_incr_field + ">='${yyyy-MM-01;P1M}' and " +$scope.conf_incr_field + "<'${yyyy-MM-01}'";break;
+                case 'W':ret = $scope.conf_incr_field + ">='${yyyy-MM-dd;F1W}' and " + $scope.conf_incr_field + "<'${yyyy-MM-dd;F0W}'";break;
+                case 'Y':ret = $scope.conf_incr_field + ">='${yyyy-01-01};P1Y' and " + $scope.conf_incr_field + "<'${yyyy-01-01}'";break;
+            }
+        } else if(src=='mysql') {
+            if('int' == type.toLowerCase()) {
+                switch ($scope.conf_cycle) {
+                    case 'H':ret = "FROM_UNIXTIME(" + $scope.conf_incr_field + ", '%Y-%m-%d-%H')='${yyyy-MM-dd-HH;P1H}'";break;
+                    case 'D':ret = "FROM_UNIXTIME(" + $scope.conf_incr_field + ", '%Y-%m-%d')='${yyyy-MM-dd;P1D}'";break;
+                    case 'M':ret = "FROM_UNIXTIME(" + $scope.conf_incr_field + ", '%Y-%m')='${yyyy-MM;P1M}'";break;
+                    case 'W':ret = "FROM_UNIXTIME(" + $scope.conf_incr_field + ", '%Y-%m-%d')>='${yyyy-MM-dd;F1W}' and " +
+                        "FROM_UNIXTIME("+ $scope.conf_incr_field + ", '%Y-%m-%d')<'${yyyy-MM-dd;F0W}'";break;
+                    case 'Y':ret = "FROM_UNIXTIME(" + $scope.conf_incr_field + ", '%Y')='${yyyy;P1Y}'";break;
+                }
+            }else if('datetime' == type.toLowerCase() || 'timestamp'==type.toLowerCase()) {
+                switch ($scope.conf_cycle) {
+                    case 'H':ret = $scope.conf_incr_field + ">='${yyyy-MM-dd HH:00:00;P1H}' and " + $scope.conf_incr_field +
+                        "<'${yyyy-MM-dd HH:00:00}'";break;
+                    case 'D':ret = $scope.conf_incr_field + ">='${yyyy-MM-dd 00:00:00;P1D}' and " + $scope.conf_incr_field +
+                        "<'${yyyy-MM-dd 00:00:00}'";break;
+                    case 'M':ret = $scope.conf_incr_field + ">='${yyyy-MM-01 00:00:00;P1M}' and " + $scope.conf_incr_field +
+                        "<'${yyyy-MM-01 00:00:00}'";break;
+                    case 'W':ret = $scope.conf_incr_field + ">='${yyyy-MM-dd 00:00:00;F1W}' and " + $scope.conf_incr_field +
+                        "<'${yyyy-MM-dd 00:00:00;F0W}'";break;
+                    case 'Y':ret = $scope.conf_incr_field + ">='${yyyy-01-01 00:00:00;P1Y}' and " + $scope.conf_incr_field +
+                        "<'${yyyy-01-01 00:00:00}'";break;
+                }
+            } else {
+                return ' where ' + $scope.conf_incr_field;
+            }
+        }else if(src=='sqlserver') {
+            if('datetime' == type.toLowerCase()||'smalldatetime' == type.toLowerCase()) {
+                switch ($scope.conf_cycle) {
+                    case 'H':ret = $scope.conf_incr_field +">='${yyyy-MM-dd HH:00:00;P1H}' and " +
+                        $scope.conf_incr_field + "<'${yyyy-MM-dd HH:00:00}'";break;
+                    case 'D':ret = $scope.conf_incr_field +">='${yyyy-MM-dd 00:00:00;P1D}' and " +
+                        $scope.conf_incr_field + "<'${yyyy-MM-dd 00:00:00}'";break;
+                    case 'M':ret = $scope.conf_incr_field +">='${yyyy-MM-01 00:00:00;P1M}' and " +
+                        $scope.conf_incr_field + "<'${yyyy-MM-01 00:00:00}'";break;
+                    case 'W':ret = $scope.conf_incr_field +">='${yyyy-MM-dd 00:00:00;F1W}' and " +
+                        $scope.conf_incr_field + "<'${yyyy-MM-dd 00:00:00;F0W}'";break;
+                    case 'Y':ret = $scope.conf_incr_field +">='${yyyy-01-01 00:00:00;P1Y}' and " +
+                        $scope.conf_incr_field + "<'${yyyy-01-01 00:00:00}'";break;
+                }
+            } else {
+                return ' where ' + $scope.conf_incr_field;
+            }
+        }
+        return ' where ' + ret;
+    }
+
+    function getColumnInfo(name) {
+        for(var i = 0;i < $scope.fieldOptions.length;i ++) {
+            if($scope.fieldOptions[i].name == name) {
+                return $scope.fieldOptions[i];
+            }
+        }
     }
 
     function getSourceColumns() {
@@ -252,15 +354,34 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     }
 
     function getPartitions() {
-        if($scope.conf_hive_partition == ''|| $scope.conf_hive_partition === undefined) return [];
         var pt = [];
-        var arr = $scope.conf_hive_partition.trim().split(',');
-        for(var i = 0;i < arr.length;i ++) {
-            var sp = arr[i].split(/\s+/);
-
-            var ele = {name:sp[0],type:sp[1],comment:sp[3]};
-            pt.push(ele);
+        if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type =='snapshot') {
+            switch ($scope.conf_cycle) {
+                case 'H':
+                    pt.push({name:'ds',type:'string',comment:''});
+                    pt.push({name:'hour',type:'string',comment:''});
+                    break;
+                case 'D':
+                    pt.push({name:'ds',type:'string',comment:''});
+                    break;
+                case 'M':
+                    pt.push({name:'month',type:'string',comment:''});
+                    break;
+                case 'Y':
+                    pt.push({name:'year',type:'string',comment:''});
+                    break;
+                case 'W':
+                    pt.push({name:'week',type:'string',comment:''});
+            }
         }
+
+        //var arr = $scope.conf_hive_partition.trim().split(',');
+        //for(var i = 0;i < arr.length;i ++) {
+        //    var sp = arr[i].split(/\s+/);
+        //
+        //    var ele = {name:sp[0],type:sp[1],comment:sp[3]};
+        //    pt.push(ele);
+        //}
         return pt;
     }
 
@@ -270,7 +391,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         };
         if($scope.conf_src == 'mysql' || $scope.conf_src == 'sqlserver'){
             getJdbcTableInfo();
-        }else if($scope.conf_src = 'hive') {
+        }else if($scope.conf_src == 'hive') {
             getHiveTableInfo();
         }
 
@@ -320,6 +441,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
             $scope.targetOptions = [];
             $scope.targetOptions.push('hive');
         }
+
+        console.log("now conf_target is :" + $scope.conf_target);
 
     }
     function checkSourceTableExists(){
@@ -406,6 +529,9 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         $scope.offsetOptions = ConstantService.getOffsetOption();
         $scope.timeoutOptions = ConstantService.getTimeOutOption();
         $scope.hivePartitionOptions = ConstantService.getTransferHivePartition();
+        $scope.storagePatternOptions = ConstantService.getStoragePattern();
+        $scope.partitionDescOptions = ConstantService.getPartitionDesc();
+        $scope.topicOptions = ConstantService.getTopic();
 
         $scope.conf_frequency = '0 5 0 * * ?';
         $scope.conf_taskGroup = $scope.taskGroupOptions[1].ID;
@@ -551,7 +677,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
     function getHiveToSqlserverReaderAndWriter() {
          $scope.reader = {
-             plugin:'hive',
+             plugin:'hivereader',
              sql:$scope.conf_transfer_sql,
              mode:'READ_FROM_LOCAL',
              dataDir:'hdfs://namenode171:54310/tmp',
@@ -577,6 +703,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         for(var i = 1;i < s.length;i ++) {
             col = col + "," + s[i].name;
         }
+        console.log('hive 列：' + col);
         return col;
         //$http.get("/fanli/db/columns",{
         //    params:{
@@ -618,8 +745,16 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
     function hivePartitionCondition() {
         if (!hasPartitions()) return "";
-        return "ds='" + "${CAL_YYYYMMDD_YESTERDAY}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;
-
+        var  cond;
+        switch ($scope.conf_cycle) {
+            case 'H':cond = "ds='${yyyy-MM-dd}',hour='${HH;P1H}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+            case 'D':cond = "ds='${yyyy-MM-dd;P1D}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+            case 'W':cond = "ds='${yyyy-MM-dd;F1W}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+            case 'M':cond = "ds='${yyyy-MM;P1M}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+            case 'Y':cond = "ds='${yyyy;P1Y}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+        }
+        return cond;
+        //return "ds='" + "${CAL_YYYYMMDD_YESTERDAY}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;
     }
 
     function getHiveDir() {
@@ -631,11 +766,16 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         }
 
         var p = getPartitions();
+        var partitionDir = ConstantService.getPartitionByCycle();
         if(p.length > 0) {
-            for(var i = 0;i < p.length;i ++) {
-
+            switch ($scope.conf_cycle) {
+                case 'H':dir = dir + partitionDir.H;break;
+                case 'D':dir = dir + partitionDir.D;break;
+                case 'W':dir = dir + partitionDir.W;break;
+                case 'M':dir = dir + partitionDir.M;break;
+                case 'Y':dir = dir + partitionDir.Y;break;
             }
-            dir = dir + "/" + "ds=" + "${CAL_YYYYMMDD_YESTERDAY}";
+            //dir = dir + "/" + "ds=" + "${CAL_YYYYMMDD_YESTERDAY}";
         }
 
         return dir;

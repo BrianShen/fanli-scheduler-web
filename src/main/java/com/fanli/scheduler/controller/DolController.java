@@ -1,9 +1,13 @@
 package com.fanli.scheduler.controller;
 import com.fanli.scheduler.bean.Result;
+import com.fanli.scheduler.constants.Const;
+import com.fanli.scheduler.exception.TableParseException;
+import com.fanli.scheduler.service.DolParserService;
 import com.fanli.scheduler.service.DolService;
 import com.fanli.scheduler.utils.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +56,22 @@ public class DolController {
 
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/tableName",method = RequestMethod.GET)
+    public Result<String> getTableName(@RequestParam("dolName") String dolName) throws Exception {
+        String path = Const.DOL_HOME + "/" + dolName;
+        String table = DolParserService.getTargetTableName(path);
+        Result<String> result = new Result<String>();
+        if (StringUtils.hasLength(table)) {
+            result.setResult(table);
+            result.setIsSuccess(true);
+        } else {
+            throw new TableParseException("failed to parse target table name through dol file");
+        }
+        return result;
+    }
+
     public static void main(String args[] ) {
         DolController dolController = new DolController();
         dolController.moveDol("dim/schema/dim.com_super_crm_partner.ddl.sql");

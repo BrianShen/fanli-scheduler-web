@@ -49,7 +49,8 @@ public class JobMonitorService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            criteria.andStartTimeBetween(sd, ed);
+
+            criteria.andTriggerTimeBetween(sd.getTime(), ed.getTime());
         };
         list = etlTaskStatusMapper.selectByExample(etlTaskStatusExample);
         return list;
