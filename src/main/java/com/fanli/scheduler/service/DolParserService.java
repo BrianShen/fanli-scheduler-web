@@ -1,6 +1,10 @@
 package com.fanli.scheduler.service;
 
+import com.fanli.scheduler.constants.Const;
+import com.jcraft.jsch.JSchException;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,6 +18,7 @@ import java.util.regex.Pattern;
  */
 public class DolParserService {
     private static Logger logger = Logger.getLogger(DolParserService.class);
+
 
     private static List<String> allTable = new ArrayList<String>();
     private static List<String> sourceTable = new ArrayList<String>();
@@ -55,18 +60,34 @@ public class DolParserService {
         return parseSourceTables(new File(path));
     }
 
-    public static String getTargetTableName(String path) {
+    public static String getTargetTableName(String path) throws IOException, JSchException {
+        String remoteFile = Const.HADOOP_USER + "@" + Const.HADOOP_CLIENT_HOST;
+        logger.info("remote file is :" + remoteFile);
+        String dolName = StringUtils.getFilename(path);
+        String localFileDir = Const.LOCAL_DOL_TMP_DIR;
+        String command = "scp " +  remoteFile + ":" +  path + " " + localFileDir;
+        logger.info("copy file command is :" + command);
         String table = "";
-        String dol = getStringDol(new File(path));
-        Pattern pattern = Pattern.compile(REG_TARGET_TABLE, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(dol);
-        if (matcher.find()) {
-            if (matcher.group(1).split("\\.").length > 1) {
-                table = matcher.group(1).split("\\.")[1];
-            } else {
-                table = matcher.group(1);
+        LocalExcuterService localExcuterService = new LocalExcuterService();
+        String [] cmd = new String[]{"scp",remoteFile + ":" +  path,localFileDir};
+        int returnCode = localExcuterService.executeCMD(cmd);
+        if (returnCode == 0) {
+            logger.info("The dol file is existing in " + localFileDir + ":?" + new File(localFileDir + File.separator + dolName).exists());
+            String dol = getStringDol(new File(localFileDir + File.separator + dolName));
+            Pattern pattern = Pattern.compile(REG_TARGET_TABLE, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(dol);
+            if (matcher.find()) {
+                if (matcher.group(1).split("\\.").length > 1) {
+                    table = matcher.group(1).split("\\.")[1];
+                } else {
+                    table = matcher.group(1);
+                }
             }
+        } else  {
+            logger.info("copy dol from " + Const.HADOOP_CLIENT_HOST + "return code is " + returnCode );
         }
+
+
         return table;
     }
 
@@ -139,11 +160,10 @@ public class DolParserService {
 
     private static String getStringDol(File file)  {
         InputStreamReader inputStreamReader = null;
-        StringBuffer sb = null;
+        StringBuffer sb = new StringBuffer();
         try {
             inputStreamReader = new InputStreamReader(new FileInputStream(file),"utf-8");
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            sb = new StringBuffer();
             String line = null;
             boolean windowOpen = false;
             while ((line = bufferedReader.readLine()) != null) {
@@ -175,6 +195,7 @@ public class DolParserService {
             }
 
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             if (inputStreamReader != null) {
                 try {
@@ -198,7 +219,13 @@ public class DolParserService {
         String path = "D:" + File.separator + "dwdev.om.dprpt_trade_user_dp_point1.dol";
         File file = new File(path);
         //System.out.println(DolParserService.parseSourceTables(file));
-        System.out.println(DolParserService.getTargetTableName(path));
+        try {
+            System.out.println(DolParserService.getTargetTableName(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
 //        List<String> l1 = new ArrayList<String>();
 //        l1.add("dpdw_op_push_base");
 //        l1.add("dpmid_dp_dpid");

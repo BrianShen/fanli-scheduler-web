@@ -5,4 +5,7 @@ package com.fanli.scheduler.constants;
  */
 public class Const {
     public static final String DOL_HOME = "/home/hadoop/dol";
+    public static final String HADOOP_USER = "hadoop";
+    public static final String HADOOP_CLIENT_HOST = "192.168.3.227";
+    public static final String LOCAL_DOL_TMP_DIR="/home/hadoop/fanli-scheduler/dol_temp";
 }

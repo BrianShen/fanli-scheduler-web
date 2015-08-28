@@ -125,12 +125,14 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     }
 
     function parseTargetTable() {
+        console.log("dol name:" + getDolName());
         var table = DolService.parseDolToGetTable({
             dolName:getDolName()
         });
         table.$promise.then(function(data) {
             if(data.isSuccess) {
                 $scope.table_name = data.result;
+
                 initConfUI();
                 $scope.isLoading = false;
                 $scope.showImportMsg = true;

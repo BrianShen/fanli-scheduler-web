@@ -5,6 +5,8 @@ import com.fanli.scheduler.exception.TableParseException;
 import com.fanli.scheduler.service.DolParserService;
 import com.fanli.scheduler.service.DolService;
 import com.fanli.scheduler.utils.PropertiesUtil;
+import com.jcraft.jsch.JSchException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -26,6 +29,8 @@ public class DolController {
 
     @Autowired
     private DolService dolService;
+
+    private static Logger logger = Logger.getLogger(DolController.class);
     @RequestMapping(value = "/checkDol",method = RequestMethod.GET)
     @ResponseBody
     public Result<String> checkDol(@RequestParam("dolPath")String dolPath) {
@@ -59,22 +64,33 @@ public class DolController {
 
     @ResponseBody
     @RequestMapping(value = "/tableName",method = RequestMethod.GET)
-    public Result<String> getTableName(@RequestParam("dolName") String dolName) throws Exception {
+    public Result<String> getTableName(@RequestParam("dolName") String dolName) {
+        logger.info("get table name through dol,the dol name is " + dolName);
+        logger.info("dol path is" + Const.DOL_HOME + "/" + dolName );
         String path = Const.DOL_HOME + "/" + dolName;
-        String table = DolParserService.getTargetTableName(path);
+        String table = null;
+        try {
+            table = DolParserService.getTargetTableName(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
         Result<String> result = new Result<String>();
         if (StringUtils.hasLength(table)) {
+            logger.info("table name is :" + table);
             result.setResult(table);
             result.setIsSuccess(true);
         } else {
-            throw new TableParseException("failed to parse target table name through dol file");
+            try {
+                throw new TableParseException("failed to parse target table name through dol file");
+            } catch (TableParseException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
 
-    public static void main(String args[] ) {
-        DolController dolController = new DolController();
-        dolController.moveDol("dim/schema/dim.com_super_crm_partner.ddl.sql");
-    }
+
 
 }

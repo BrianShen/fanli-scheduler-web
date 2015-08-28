@@ -625,6 +625,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 writer.$promise.then(function(data) {
                     if(data.isSuccess) {
                         showAlert('新增传输成功');
+                        $scope.suceessAndDisable = true;
                         setLoading(false,'');
                     }
                 },function(){})
