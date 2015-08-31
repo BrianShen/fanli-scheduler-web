@@ -25,7 +25,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         //setLoading(true,"正在查询...");
         console.log('target select is ' + $scope.conf_target);
         if($scope.conf_target == 'hive') {
-            $scope.target_database_options = ['load','ods'];
+            $scope.target_database_options = ['load','ods','dim'];
         }else {
             var source= DimService.querySourceDB({
                 type:$scope.conf_target
@@ -160,7 +160,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
         } else if($scope.conf_target=='hive'&&($scope.conf_target_db=='dw'||$scope.conf_target_db == 'dm')) {
             $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_topic+'_'+conf_table_name_desc;
         } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='dim') {
-            $scope.conf_targetTable = conf_src_db_ab+$scope.conf_src_table+conf_topic+conf_table_name_desc;
+            $scope.conf_targetTable ='s_'+ conf_src_db_ab+'_'+ $scope.conf_src_table;
         };
         console.log($scope.conf_targetTable);
     }
@@ -260,9 +260,16 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     function getTransferSql() {
         var col = $scope.commonColumn;
         var sql = 'select ';
-        sql = sql +'`' + col[0].name + '`';
-        for(var i = 1;i < col.length;i ++) {
-            sql = sql + ','+'`'+ col[i].name + '`';
+        if($scope.conf_src == 'sqlserver') {
+            sql = sql +'[' + col[0].name + ']';
+            for(var i = 1;i < col.length;i ++) {
+                sql = sql + ','+'['+ col[i].name + ']';
+            }
+        } else {
+            sql = sql +'`' + col[0].name + '`';
+            for(var i = 1;i < col.length;i ++) {
+                sql = sql + ','+'`'+ col[i].name + '`';
+            }
         }
         sql = sql + ' from ' + $scope.conf_src_table ;
         if($scope.conf_target_table_type == 'append') {

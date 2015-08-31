@@ -10,7 +10,9 @@ import java.util.List;
  */
 public class TaskServiceImpl  implements TaskService {
     @Override
-    public List<EtlTaskCfg> getChildrenByTaskid(Integer taskid) {
+    public List<Integer> getChildrenByTaskid(Integer taskid) {
         return null;
     }
+
+
 }

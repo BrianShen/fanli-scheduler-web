@@ -160,7 +160,7 @@
                     </div>
                     <div class="space-10"></div>
                     <div class="row" >
-                        <div class="col-xs-3" ng-show="conf_target=='hive'">
+                        <div class="col-xs-3" ng-show="conf_target=='hive'&&conf_target_db!='dim'">
                             <label class="col-sm-4 inputFloat control-label textRight">存储模式</label>
                             <div class="col-sm-8">
                                 <select ng-model="conf_storage_pattern"  class="form-control" ng-change="getTargetTableName()"
@@ -176,7 +176,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xs-3" ng-show="conf_target=='hive'&&(conf_target_db=='dw'||conf_target_db=='dm'||conf_target_db=='dim')">
+                        <div class="col-xs-3" ng-show="conf_target=='hive'&&(conf_target_db=='dw'||conf_target_db=='dm')">
                             <label class="col-sm-4 inputFloat control-label textRight">业务主题</label>
                             <div class="col-sm-8">
                                 <select ng-model="conf_topic"  class="form-control" ng-change="getTargetTableName()"
@@ -190,8 +190,7 @@
                                 <input type="text"  class=" form-control" ng-model="conf_src_db_ab" ng-change="getTargetTableName()">
                             </div>
                         </div>
-                        <div class="col-xs-3" ng-show="conf_target=='hive'&&(conf_target_db=='dw'||conf_target_db=='dm'||conf_target_db=='dim'
-                        ||conf_target_db=='tmpdb')">
+                        <div class="col-xs-3" ng-show="conf_target=='hive'&&(conf_target_db=='dw'||conf_target_db=='dm'||conf_target_db=='tmpdb')">
                             <label class="col-sm-4 inputFloat control-label textRight">表名自定义内容:</label>
                             <div class="col-sm-8">
                                 <input type="text"  class=" form-control" ng-model="conf_table_name_desc" ng-change="getTargetTableName()">

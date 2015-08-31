@@ -48,6 +48,8 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
 
 
 
+
+
     function processQueryResult(tasks) {
         tasks.$promise.then(function(data) {
             if(data.isSuccess) {
@@ -79,6 +81,43 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
         else
             window.open("#/transfer_task_edit/" + job.taskId);
     };
+
+    //预跑任务
+    $scope.preRunJob = function (index) {
+        var job = getJobByIndex(index);
+        $scope.msg = {
+            headerText: '设置预跑任务:' + job.taskId + ' 时间',
+            actionButtonStyle: 'btn-primary',
+            jobExecCycle: job.cycle
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/preRunDialog.html',
+            controller: PreRunTaskCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.msg;
+                }
+            }
+        });
+        modalInstance.result.then(function (time) {
+            var result = JobManageService.preRunTask({
+                'startTime': time.startDate,
+                'endTime': time.endDate,
+                'taskId': job.taskId,
+                'committer': "",
+                'type': job.type == 2 ? 'calculate' : 'transfer'
+            });
+            $scope.isLoading = true;
+            $scope.closeAlert();
+            process(result);
+        }, function () {
+        });
+    };
+    function process(result) {
+        result.$promise.then(function(data) {
+
+        },function(){})
+    }
 
     //失效任务
     $scope.invalidJob = function (index) {

@@ -115,12 +115,18 @@
                                     <i class="icon-pencil bigger-130"></i>
                                     <span>编辑</span>
                                 </button>
-                                <button class="btn-link " ng-click="invalidJob($index)"
+                                <button class="btn-link green" ng-click="preRunJob($index)"
                                         tooltip-placement="top"
-                                        tooltip="置为失效">
-                                    <i class="icon-pause bigger-130"></i>
-                                    <span>置为失效</span>
+                                        tooltip="手动运行">
+                                    <i class="icon-forward bigger-130"></i>
+                                    <span>手动运行</span>
                                 </button>
+                                <!--<button class="btn-link " ng-click="invalidJob($index)"-->
+                                        <!--tooltip-placement="top"-->
+                                        <!--tooltip="置为失效">-->
+                                    <!--<i class="icon-pause bigger-130"></i>-->
+                                    <!--<span>置为失效</span>-->
+                                <!--</button>-->
 
                                 <!--<a class="blue" href="#/jobView/{{job.taskId}}" target="_BLANK"-->
                                    <!--tooltip-placement="top"-->

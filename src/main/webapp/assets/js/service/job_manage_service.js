@@ -81,6 +81,18 @@ angular.module('job_manage.service', ['ngResource'])
                             taskId: '@taskId',
                             type: '@type'
                         }
+                    },
+                    //预跑任务
+                    preRunTask: {
+                        method: 'POST',
+                        params: {
+                            action: 'preRunTask',
+                            startTime: '@startTime',
+                            endTime: '@endTime',
+                            taskId: '@taskId',
+                            committer: '@committer',
+                            type: '@type'
+                        }
                     }
                 });
         }
