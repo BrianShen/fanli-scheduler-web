@@ -12,11 +12,18 @@
 
     <import resource="applicationContext.xml"></import>
     <mvc:resources mapping="/assets/**" location="/assets/" />
+
+    <!--spring mvc拦截器-->
     <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/fanli/**"/>
-            <bean class="com.fanli.scheduler.bean.interceptor."/>
-        </mvc:interceptor>
+        <bean class="com.fanli.scheduler.bean.interceptor.ApplicationLoginIntercepor"/>
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/dim/**"/>-->
+            <!--<bean class="com.fanli.scheduler.bean.interceptor.ApplicationLoginIntercepor"/>-->
+        <!--</mvc:interceptor>-->
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/monitor/**"/>-->
+            <!--<bean class="com.fanli.scheduler.bean.interceptor.ApplicationLoginIntercepor"/>-->
+        <!--</mvc:interceptor>-->
     </mvc:interceptors>
 
 
