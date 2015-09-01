@@ -602,9 +602,9 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     function updateCommand(taskid) {
         var res = JobManageService.updateTransferTask({},{
             taskId:taskid,
-            command:'sh /home/hadoop/wormhole/release/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} '  + $scope.conf_offset
+            command:'sh /home/hadoop/wormhole/test/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} '  + $scope.conf_offset
         });
-        console.log('sh /home/hadoop/wormhole/release/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} ' + $scope.conf_offset);
+        console.log('sh /home/hadoop/wormhole/test/bin/wormhole.sh ' + taskid + ' ' + '${unix_timestamp} ' + $scope.conf_offset);
         res.$promise.then(function(data) {
             if(data.isSuccess) {
                 console.log("更新command成功");

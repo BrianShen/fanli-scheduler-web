@@ -19,7 +19,8 @@ angular.module('job_manage.service', ['ngResource'])
                             action: 'queryTasks',
                             taskGroupId: '@group',
                             owner: '@owner',
-                            taskId: '@id'
+                            taskId: '@id',
+                            isValid:'@isValid'
                         }
                     },
                     updateTask:{
@@ -89,9 +90,7 @@ angular.module('job_manage.service', ['ngResource'])
                             action: 'preRunTask',
                             startTime: '@startTime',
                             endTime: '@endTime',
-                            taskId: '@taskId',
-                            committer: '@committer',
-                            type: '@type'
+                            taskId: '@taskId'
                         }
                     }
                 });

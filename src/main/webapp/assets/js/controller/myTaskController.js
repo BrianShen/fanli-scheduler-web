@@ -2,14 +2,14 @@
  * Created by wei.shen on 2015/7/16.
  */
 
-fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','component',function($scope,$filter,JobManageService,component) {
+fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService','component',function($scope,$filter,$modal,JobManageService,component) {
     $scope.taskGroupOptions= [
         {ID: 1, Text: 'ods'},
         {ID: 2, Text: 'load'},
         {ID: 3, Text: 'dm'},
         {ID: 4, Text: 'dw'},
-        {ID: 5, Text: 'dim'},
-        {ID: 6, Text:'knn'}
+        {ID: 5, Text: 'rpt'},
+        {ID: 6, Text: 'dim'}
     ];
 
     initPageParams();
@@ -22,11 +22,12 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
             isShow: false
         };
         //是否生效过滤项
-        $scope.isValid = 'yes';
+        $scope.isValid = true;
         //是否隐藏查询结果
         $scope.hideTable = true;
         //页面是否正在加载
         $scope.isLoading = false;
+
     }
 
     //关闭提示信息
@@ -34,16 +35,29 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
         $scope.alert.isShow = false;
     };
 
+    $scope.showAlert = function(a,b) {
+        $scope.alert.isShow = true;
+        $scope.alert.type = a;
+        $scope.alert.msg = b;
+    }
+
     $scope.submitQuery = function() {
         showLoading("正在查询中...");
+        $scope.closeAlert();
 
         var tasks = JobManageService.queryTasks({},{
             group: $scope.jobGroup,
             owner: $scope.jobDeveloper,
-            id: $scope.jobID
+            id: $scope.jobID,
+            isValid:$scope.isValid==true?1:0
         });
         processQueryResult(tasks);
     };
+
+    $scope.handleValid = function() {
+        console.log($scope.isValid);
+        $scope.submitQuery();
+    }
 
 
 
@@ -51,6 +65,7 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
 
 
     function processQueryResult(tasks) {
+
         tasks.$promise.then(function(data) {
             if(data.isSuccess) {
                 $scope.allTaskList = data.results;
@@ -67,6 +82,11 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
     function showLoading(msg) {
         $scope.isLoading = true;
         $scope.loadingMsg = msg;
+    }
+
+    function setLoading(a,b) {
+        $scope.isLoading = a;
+        $scope.loadingMsg = b;
     }
 
     /**
@@ -103,9 +123,7 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
             var result = JobManageService.preRunTask({
                 'startTime': time.startDate,
                 'endTime': time.endDate,
-                'taskId': job.taskId,
-                'committer': "",
-                'type': job.type == 2 ? 'calculate' : 'transfer'
+                'taskId': job.taskId
             });
             $scope.isLoading = true;
             $scope.closeAlert();
@@ -115,8 +133,26 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','JobManageService','compone
     };
     function process(result) {
         result.$promise.then(function(data) {
+            if(data.isSuccess) {
+                if(data.result < 10) {
+                    var ids = data.results;
+                    var idStr = '';
+                    for(var i = 0;i < ids.length;i ++) {
+                        idStr  = idStr + ids[i] + ',';
+                    }
+                    idStr = idStr.substring(0,idStr.length - 1);
+                    $scope.showAlert('alert-success','成功预跑' + data.result + '个任务,taskid为：' + idStr);
+                } else {
+                    $scope.showAlert('alert-success','成功预跑' + data.result + '个任务');
+                }
+                setLoading(false,'');
 
-        },function(){})
+            } else {
+                $scope.showAlert('alert-danger','生成实例失败，如有必要请联系开发人员！');
+                setLoading(false,'');
+            }
+        },function(){$scope.showAlert('alert-danger','生成实例失败，如有必要请联系开发人员！');
+            setLoading(false,'');})
     }
 
     //失效任务

@@ -33,7 +33,8 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
         {"id":2,name:"ods",desc:""},
         {"id":3,name:"load",desc:""},
         {"id":4,name:"dm",desc:""},
-        {"id":5,name:"rpt",desc:""}
+        {"id":5,name:"rpt",desc:""},
+        {"id":6,name:"dim",desc:""}
     ];
     $scope.cycleOptions  = {
         mi: '分', H: '时', D: '日', W: '周', M: '月', Y: '年'

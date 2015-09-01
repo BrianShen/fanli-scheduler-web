@@ -32,10 +32,9 @@ public class JobMonitorController {
 
         List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,"".equals(taskid)?null:Integer.parseInt(taskid),owner,"".equals(status)?null:Integer.parseInt(status));
         result.setResults(list);
-
+        logger.info(owner + "commit a query at " + new Date().toLocaleString() + " taskid: "+ taskid +
+        " owner:" + owner + " status" + status + " startTime:" + startTime + " endTime:" + endTime);
         result.setIsSuccess(true);
-
-        System.out.println(owner);
         return result;
 
     }

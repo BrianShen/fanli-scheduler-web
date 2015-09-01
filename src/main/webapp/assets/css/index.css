@@ -11,6 +11,13 @@
     display: block;
 }
 
+.textRight {
+    text-align: right;
+}
+
+.bottom10 {
+    margin-bottom: 10px;
+}
 .statusFont {
     font-size: 16px;
 }
@@ -49,4 +56,44 @@
 
 .tag.timeout {
     background-color: #0000FF;
+}
+
+.marginR5 {
+    margin-right: 5px;
+}
+
+.marginR30 {
+    margin-right: 30px;
+}
+
+.marginR60 {
+    margin-right: 60px;
+}
+
+.marginL5 {
+    margin-left: 5px;
+}
+
+.marginT5 {
+    margin-top: 5px;
+}
+
+.marginL0 {
+    margin-left: 0px;
+}
+
+.marginR0 {
+    margin-right: 0px;
+}
+
+.paddingT5 {
+    padding-top: 5px;
+}
+
+.marginL10 {
+    margin-left: 10px;
+}
+
+.marginL18 {
+    margin-left: 18px;
 }

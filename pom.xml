@@ -125,6 +125,12 @@
             <version>1.7.2</version>
         </dependency>
 
+        <!--crontab-->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.8.5</version>
+        </dependency>
         <!--gson-->
         <dependency>
             <groupId>com.google.code.gson</groupId>

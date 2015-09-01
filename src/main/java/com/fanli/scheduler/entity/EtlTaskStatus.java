@@ -83,6 +83,48 @@ public class EtlTaskStatus {
         this.taskStatusId = taskStatusId == null ? null : taskStatusId.trim();
     }
 
+    @Override
+    public String toString() {
+        return "EtlTaskStatus{" +
+                "taskStatusId='" + taskStatusId + '\'' +
+                ", taskId=" + taskId +
+                ", taskName='" + taskName + '\'' +
+                ", taskGroupId=" + taskGroupId +
+                ", resource='" + resource + '\'' +
+                ", command='" + command + '\'' +
+                ", logPath='" + logPath + '\'' +
+                ", cycle='" + cycle + '\'' +
+                ", timeId='" + timeId + '\'' +
+                ", status=" + status +
+                ", ifWait=" + ifWait +
+                ", ifRecall=" + ifRecall +
+                ", ifPre=" + ifPre +
+                ", priority=" + priority +
+                ", recallNum=" + recallNum +
+                ", runNum=" + runNum +
+                ", recallInterval=" + recallInterval +
+                ", recallLimit=" + recallLimit +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", timeStamp=" + timeStamp +
+                ", type=" + type +
+                ", tableName='" + tableName + '\'' +
+                ", calDt='" + calDt + '\'' +
+                ", freq='" + freq + '\'' +
+                ", owner='" + owner + '\'' +
+                ", triggerTime=" + triggerTime +
+                ", waitCode='" + waitCode + '\'' +
+                ", recallCode='" + recallCode + '\'' +
+                ", successCode='" + successCode + '\'' +
+                ", jobCode=" + jobCode +
+                ", runningPrio=" + runningPrio +
+                ", timeout=" + timeout +
+                ", jobCodemsg='" + jobCodemsg + '\'' +
+                ", taskCommitter='" + taskCommitter + '\'' +
+                ", concurrency=" + concurrency +
+                '}';
+    }
+
     public Integer getTaskId() {
         return taskId;
     }

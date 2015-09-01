@@ -41,6 +41,7 @@ public class TaskConfigServiceImpl implements TaskConfigService{
         if (taskQuery.getTaskGroupId() != null) criteria.andTaskGroupIdEqualTo(taskQuery.getTaskGroupId());
         if (!taskQuery.getOwner().equals("")) criteria.andOwnerEqualTo(taskQuery.getOwner());
         if (taskQuery.getTaskId() != null) criteria.andTaskIdEqualTo(taskQuery.getTaskId());
+        if (taskQuery.getIsValid() != null) criteria.andIfEnableEqualTo(taskQuery.getIsValid());
         return etlTaskCfgMapper.selectByExample(etlTaskCfgExample);
     }
 

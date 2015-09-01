@@ -11,6 +11,8 @@ import com.fanli.scheduler.mapping.EtlLoadCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
+import com.fanli.scheduler.service.TaskService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wei.shen on 2015/7/15.
@@ -25,6 +28,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/taskManager")
 public class TaskHandleController {
+
+    private static Logger logger = Logger.getLogger(TaskHandleController.class);
     @Autowired
     private TaskConfigService taskConfigService;
 
@@ -36,6 +41,9 @@ public class TaskHandleController {
 
     @Autowired
     private EtlLoadCfgMapper etlLoadCfgMapper;
+
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping(value = "/taskConfAdd" ,method = RequestMethod.POST)
     @ResponseBody
@@ -101,12 +109,16 @@ public class TaskHandleController {
 
     @RequestMapping(value = "/queryTasks",method = RequestMethod.GET)
     @ResponseBody
-    public Result<EtlTaskCfg> getTaskByParams(@RequestParam(value = "taskId",defaultValue = "") Integer taskId,@RequestParam(value = "taskGroupId",defaultValue = "") Integer taskGroupId,@RequestParam(value = "owner",defaultValue = "") String owner) {
+    public Result<EtlTaskCfg> getTaskByParams(@RequestParam(value = "taskId",defaultValue = "") Integer taskId,
+                                              @RequestParam(value = "taskGroupId",defaultValue = "") Integer taskGroupId,
+                                              @RequestParam(value = "owner",defaultValue = "") String owner,
+                                              @RequestParam(value = "isValid",defaultValue = "")Integer isValid) {
         Result<EtlTaskCfg> result = new Result<EtlTaskCfg>();
         TaskQuery taskQuery = new TaskQuery();
         taskQuery.setOwner(owner);
         taskQuery.setTaskGroupId(taskGroupId);
         taskQuery.setTaskId(taskId);
+        taskQuery.setIsValid(isValid);
         System.out.println(taskQuery);
         List<EtlTaskCfg> etlTaskCfgs = taskConfigService.getTaskByParams(taskQuery);
         if (etlTaskCfgs != null) {
@@ -197,6 +209,32 @@ public class TaskHandleController {
         etlLoadCfgMapper.insert(etlLoadCfg);
         result.setIsSuccess(true);
         return result;
+    }
+
+    /**
+     * 预跑任务
+     */
+    @RequestMapping(value = "/preRunTask", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Result preRunTask(
+            @RequestParam(value = "startTime", defaultValue = "") String startTime,
+            @RequestParam(value = "endTime", defaultValue = "") String endTime,
+            @RequestParam(value = "taskId", defaultValue = "") String taskId) {
+        logger.info("pre run task with startTime:" + startTime + ", endTime: " + endTime + ",taskid;" + taskId);
+        Result result = new Result();
+        Map<String,Object> map = taskService.generateInstance(startTime,endTime, Integer.parseInt(taskId));
+        if (map != null) {
+            result.setIsSuccess(true);
+            result.setResult(map.get("num"));
+            result.setResults((List<String>)map.get("instanceids"));
+        } else {
+            logger.error("pre run task failed!");
+            result.setIsSuccess(false);
+        }
+
+        return result;
+
     }
 
     /**

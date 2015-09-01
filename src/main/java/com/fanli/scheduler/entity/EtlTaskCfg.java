@@ -272,4 +272,37 @@ public class EtlTaskCfg {
     public void setConcurrency(Integer concurrency) {
         this.concurrency = concurrency;
     }
+
+    @Override
+    public String toString() {
+        return "EtlTaskCfg{" +
+                "taskId=" + taskId +
+                ", taskGroupId=" + taskGroupId +
+                ", taskName='" + taskName + '\'' +
+                ", resource='" + resource + '\'' +
+                ", command='" + command + '\'' +
+                ", cycle='" + cycle + '\'' +
+                ", priority=" + priority +
+                ", ifRecall=" + ifRecall +
+                ", ifWait=" + ifWait +
+                ", ifPre=" + ifPre +
+                ", ifEnable=" + ifEnable +
+                ", freq='" + freq + '\'' +
+                ", owner='" + owner + '\'' +
+                ", waitCode='" + waitCode + '\'' +
+                ", recallCode='" + recallCode + '\'' +
+                ", successCode='" + successCode + '\'' +
+                ", timeout=" + timeout +
+                ", recallInterval=" + recallInterval +
+                ", logFile='" + logFile + '\'' +
+                ", addUser='" + addUser + '\'' +
+                ", addTime=" + addTime +
+                ", updateUser='" + updateUser + '\'' +
+                ", updateTime=" + updateTime +
+                ", type=" + type +
+                ", offset='" + offset + '\'' +
+                ", recallLimit=" + recallLimit +
+                ", concurrency=" + concurrency +
+                '}';
+    }
 }

@@ -7,8 +7,18 @@ public class TaskQuery {
     private Integer taskId;
     private Integer taskGroupId;
     private String owner;
+    private Integer isValid;
+
+    public Integer getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(Integer isValid) {
+        this.isValid = isValid;
+    }
 
     @Override
+
     public String toString() {
         return "TaskQuery{" +
                 "taskId=" + taskId +
