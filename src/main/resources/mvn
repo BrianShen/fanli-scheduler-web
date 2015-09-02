@@ -1,1 +1,4 @@
 mvn install -Dmaven.test.skip=true
+##单点登录api
+curl -d 'uname=junhua.zhang&pwd=xx' http://fanliauth.office.51fanli.com:8389/api/verify
+post方式

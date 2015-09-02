@@ -5,6 +5,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.WebRequestInterceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by wei.shen on 2015/9/1.
  */
-public class ApplicationLoginIntercepor implements HandlerInterceptor {
+public class ApplicationLoginIntercepor extends HandlerInterceptorAdapter {
     private static final String LOGIN_URL = "/fanli/login";
 
     @Override
@@ -21,6 +22,7 @@ public class ApplicationLoginIntercepor implements HandlerInterceptor {
         HttpSession httpSession = httpServletRequest.getSession(true);
         Object obj = httpSession.getAttribute("user");
         if (obj == null||"".equals(obj.toString())) {
+//            httpServletResponse.sendRedirect("http://localhost:8080/assets/pages/login.html");
             httpServletResponse.sendRedirect(LOGIN_URL);
             return false;
         } else return true;
