@@ -79,8 +79,14 @@ angular.module('job_manage.service', ['ngResource'])
                         method: 'POST',
                         params: {
                             action: 'invalidTask',
-                            taskId: '@taskId',
-                            type: '@type'
+                            taskId: '@taskId'
+                        }
+                    },
+                    getInfluencedTasksByTaskId:{
+                      method:'GET',
+                        params:{
+                            action:'relaTask',
+                            taskId:'@taskId'
                         }
                     },
                     //预跑任务
@@ -92,6 +98,9 @@ angular.module('job_manage.service', ['ngResource'])
                             endTime: '@endTime',
                             taskId: '@taskId'
                         }
+                    },
+                    addPreTask:{
+
                     }
                 });
         }

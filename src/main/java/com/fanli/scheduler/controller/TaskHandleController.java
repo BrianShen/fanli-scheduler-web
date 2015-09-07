@@ -11,12 +11,16 @@ import com.fanli.scheduler.mapping.EtlLoadCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
+import com.fanli.scheduler.service.TaskRelaService;
 import com.fanli.scheduler.service.TaskService;
+import com.fanli.scheduler.utils.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +48,9 @@ public class TaskHandleController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskRelaService taskRelaService;
 
     @RequestMapping(value = "/taskConfAdd" ,method = RequestMethod.POST)
     @ResponseBody
@@ -232,30 +239,54 @@ public class TaskHandleController {
             logger.error("pre run task failed!");
             result.setIsSuccess(false);
         }
-
         return result;
-
     }
 
     /**
      * 失效任务
      */
-//    @RequestMapping(value = "/invalidTask", method = RequestMethod.POST)
-//    public
-//    @ResponseBody
-//    Result invalidTask(@RequestParam(value = "taskId", defaultValue = "") String taskId,
-//            @RequestParam(value = "type", defaultValue = "") String type) {
-//        try {
-//            String nowTimeStamp = GalaxyDateUtils.getCurrentTimeStampStr();
-//            if (type.equals("transfer"))
-//                return jobManageUrlHandler.handleInvalidTransferTask(Integer.parseInt(taskId), nowTimeStamp, user);
-//            else
-//                return jobManageUrlHandler.handleInvalidCalculateTask(Integer.parseInt(taskId), nowTimeStamp, user);
-//        } catch (Exception e) {
-//            logger.error("User: (" + user.getEmployPinyin() + ") invalid task error", e);
-//            return getExceptionResult("系统错误");
-//        }
-//    }
+    @RequestMapping(value = "/invalidTask", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Result invalidTask(@RequestParam(value = "taskId", defaultValue = "") String taskId) {
+        Result result = new Result();
+        try {
+            Date nowTimeStamp = new Date();
+            List<Integer> list = new ArrayList<Integer>();
+            list.add(Integer.parseInt(taskId));
+            result.setIsSuccess(taskService.invalidTask(list,nowTimeStamp));
+        } catch (Exception e) {
+            result.setIsSuccess(false);
+            result.setMessages("失效任务失败");
+            logger.error("invalid task error", e);
+        }
+        return result;
+    }
+
+    /**
+     * 根据taskid查询直接孩子
+     */
+    @RequestMapping(value = "/relaTask", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Result<EtlTaskCfg> getRelaImmediateChildTasks(@RequestParam("taskId") String taskId) {
+        Result result = new Result();
+        if (!StringUtils.hasLength(taskId)) {
+            logger.error("taskid can not be null or empty");
+            return null;
+        }
+        List<Integer> taskids = taskRelaService.getRelaChildTaskByTaskid(Integer.parseInt(taskId));
+        List<EtlTaskCfg> tasks = null;
+        if (taskids != null) {
+            logger.info("taskid " + taskId + " has these children:" + taskids);
+            tasks = taskConfigService.getTasksByIds(taskids);
+        }
+        if (tasks != null){
+            result.setResults(tasks);
+            result.setIsSuccess(true);
+        }
+        return result;
+    }
 
     @RequestMapping(value = "/test",method = RequestMethod.GET)
     @ResponseBody

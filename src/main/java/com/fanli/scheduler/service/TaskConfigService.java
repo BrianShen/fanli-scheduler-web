@@ -19,4 +19,5 @@ public interface TaskConfigService {
     int insertTransferTask(EtlTaskCfg etlTaskCfg);
     EtlTaskCfg getTransferById(Integer taskid);
     int updateTransfer(EtlTaskCfg etlTaskCfg);
+    List<EtlTaskCfg> getTasksByIds(List<Integer> ids);
 }

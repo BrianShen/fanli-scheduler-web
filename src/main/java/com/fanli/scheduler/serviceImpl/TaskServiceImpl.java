@@ -82,5 +82,22 @@ public class TaskServiceImpl  implements TaskService {
         return map;
     }
 
+    @Override
+    public Boolean invalidTask(List<Integer> taskids,Date updateTime) {
+        assert taskids != null;
+        int num = 0;
+        for(int id :taskids) {
+            EtlTaskCfg cfg = new EtlTaskCfg();
+            cfg.setTaskId(id);
+            cfg.setIfEnable(0);
+            cfg.setUpdateTime(updateTime);
+            num += etlTaskCfgMapper.updateByPrimaryKeySelective(cfg);
+        }
+        logger.info(num + " tasks are set to invalid tasks,the total tasks to set is " + taskids.size());
+
+        if (num == taskids.size()) return true;
+        else return false;
+    }
+
 
 }

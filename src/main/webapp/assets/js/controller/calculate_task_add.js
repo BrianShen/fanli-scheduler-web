@@ -7,13 +7,6 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     $scope.showImportMsg = false;
     $scope.isLoading = false;
     $scope.dolPath = '';
-    //$scope.developerOptions = [
-    //    {"id":1 , "name":"鲍时祥", "bu":"数据部"},
-    //    {"id":2 , "name":"汤晓磊", "bu":"数据部"},
-    //    {"id":3 , "name":"吴良东", "bu":"数据部"},
-    //    {"id":4 , "name":"徐翔宇", "bu":"数据部"}
-    //];
-
      var getDevelopers = function() {
          var rep = DimService.queryAllDevelopers({},{});
          rep.$promise.then(function(data) {
@@ -494,7 +487,7 @@ fanliApp.controller("taskAddCtrl",['$scope','$http','$modal','$filter','Constant
     $scope.publish = function() {
         $scope.message = {
             headerText: '提示',
-            bodyText: '请确认是否执行如下建表语句，如有疑问请联系开发人员：沈伟，张超: <pre>' + getBuildTableSql($scope.metatable) + '</pre>',
+            bodyText: '请确认是否执行如下建表语句，如有疑问请联系开发人员: <pre>' + getBuildTableSql($scope.metatable) + '</pre>',
             actionButtonStyle: 'btn-danger',
             showCancel: true
         };

@@ -146,10 +146,10 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
 });
 
 //受影响的任务列表的Dialog的controller
-var InfluencedTaskCtrl = function ($scope, $filter, component, $modalInstance, msg, JobManageService, UIService, UtilsService) {
+var InfluencedTaskCtrl = function ($scope, $filter, component, $modalInstance, msg, JobManageService, ConstantService) {
     /***********************执行开始***********************/
     initScope();
-    setUIElements();
+    //setUIElements();
     getInfluencedTasks();
     /***********************执行结束***********************/
 
@@ -184,25 +184,25 @@ var InfluencedTaskCtrl = function ($scope, $filter, component, $modalInstance, m
         };
         //获得cycle的文字描述
         $scope.getCycleText = function (cycle) {
-            return UIService.cycleToText(cycle);
+            return ConstantService.cycleToText(cycle);
         };
         //获取cycle的css样式
         $scope.getExecutionCycleLabel = function (cycle) {
-            return UIService.getCycleCss(cycle);
+            return ConstantService.getCycleCss(cycle);
         };
         //获得开发者的中文名
-        $scope.getDevelopChineseName = function (pinyinName) {
-            return UtilsService.getDeveloperRealName(pinyinName);
-        };
+        //$scope.getDevelopChineseName = function (pinyinName) {
+        //    return UtilsService.getDeveloperRealName(pinyinName);
+        //};
         //不显示提示信息
         $scope.closeAlert = function () {
             $scope.alert.isShow = false;
         };
     }
 
-    function setUIElements() {
-        $scope.developers = UtilsService.getDevelopers();
-    }
+    //function setUIElements() {
+    //    $scope.developers = UtilsService.getDevelopers();
+    //}
 
     //获取受影响的任务列表
     function getInfluencedTasks() {
@@ -219,8 +219,8 @@ var InfluencedTaskCtrl = function ($scope, $filter, component, $modalInstance, m
         result.$promise.then(
             function (data) {
                 $scope.isLoading = false;
-                if (data.success) {
-                    $scope.dataList = data.results;
+                if (data.isSuccess) {
+                    $scope.allTaskList = data.results;
                     $scope.table = component.getCustomizedTable($scope, $filter);
                     $scope.table.predicate = 'owner';
                     $scope.table.reverse = !$scope.table.reverse;
@@ -241,10 +241,10 @@ var InfluencedTaskCtrl = function ($scope, $filter, component, $modalInstance, m
 };
 
 //同源任务列表的Dialog的controller
-var SameSourceTaskCtrl = function ($scope, $filter, component, $modalInstance, msg, JobManageService, UIService, UtilsService) {
+var SameSourceTaskCtrl = function ($scope, $filter, component, $modalInstance, msg, JobManageService, ConstantService) {
     /***********************执行开始***********************/
     initScope();
-    setUIElements();
+    //setUIElements();
     getSameSourceTasks();
     /***********************执行结束***********************/
 
@@ -279,25 +279,25 @@ var SameSourceTaskCtrl = function ($scope, $filter, component, $modalInstance, m
         };
         //获得cycle的文字描述
         $scope.getCycleText = function (cycle) {
-            return UIService.cycleToText(cycle);
+            return ConstantService.cycleToText(cycle);
         };
         //获取cycle的css样式
         $scope.getExecutionCycleLabel = function (cycle) {
-            return UIService.getCycleCss(cycle);
+            return ConstantService.getCycleCss(cycle);
         };
         //获得开发者的中文名
-        $scope.getDevelopChineseName = function (pinyinName) {
-            return UtilsService.getDeveloperRealName(pinyinName);
-        };
+        //$scope.getDevelopChineseName = function (pinyinName) {
+        //    return UtilsService.getDeveloperRealName(pinyinName);
+        //};
         //不显示提示信息
         $scope.closeAlert = function () {
             $scope.alert.isShow = false;
         };
     }
 
-    function setUIElements() {
-        $scope.developers = UtilsService.getDevelopers();
-    }
+    //function setUIElements() {
+    //    $scope.developers = UtilsService.getDevelopers();
+    //}
 
     //获取同源任务列表
     function getSameSourceTasks() {
@@ -315,7 +315,7 @@ var SameSourceTaskCtrl = function ($scope, $filter, component, $modalInstance, m
             function (data) {
                 $scope.isLoading = false;
                 if (data.success) {
-                    $scope.dataList = data.results;
+                    $scope.allTaskList = data.results;
                     $scope.table = component.getCustomizedTable($scope, $filter);
                     $scope.table.predicate = 'owner';
                     $scope.table.reverse = !$scope.table.reverse;

@@ -1,4 +1,4 @@
-package com.fanli.scheduler.bean.interceptor;
+package com.fanli.scheduler.interceptor;
 
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.WebRequest;

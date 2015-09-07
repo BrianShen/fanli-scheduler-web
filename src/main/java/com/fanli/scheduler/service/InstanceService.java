@@ -68,6 +68,7 @@ public class InstanceService {
         instance.setJobCode(-1);
         instance.setRunningPrio(-1);
         instance.setTimeout(etlTaskCfg.getTimeout());
+        instance.setConcurrency(1);
         return instance;
     }
 }

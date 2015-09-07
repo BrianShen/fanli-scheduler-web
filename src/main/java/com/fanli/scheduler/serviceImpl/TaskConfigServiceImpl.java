@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,6 +80,18 @@ public class TaskConfigServiceImpl implements TaskConfigService{
     public int updateTransfer(EtlTaskCfg etlTaskCfg) {
 
         return etlTaskCfgMapper.updateByPrimaryKeySelective(etlTaskCfg);
+    }
+
+    @Override
+    public List<EtlTaskCfg> getTasksByIds(List<Integer> ids) {
+        List<EtlTaskCfg> ret = new ArrayList<EtlTaskCfg>();
+        for (Integer id : ids) {
+            EtlTaskCfg task = etlTaskCfgMapper.selectByPrimaryKey(id);
+            if (task != null) {
+                if (task.getIfEnable() == 1) ret.add(task);
+            }
+        }
+        return ret;
     }
 
 

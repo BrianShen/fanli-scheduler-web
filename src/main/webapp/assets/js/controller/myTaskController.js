@@ -175,12 +175,22 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
         });
         modalInstance.result.then(function (data) {
             var result = JobManageService.invalidTask({
-                'taskId': job.taskId,
-                'type': job.type == 2 ? 'calculate' : 'transfer'
+                'taskId': job.taskId
             });
             $scope.isLoading = true;
             $scope.closeAlert();
-            processValid(result, 0);
+            result.$promise.then(function(data) {
+                if(data.isSuccess) {
+                    $scope.isLoading = false;
+                    $scope.showAlert('alert-success','成功将任务' + job.taskName + '从调度下线');
+                } else {
+                    $scope.isLoading = false;
+                    $scope.showAlert('alert-danger','下线失败！');
+                }
+            },function(data) {
+                $scope.isLoading = false;
+                $scope.showAlert('alert-danger','下线失败！');
+            })
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });

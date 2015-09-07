@@ -3,7 +3,7 @@
  * Created by wei.shen on 2015/8/5.
  */
 
-fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,DimService,ConstantService,JobManageService,JobMonitorService) {
+fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableService,DimService,ConstantService,JobManageService,JobMonitorService) {
 
     initUI();
 
@@ -18,6 +18,53 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
 
 
         })
+    };
+
+    //配置依赖
+    $scope.showDependenceDialog = function () {
+        $scope.dependenceTasks = [];
+        $scope.message = {
+            headerText: '请选择依赖任务',
+            data: $scope.dependenceTasks // 传入数据，dialog的controller进行修改
+        };
+
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/taskDependencyDialog.html',
+            controller: 'TaskDependencyCtrl',
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks = data;
+        }, function () {
+        });
+    };
+
+    //删除依赖
+    $scope.deleteDependenceTask = function (index) {
+        $scope.message = {
+            headerText: '提示',
+            bodyText: '是否删除任务前驱: ' + $scope.dependenceTasks[index].taskId + ' ?',
+            actionButtonStyle: 'btn-danger',
+            showCancel: true
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/message.html',
+            controller: MessageCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks.splice(index, 1);
+        }, function () {
+        });
     };
 
 
@@ -271,7 +318,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 sql = sql + ','+'`'+ col[i].name + '`';
             }
         }
-        sql = sql + ' from ' + $scope.conf_src_table ;
+        if($scope.conf_target != 'hive') {
+            sql = sql + ' from ' + $scope.conf_src_table ;
+        } else {
+            sql = sql + ' from ' + $scope.conf_src_db + '.' + $scope.conf_src_table;
+        }
+
         if($scope.conf_target_table_type == 'append') {
             var incr = getColumnInfo($scope.conf_incr_field);
             console.log('增量字段是:' + incr);
@@ -589,15 +641,42 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                 if(data.isSuccess) {
                     var taskid = data.result.taskId;
                     updateCommand(taskid);
-                    addTransferParamToDatabase(taskid);
-
-
+                    addPreRelaTaskToDatabase(taskid);
                 }
             },function(data) {
                 setLoading(false,'');
             })
         }
     }
+
+    function addPreRelaTaskToDatabase(taskid) {
+        $scope.generatedTaskId = taskid;
+        if ($scope.dependenceTasks.length > 0) {
+            $http.post("/fanli/taskManager/taskpreadd", {
+                taskId: $scope.generatedTaskId,
+                preId: getPreTasks()
+            }).success(function (data) {
+                if(data.isSuccess) {
+                    addTransferParamToDatabase(taskid);
+                }
+            }).error(function() {
+                setAlert(true,'alert-danger',"保存依赖信息失败");
+            })
+        }
+    }
+
+    var getPreTasks = function() {
+        var pre = '';
+        if($scope.dependenceTasks.length > 0){
+            var pres = $scope.dependenceTasks;
+            for(var i = 0;i < pres.length - 1;i ++) {
+                pre = pre + pres[i].taskId + ","
+            }
+            pre = pre + pres[pres.length - 1].taskId;
+        }
+        return pre;
+    }
+
 
     function updateCommand(taskid) {
         var res = JobManageService.updateTransferTask({},{
@@ -635,9 +714,9 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
                         $scope.suceessAndDisable = true;
                         setLoading(false,'');
                     }
-                },function(){})
+                },function(){setAlert(true,'alert-danger',"保存写参数失败！")})
             }
-        },function(){})
+        },function(){setAlert(true,'alert-danger',"保存读参数失败！")})
     }
 
 
@@ -700,7 +779,15 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
             concurrency: "1",
             tableName: $scope.conf_targetTable,
             columns: getHiveColumns(),
-            pre: ""
+            pre: preSql()
+        }
+    }
+
+    function preSql() {
+        if($scope.conf_target_table_type == 'full') {
+            return "delete from " + $scope.conf_targetTable;
+        }else {
+            return "";
         }
     }
 
@@ -790,10 +877,10 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,TableService,Di
     }
 
 
-    function hasPre() {
-        if($scope.conf_src == 'hive') {
+    var hasPre = function() {
+        if($scope.dependenceTasks.length > 0) {
             return 1;
-        } else {
+        }else {
             return 0;
         }
     }
