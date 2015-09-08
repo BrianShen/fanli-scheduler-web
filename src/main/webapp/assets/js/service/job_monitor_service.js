@@ -11,7 +11,7 @@ angular.module('job_monitor.service', ['ngResource'])
                             action: 'recallInstance',
                             instanceId: '@instanceId'
                         }
-                    }
+                    },
                     ////根据instanceId显示其自身以及所有的post tasks
                     //getSelfAndPostInstances: {
                     //    method: 'GET',
@@ -44,13 +44,13 @@ angular.module('job_monitor.service', ['ngResource'])
                     //    }
                     //},
                     ////置为成功任务
-                    //successInstance: {
-                    //    method: 'POST',
-                    //    params: {
-                    //        action: 'successInstance',
-                    //        instanceId: '@instanceId'
-                    //    }
-                    //},
+                    successInstance: {
+                        method: 'POST',
+                        params: {
+                            action: 'successInstance',
+                            instanceId: '@instanceId'
+                        }
+                    },
                     ////批量置为成功
                     //successInstances: {
                     //    method: 'POST',
@@ -130,14 +130,14 @@ angular.module('job_monitor.service', ['ngResource'])
                     //        instanceId: '@instanceId'
                     //    }
                     //},
-                    ////根据instanceId获得其直接下游的instances及其自身
-                    //getDirectInfluencedInstancesByInstanceId: {
-                    //    method: 'GET',
-                    //    params: {
-                    //        action: 'getDirectInfluencedInstancesByInstanceId',
-                    //        instanceId: '@instanceId'
-                    //    }
-                    //}
+                    //根据instanceId获得其直接下游的instances及其自身
+                    getDirectInfluencedInstancesByInstanceId: {
+                        method: 'GET',
+                        params: {
+                            action: 'getDirectInfluencedInstancesByInstanceId',
+                            instanceId: '@instanceId'
+                        }
+                    }
                 });
         }
     ]);

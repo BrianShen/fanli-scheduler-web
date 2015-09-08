@@ -338,10 +338,10 @@ var SameSourceTaskCtrl = function ($scope, $filter, component, $modalInstance, m
 
 
 //受影响的任务实例列表的Dialog的controller
-var DirectInfluencedInstancesDialog = function ($scope, $filter, component, $modalInstance, msg, JobMonitorService, UIService, UtilsService) {
+var DirectInfluencedInstancesDialog = function ($scope, $filter, component, $modalInstance, msg, JobMonitorService, ConstantService) {
     /***********************执行开始***********************/
     initScope();
-    setUIElements();
+    //setUIElements();
     getDirectInfluencedInstances();
     /***********************执行结束***********************/
 
@@ -378,25 +378,25 @@ var DirectInfluencedInstancesDialog = function ($scope, $filter, component, $mod
         };
         //获得cycle的文字描述
         $scope.getCycleText = function (cycle) {
-            return UIService.cycleToText(cycle);
+            return ConstantService.cycleToText(cycle);
         };
         //获取cycle的css样式
         $scope.getExecutionCycleLabel = function (cycle) {
-            return UIService.getCycleCss(cycle);
+            return ConstantService.getCycleCss(cycle);
         };
         //获得开发者的中文名
-        $scope.getDevelopChineseName = function (pinyinName) {
-            return UtilsService.getDeveloperRealName(pinyinName);
-        };
+        //$scope.getDevelopChineseName = function (pinyinName) {
+        //    return UtilsService.getDeveloperRealName(pinyinName);
+        //};
         //不显示提示信息
         $scope.closeAlert = function () {
             $scope.alert.isShow = false;
         };
     }
 
-    function setUIElements() {
-        $scope.developers = UtilsService.getDevelopers();
-    }
+    //function setUIElements() {
+    //    $scope.developers = UtilsService.getDevelopers();
+    //}
 
     //获取受影响的任务列表
     function getDirectInfluencedInstances() {
@@ -413,8 +413,8 @@ var DirectInfluencedInstancesDialog = function ($scope, $filter, component, $mod
         result.$promise.then(
             function (data) {
                 $scope.isLoading = false;
-                if (data.success) {
-                    $scope.dataList = data.results;
+                if (data.isSuccess) {
+                    $scope.allTaskList = data.results;
                     $scope.table = component.getCustomizedTable($scope, $filter);
                     $scope.table.predicate = 'owner';
                     $scope.table.reverse = !$scope.table.reverse;

@@ -57,6 +57,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
         return $scope.jobInstanses[index];
     }
 
+
     //重跑任务
     $scope.reRunJob = function (index) {
         var job = getJobByIndex(index);
@@ -89,6 +90,42 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
             },function(){})
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
+        });
+    };
+    //置为成功
+    $scope.successJob = function (index) {
+        var job = getJobByIndex(index);
+        $scope.message = {
+            headerText: '警告: 以下任务实例将会直接受到影响，请确认是否将任务实例' + job.taskStatusId + '置为成功？',
+            actionButtonStyle: 'btn-primary',
+            instanceId: job.taskStatusId
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/directInfluencedInstancesDialog.html',
+            controller: DirectInfluencedInstancesDialog,
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            var result = JobMonitorService.successInstance({
+                    'instanceId': job.taskStatusId
+                }
+            );
+            $scope.isLoading = true;
+            setAlert(false,'','');
+            result.$promise.then(
+                function (data) {
+                    setAlert(true,'alert-success',data.messages);
+                    $scope.isLoading = false;
+                    if (data.isSuccess) {
+                        $scope.jobInstanses[index].status = 1;
+                    }
+                });
+        }, function () {
         });
     };
 

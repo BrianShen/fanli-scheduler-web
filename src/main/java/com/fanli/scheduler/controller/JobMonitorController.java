@@ -2,6 +2,8 @@ package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.EtlTaskStatus;
+import com.fanli.scheduler.entity.EtlTaskrelaStatus;
+import com.fanli.scheduler.service.InstanceRelaService;
 import com.fanli.scheduler.service.JobMonitorService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.util.List;
 public class JobMonitorController {
     @Autowired
     private JobMonitorService jobMonitorService;
+
+    @Autowired
+    private InstanceRelaService instanceRelaService;
 
     private static Logger logger = Logger.getLogger(JobMonitorController.class);
 
@@ -58,5 +63,48 @@ public class JobMonitorController {
             logger.error("recall instance error", e);
         }
         return result;
+    }
+
+    /**
+     * 将任务手动置为成功
+     * @param instanceId
+     * @return
+     */
+    @RequestMapping(value = "successInstance",method = RequestMethod.POST)
+    @ResponseBody
+    public Result successInstance(@RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
+        logger.info(" success instance: instanceId(" + instanceId + ")");
+        Result result = new Result();
+        try {
+            int row = jobMonitorService.handSuccessJob(instanceId);
+            if (row == 1) {
+                result.setIsSuccess(true);
+                result.setMessages("成功将实例" + instanceId + "置为成功");
+            }else {
+                result.setMessages("将实例" + instanceId + "置为成功是发生错误");
+                result.setIsSuccess(false);
+            }
+        }catch (Exception e) {
+            logger.error("success instance error", e);
+        }
+        return result;
+
+    }
+
+    /**
+     * 根据instanceId获取其直接下游的instances及其自身
+     */
+    @RequestMapping(value = "/getDirectInfluencedInstancesByInstanceId", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Result<EtlTaskrelaStatus> getDirectInfluencedInstancesByInstanceId(
+            @RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
+        logger.info("get direct influence instances: instanceId(" + instanceId + ")");
+        try {
+            return instanceRelaService.handleGetDirectInfluencedInstancesByInstanceId(instanceId);
+        } catch (Exception e) {
+            logger.error("get direct influence instances error", e);
+        }
+        return null;
     }
 }

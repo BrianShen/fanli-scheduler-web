@@ -66,4 +66,15 @@ public class JobMonitorService {
         }
         return etlTaskStatusMapper.updateByExampleSelective(taskStatus,etlTaskStatusExample);
     }
+
+    public int handSuccessJob(String instanceid) {
+        EtlTaskStatus taskStatus = new EtlTaskStatus();
+        taskStatus.setStatus(1);
+        EtlTaskStatusExample etlTaskStatusExample = new EtlTaskStatusExample();
+        EtlTaskStatusExample.Criteria criteria = etlTaskStatusExample.createCriteria();
+        if (!"".equals(instanceid) && null != instanceid) {
+            criteria.andTaskStatusIdEqualTo(instanceid);
+        }
+        return etlTaskStatusMapper.updateByExampleSelective(taskStatus,etlTaskStatusExample);
+    }
 }
