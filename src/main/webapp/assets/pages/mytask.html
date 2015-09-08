@@ -134,9 +134,17 @@
                                 </button>
                                 <button class="btn-link " ng-click="invalidJob($index)"
                                         tooltip-placement="top"
-                                        tooltip="下线">
+                                        tooltip="下线"
+                                        ng-show="isValid==true">
                                     <i class="icon-pause bigger-130"></i>
                                     <span>下线</span>
+                                </button>
+                                <button class="btn-link " ng-click="validateJob($index)"
+                                        tooltip-placement="top"
+                                        tooltip="上线"
+                                        ng-show="isValid==false">
+                                    <i class="icon-pause bigger-130"></i>
+                                    <span>上线</span>
                                 </button>
 
                                 <!--<a class="blue" href="#/jobView/{{job.taskId}}" target="_BLANK"-->

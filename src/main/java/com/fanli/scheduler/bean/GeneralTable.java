@@ -10,6 +10,15 @@ public class GeneralTable {
     private List<GeneralColumn> columns;
     private List<GeneralColumn> partitions;
     private String dbType;
+    private String schema;
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     public String getName() {
         return name;

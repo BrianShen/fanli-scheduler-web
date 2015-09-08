@@ -133,7 +133,7 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
     var updatePres = function() {
         var ret = JobManageService.updatePre({},{
             taskId: $routeParams.taskid,
-            preId:getPreTasks()
+            preId:preTasks()
         });
 
         ret.$promise.then(function(data) {
@@ -153,7 +153,7 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
         $scope.saveSuccessMsg = msg;
     }
 
-    var getPreTasks = function() {
+    var preTasks = function() {
         var pre = '';
         if($scope.dependenceTasks.length > 0){
             var pres = $scope.dependenceTasks;

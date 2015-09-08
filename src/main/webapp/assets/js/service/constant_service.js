@@ -55,7 +55,7 @@ angular.module("constant.service",[])
                   {ID: 2, Text: 'load'},
                   {ID: 3, Text: 'dm'},
                   {ID: 4, Text: 'dw'},
-                  {ID: 5, Text: 'rpt'},
+                  {ID: 5, Text: 'export'},
                   {ID: 6, Text: 'dim'}
               ];
             },

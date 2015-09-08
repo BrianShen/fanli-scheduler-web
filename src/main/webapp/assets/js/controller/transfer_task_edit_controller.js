@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/8/6.
  */
 
-fanliApp.controller('transferEditCtrl',function($scope,$routeParams,JobManageService,ConstantService,DimService) {
+fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobManageService,ConstantService,DimService) {
     initUI();
     function initUI() {
         //getDevelopers();
@@ -40,12 +40,40 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,JobManageSer
 
         result.$promise.then(function(data) {
             if(data.isSuccess) {
-                setLoading(false,'');
-                showAlert('修改成功')
+                updatePres();
+
 
             }
         },function() {})
 
+    }
+    var updatePres = function() {
+        var ret = JobManageService.updatePre({},{
+            taskId: $routeParams.taskid,
+            preId:preTasks()
+        });
+
+        ret.$promise.then(function(data) {
+            if(data.isSuccess) {
+                setLoading(false,'');
+                showAlert('修改成功')
+            }
+        },function() {
+
+        })
+
+    }
+
+    var preTasks = function() {
+        var pre = '';
+        if($scope.dependenceTasks.length > 0){
+            var pres = $scope.dependenceTasks;
+            for(var i = 0;i < pres.length - 1;i ++) {
+                pre = pre + pres[i].taskId + ","
+            }
+            pre = pre + pres[pres.length - 1].taskId;
+        }
+        return pre;
     }
 
     $scope.setTaskName = function() {
@@ -73,7 +101,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,JobManageSer
                 setLoading(false,'');
         },function() {
                 $scope.errorShow = true;
-                $scope.cfgMsg = '获取传输配置信息失败，请或联系开发';
+                $scope.cfgMsg = '获取传输配置信息失败，请联系开发';
             })
     }
 
@@ -101,6 +129,65 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,JobManageSer
     }
 
     getTransferConfigById($routeParams.taskid);
+
+    var getPreTasks = function(id) {
+        var pres = JobManageService.queryPreTaskById({
+            taskid: id
+        });
+        pres.$promise.then(function(data) {
+            $scope.dependenceTasks = data.results;
+        },function() {
+            $scope.errorShow = true;
+            $scope.cfgMsg = '获取前置信息失败，请联系开发';
+        })
+    }
+    getPreTasks($routeParams.taskid);
+
+    //删除依赖
+    $scope.deleteDependenceTask = function (index) {
+        $scope.message = {
+            headerText: '提示',
+            bodyText: '是否删除任务前驱: ' + $scope.dependenceTasks[index].taskId + ' ?',
+            actionButtonStyle: 'btn-danger',
+            showCancel: true
+        };
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/message.html',
+            controller: MessageCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks.splice(index, 1);
+        }, function () {
+        });
+    };
+
+    //配置依赖
+    $scope.showDependenceDialog = function () {
+        $scope.message = {
+            headerText: '请选择依赖任务',
+            data: $scope.dependenceTasks // 传入数据，dialog的controller进行修改
+        };
+
+        var modalInstance = $modal.open({
+            templateUrl: 'dialog/taskDependencyDialog.html',
+            controller: 'TaskDependencyCtrl',
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            $scope.dependenceTasks = data;
+        }, function () {
+        });
+    };
 
     function showAlert(msg){
         $scope.showSaveSucess = true;

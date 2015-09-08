@@ -14,4 +14,5 @@ public interface TaskService {
     List<Integer> getChildrenByTaskid(Integer taskid);
     Map<String,Object> generateInstance(String start,String end,Integer taskid);
     Boolean invalidTask(List<Integer> taskids,Date updateTime);
+    Boolean validateTask(Integer taskid,Date updateTime);
 }

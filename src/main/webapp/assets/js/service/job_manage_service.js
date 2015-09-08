@@ -82,6 +82,13 @@ angular.module('job_manage.service', ['ngResource'])
                             taskId: '@taskId'
                         }
                     },
+                    validateTask:{
+                        method: 'POST',
+                        params: {
+                            action: 'validateTask',
+                            taskId: '@taskId'
+                        }
+                    },
                     getInfluencedTasksByTaskId:{
                       method:'GET',
                         params:{

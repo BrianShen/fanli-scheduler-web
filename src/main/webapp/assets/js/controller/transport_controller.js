@@ -318,7 +318,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 sql = sql + ','+'`'+ col[i].name + '`';
             }
         }
-        if($scope.conf_target != 'hive') {
+        if($scope.conf_src != 'hive') {
             sql = sql + ' from ' + $scope.conf_src_table ;
         } else {
             sql = sql + ' from ' + $scope.conf_src_db + '.' + $scope.conf_src_table;
@@ -573,6 +573,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         $scope.conf_target = '';
         $scope.conf_targetTable = '';
         $scope.conf_hive_partition = '';
+        $scope.dependenceTasks = [];
         $scope.setTaskName = function() {
             $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
         }
@@ -662,6 +663,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             }).error(function() {
                 setAlert(true,'alert-danger',"保存依赖信息失败");
             })
+        } else {
+            addTransferParamToDatabase(taskid);
         }
     }
 

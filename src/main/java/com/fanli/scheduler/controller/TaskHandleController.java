@@ -94,7 +94,11 @@ public class TaskHandleController {
     public Result editPre(@RequestBody TaskAdder taskAdder) {
         taskConfigService.deleteTaskRela(Integer.parseInt(taskAdder.getTaskId()));
         Result result = new Result();
-        String[] pres= taskAdder.getPreId().split(",");
+        String[] pres= null;
+        if (StringUtils.hasLength(taskAdder.getPreId())){
+            pres= taskAdder.getPreId().split(",");
+        } else pres = new String[0];
+
         Integer[] pre = new Integer[pres.length];
         for(int i = 0;i < pres.length;i ++) {
             pre[i] = Integer.parseInt(pres[i]);
@@ -259,6 +263,25 @@ public class TaskHandleController {
             result.setIsSuccess(false);
             result.setMessages("失效任务失败");
             logger.error("invalid task error", e);
+        }
+        return result;
+    }
+
+    /**
+     * 重新生效任务
+     */
+    @RequestMapping(value = "/validateTask", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Result validateTask(@RequestParam(value = "taskId", defaultValue = "") String taskId) {
+        Result result = new Result();
+        try {
+            Date nowTimeStamp = new Date();
+            result.setIsSuccess(taskService.validateTask(Integer.parseInt(taskId), nowTimeStamp));
+        } catch (Exception e) {
+            result.setIsSuccess(false);
+            result.setMessages("生效任务失败");
+            logger.error("validate task error", e);
         }
         return result;
     }

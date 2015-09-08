@@ -99,5 +99,18 @@ public class TaskServiceImpl  implements TaskService {
         else return false;
     }
 
+    @Override
+    public Boolean validateTask(Integer taskid,Date updateTime) {
+        assert taskid != null;
+        EtlTaskCfg cfg = new EtlTaskCfg();
+        cfg.setTaskId(taskid);
+        cfg.setIfEnable(1);
+        cfg.setUpdateTime(updateTime);
+        int ret = etlTaskCfgMapper.updateByPrimaryKeySelective(cfg);
+        if (ret == 1) {
+            return true;
+        } else return false;
+    }
+
 
 }

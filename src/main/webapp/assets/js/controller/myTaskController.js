@@ -8,7 +8,7 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
         {ID: 2, Text: 'load'},
         {ID: 3, Text: 'dm'},
         {ID: 4, Text: 'dw'},
-        {ID: 5, Text: 'rpt'},
+        {ID: 5, Text: 'export'},
         {ID: 6, Text: 'dim'}
     ];
 
@@ -155,6 +155,30 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
             setLoading(false,'');})
     }
 
+    //生效任务
+    $scope.validateJob = function(index) {
+        var job = getJobByIndex(index);
+        $scope.isLoading = true;
+        var result = JobManageService.validateTask({
+            'taskId': job.taskId
+        });
+        $scope.closeAlert();
+        result.$promise.then(function(data) {
+            if(data.isSuccess) {
+                $scope.isLoading = false;
+                $scope.showAlert('alert-success','成功上线任务' + job.taskName);
+                $scope.submitQuery();
+
+            } else {
+                $scope.isLoading = false;
+                $scope.showAlert('alert-danger','上线失败！');
+            }
+        },function(data) {
+            $scope.isLoading = false;
+            $scope.showAlert('alert-danger','上线失败！');
+        })
+    }
+
     //失效任务
     $scope.invalidJob = function (index) {
         var job = getJobByIndex(index);
@@ -181,8 +205,10 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
             $scope.closeAlert();
             result.$promise.then(function(data) {
                 if(data.isSuccess) {
+
                     $scope.isLoading = false;
                     $scope.showAlert('alert-success','成功将任务' + job.taskName + '从调度下线');
+                    $scope.submitQuery();
                 } else {
                     $scope.isLoading = false;
                     $scope.showAlert('alert-danger','下线失败！');

@@ -23,7 +23,8 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
             var preTasks = JobManageService.queryTasks({},{
                 group: grp,
                 owner: owner,
-                id: task
+                id: task,
+                isValid:1
             });
 
             processResult(preTasks);
