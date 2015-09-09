@@ -203,10 +203,8 @@ public enum ConnectMan {
             stmt = connection.createStatement();
             ret = stmt.executeUpdate(sql);
             logger.info("execute create table return code is :" + ret);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        }catch (Exception e) {
+            logger.error("create table failed,the error is :" + e.getMessage());
         }finally {
             try{
                 if(stmt!=null)

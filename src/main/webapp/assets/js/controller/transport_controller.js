@@ -268,7 +268,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 var src_column = data.columns;
                 $scope.commonColumn = src_column;
                 getTransferSql();
-                $scope.SRCColumn = mergeHiveColumns(src_partition,src_column);
+                var mergedCol = mergeHiveColumns(src_partition,src_column);
+                $scope.SRCColumn = appendIncrAndUpdateFiled(mergedCol);
                 requestTogetSql();
             })
         } else{
@@ -291,17 +292,31 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
     }
 
+    function appendIncrAndUpdateFiled(cols) {
+        var len = cols.length;
+        var incr = {name:'ins_date',type:'timestamp',comment:'入库时间',index:len};
+        var update = {name:'upd_date',type:'timestamp',comment:'更新时间',index:len + 1};
+        cols.push(incr);
+        cols.push(update);
+        return cols;
+    }
+
     function requestTogetSql() {
         var buildSql = TableService.queryCreateTableSql({},{
             name:$scope.conf_targetTable,
             columns:$scope.SRCColumn,
             partitions:getPartitions(),
-            dbType:$scope.conf_target
+            dbType:$scope.conf_target,
+            schema:getSchema()
         });
         buildSql.$promise.then(function(data) {
             $scope.conf_create_table_sql = data.result;
             console.log($scope.conf_create_table_sql);
         },function() {})
+    }
+
+    function getSchema() {
+        return $scope.conf_src_db;
     }
 
     function getTransferSql() {
@@ -312,6 +327,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             for(var i = 1;i < col.length;i ++) {
                 sql = sql + ','+'['+ col[i].name + ']';
             }
+            sql = sql + ',getdate(),getdate()';
         } else {
             sql = sql +'`' + col[0].name + '`';
             for(var i = 1;i < col.length;i ++) {

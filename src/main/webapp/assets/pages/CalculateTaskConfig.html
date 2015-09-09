@@ -1,13 +1,13 @@
 <!--<div class="page-header">-->
-    <!--<h1>-->
-        <!--新增计算任务-->
-        <!--<small>-->
-            <!--<i class="icon-double-angle-right"></i>-->
-            <!--<i class="icon-double-angle-right"></i>-->
-            <!--<i class="icon-double-angle-right"></i>-->
-            <!--导入计算脚本-->
-        <!--</small>-->
-    <!--</h1>-->
+<!--<h1>-->
+<!--新增计算任务-->
+<!--<small>-->
+<!--<i class="icon-double-angle-right"></i>-->
+<!--<i class="icon-double-angle-right"></i>-->
+<!--<i class="icon-double-angle-right"></i>-->
+<!--导入计算脚本-->
+<!--</small>-->
+<!--</h1>-->
 <!--</div>&lt;!&ndash; /.page-header &ndash;&gt;-->
 
 <form class="form-vertical">
@@ -34,20 +34,21 @@
                 </select>
             </div>
 
-        <div class="space-4"></div>
+            <div class="space-4"></div>
 
 
             <label class="col-sm-1 control-label padding0 textRight">dol脚本</label>
 
             <div class="col-xs-12  col-sm-3">
-                <input ng-model="dolPath" data-rel="tooltip" type="text" id="form-field-6" placeholder="dol相对fanli_dw文件路径，/xx/xxx.dol"
+                <input ng-model="dolPath" data-rel="tooltip" type="text" id="form-field-6"
+                       placeholder="dol相对fanli_dw文件路径，/xx/xxx.dol"
                        title="balabala" data-placement="bottom" class="width-80"/>
             </div>
 
-        <div class="space-4"></div>
+            <div class="space-4"></div>
 
 
-            <label class="col-sm-1 control-label padding0 textRight" >目标库名</label>
+            <label class="col-sm-1 control-label padding0 textRight">目标库名</label>
 
             <div class="col-xs-12  col-sm-3">
                 <select ng-model="db"
@@ -62,7 +63,7 @@
 
     <div class="space-4"></div>
 
-    <div class="col-md-offset-5 col-md-12" >
+    <div class="col-md-offset-5 col-md-12">
         <button ng-click="postDolInfo()" class="btn btn-info" type="button" ng-disabled="showConfig">
             <i class="icon-ok bigger-110"></i>
             提交
@@ -211,10 +212,10 @@
             <!--<label class="col-sm-1 control-label padding0 textRight">执行命令</label>-->
 
             <!--<div class="col-sm-7">-->
-                <!--<input type="text" class="width-95" ng-model="conf_para1" ng-trim="true">-->
-                <!--<strong>*</strong>-->
-                <!--&lt;!&ndash;<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">&ndash;&gt;-->
-                <!--&lt;!&ndash;</textarea>&ndash;&gt;-->
+            <!--<input type="text" class="width-95" ng-model="conf_para1" ng-trim="true">-->
+            <!--<strong>*</strong>-->
+            <!--&lt;!&ndash;<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">&ndash;&gt;-->
+            <!--&lt;!&ndash;</textarea>&ndash;&gt;-->
             <!--</div>-->
         </div>
     </div>
@@ -291,9 +292,15 @@
                     </div>
                     <div class="col-sm-12">
                         <p class="text-right">
-                            <button class="btn btn-lg btn-success" ng-click="returnStep1()" ng-disabled="taskConfPre">重新导入</button>
-                            <button class="btn btn-lg btn-success" ng-click="submitTaskConfig()" ng-disabled="taskConfSave">保存</button>
-                            <button class="btn btn-lg btn-success" ng-click="gotoStep3()" ng-disabled="taskConfNext">元数据</button>
+                            <button class="btn btn-lg btn-success" ng-click="returnStep1()" ng-disabled="taskConfPre">
+                                重新导入
+                            </button>
+                            <button class="btn btn-lg btn-success" ng-click="submitTaskConfig()"
+                                    ng-disabled="taskConfSave">保存
+                            </button>
+                            <button class="btn btn-lg btn-success" ng-click="gotoStep3()" ng-disabled="taskConfNext">
+                                元数据
+                            </button>
                         </p>
                     </div>
                 </div>
@@ -302,7 +309,7 @@
     </div>
 </form>
 
-<div  style="margin-bottom: 40px" ng-show="showMetaConfig" >
+<div style="margin-bottom: 40px" ng-show="showMetaConfig">
     <div class="row" style="padding-left: 10px; padding-right: 10px">
         <div class="col-xs-12 text-center" ng-show="metaIsLoading">
             <div class="loading" style="color: #000000;width: auto">{{metaLoadingMsg}}</div>
@@ -407,7 +414,7 @@
                                         <input type="text"
                                                ng-model="showColumnTable.displayedDataList.slice(showColumnTable.startIndex-1, showColumnTable.endIndex)[$index].comment"
                                                ng-change="changeComment($index)"
-                                               class="width-75" >
+                                               class="width-75">
                                 <span class=" light-red " tooltip-placement="top"
                                       tooltip-html-unsafe="注释必填">
                                     <strong>*</strong>
@@ -505,7 +512,6 @@
             </div>
 
 
-
             <div class="alert {{publishStatusClass}} col-xs-12" ng-show="showPublishResultMsg">
                 <button type="button" class="close" data-dismiss="alert">
                     <i class="icon-remove"></i>
@@ -515,12 +521,12 @@
 
 
             <!--<div class="row">-->
-                <!--<div class="col-sm-11"></div>-->
-                <!--<div class="col-sm-1">-->
-                    <!--<button class="btn btn-primary" ng-click="getSql($index)" ng-show="table.submitShow">提交</button>-->
-                <!--</div>-->
+            <!--<div class="col-sm-11"></div>-->
+            <!--<div class="col-sm-1">-->
+            <!--<button class="btn btn-primary" ng-click="getSql($index)" ng-show="table.submitShow">提交</button>-->
+            <!--</div>-->
             <!--</div>-->
         </form>
     </div>
 </div>
-</div>
+

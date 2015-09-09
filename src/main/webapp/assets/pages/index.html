@@ -70,7 +70,7 @@
 			</a><!-- /.brand -->
 		</div><!-- /.navbar-header -->
 
-		<div class="navbar-header pull-right" role="navigation">
+		<div class="navbar-header pull-right" role="navigation" ng-controller="sidebarCtrl">
 			<ul class="nav ace-nav">
 				<li style="color: green;background-color: green">
 					<a data-toggle="dropdown" href="" class="dropdown-toggle" style="background-color: green">
@@ -129,33 +129,46 @@
 			</script>
 
 			<ul class="nav nav-list">
-				<li>
+				<li ng-class="{active:isActive('/')}">
 					<a href="#/">
 						<i class="icon-dashboard"></i>
 						<span class="menu-text"> 任务监控 </span>
 					</a>
 				</li>
 
-				<li>
+				<li ng-class="{active:isActive('/taskAdd')}">
 					<a href="#/taskAdd">
 						<i class="icon-cog"></i>
 						<span class="menu-text"> 新增计算 </span>
 					</a>
 				</li>
 
-				<li>
+				<li ng-class="{active:isActive('/transport')}">
 					<a href="#/transport">
 						<i class="icon-exchange"></i>
 						<span class="menu-text"> 新增传输 </span>
 					</a>
 				</li>
 
-				<li>
+				<li ng-class="{active:isActive('/mytask')}">
 					<a href="#/mytask">
 						<i class="icon-list-alt"></i>
 						<span class="menu-text"> 任务管理 </span>
 					</a>
 				</li>
+				<li>
+					<a href="http://bimeta.office.51fanli.com/mds/" target="_blank">
+						<i class="icon-globe"></i>
+						<span class="menu-text"> 主数据 </span>
+					</a>
+				</li>
+				<li>
+					<a href="http://bipage.office.51fanli.com/" target="_blank">
+						<i class="icon-flag"></i>
+						<span class="menu-text"> page/module </span>
+					</a>
+				</li>
+
 
 
 			</ul><!-- /.nav-list -->

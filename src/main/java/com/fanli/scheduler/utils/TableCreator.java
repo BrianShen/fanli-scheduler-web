@@ -54,6 +54,7 @@ public class TableCreator {
         }
 
         builder = buildTail(deleteRedundancy(builder), TYPE_SQLSERVER);
+        builder = buildSqlserverComment(builder,generalTable);
         return builder.toString();
     }
 
@@ -64,6 +65,25 @@ public class TableCreator {
     private static StringBuilder buildSqlserverBody (StringBuilder builder, String name, String type, String comment) {
         return builder.append("    ").append(name).append(" ")
                 .append(type).append(",\n");
+    }
+
+    private static StringBuilder buildSqlserverComment(StringBuilder builder,GeneralTable generalTable) {
+        String table = generalTable.getName();
+        String schema = generalTable.getSchema();
+        for (GeneralColumn column:generalTable.getColumns()) {
+            builder.append("\n")
+                    .append("GO\n")
+                    .append("EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'")
+                    .append(column.getComment())
+                    .append("' , @level0type=N'SCHEMA',@level0name=N'")
+                    .append(schema)
+                    .append("', @level1type=N'TABLE',@level1name=N'")
+                    .append(table)
+                    .append("', @level2type=N'COLUMN',@level2name=N'")
+                    .append(column.getName())
+                    .append("'");
+        }
+        return builder;
     }
 
 
