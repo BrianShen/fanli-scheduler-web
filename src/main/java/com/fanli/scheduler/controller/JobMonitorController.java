@@ -35,7 +35,7 @@ public class JobMonitorController {
             @RequestParam(value = "endTime",defaultValue = "") String endTime) {
         Result<EtlTaskStatus> result = new Result<EtlTaskStatus>();
 
-        List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,"".equals(taskid)?null:Integer.parseInt(taskid),owner,"".equals(status)?null:Integer.parseInt(status));
+        List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,taskid,owner,"".equals(status)?null:Integer.parseInt(status));
         result.setResults(list);
         logger.info(owner + "commit a query at " + new Date().toLocaleString() + " taskid: "+ taskid +
         " owner:" + owner + " status" + status + " startTime:" + startTime + " endTime:" + endTime);

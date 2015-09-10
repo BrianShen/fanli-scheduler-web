@@ -5,9 +5,11 @@ import com.fanli.scheduler.entity.*;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
+import freemarker.template.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +42,12 @@ public class TaskConfigServiceImpl implements TaskConfigService{
         EtlTaskCfgExample etlTaskCfgExample = new EtlTaskCfgExample();
         EtlTaskCfgExample.Criteria criteria = etlTaskCfgExample.createCriteria();
         if (taskQuery.getTaskGroupId() != null) criteria.andTaskGroupIdEqualTo(taskQuery.getTaskGroupId());
-        if (!taskQuery.getOwner().equals("")) criteria.andOwnerEqualTo(taskQuery.getOwner());
-        if (taskQuery.getTaskId() != null) criteria.andTaskIdEqualTo(taskQuery.getTaskId());
+        if (!taskQuery.getOwner().equals("")) criteria.andOwnerLike("%" + taskQuery.getOwner() + "%");
+        if (org.jsoup.helper.StringUtil.isNumeric(taskQuery.getTaskId())) {
+            if (StringUtils.hasLength(taskQuery.getTaskId())) criteria.andTaskIdEqualTo(Integer.parseInt(taskQuery.getTaskId()));
+        } else {
+            if (StringUtils.hasLength(taskQuery.getTaskId())) criteria.andTaskNameLike("%" + taskQuery.getTaskId() + "%");
+        }
         if (taskQuery.getIsValid() != null) criteria.andIfEnableEqualTo(taskQuery.getIsValid());
         return etlTaskCfgMapper.selectByExample(etlTaskCfgExample);
     }

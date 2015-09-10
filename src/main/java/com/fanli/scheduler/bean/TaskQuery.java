@@ -4,7 +4,7 @@ package com.fanli.scheduler.bean;
  * Created by wei.shen on 2015/7/17.
  */
 public class TaskQuery {
-    private Integer taskId;
+    private String taskId;
     private Integer taskGroupId;
     private String owner;
     private Integer isValid;
@@ -18,20 +18,20 @@ public class TaskQuery {
     }
 
     @Override
-
     public String toString() {
         return "TaskQuery{" +
-                "taskId=" + taskId +
+                "taskId='" + taskId + '\'' +
                 ", taskGroupId=" + taskGroupId +
                 ", owner='" + owner + '\'' +
+                ", isValid=" + isValid +
                 '}';
     }
 
-    public Integer getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(Integer taskId) {
+    public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 

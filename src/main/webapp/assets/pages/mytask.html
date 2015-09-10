@@ -22,15 +22,16 @@
 				<span class="block input-icon input-icon-right">
 					<input type="text" ng-model="jobDeveloper"
                            placeholder="不限"
+                           title="支持模糊查询"
                            typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
                            class="width-80">
 				</span>
             </div>
-            <label class="col-sm-1 inputFloat control-label textRight">任务ID:</label>
+            <label class="col-sm-1 inputFloat control-label textRight">任务名/ID:</label>
 
             <div class="col-sm-2">
 				<span class="block input-icon input-icon-right">
-					<input type="text" ng-model="jobID" class="width-80">
+					<input type="text" ng-model="jobID" class="width-80" placeholder="模糊查询">
 				</span>
             </div>
             <!--</div>-->

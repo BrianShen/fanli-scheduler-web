@@ -15,6 +15,7 @@ import com.fanli.scheduler.service.TaskRelaService;
 import com.fanli.scheduler.service.TaskService;
 import com.fanli.scheduler.utils.DateUtils;
 import org.apache.log4j.Logger;
+import org.jsoup.helper.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -120,7 +121,7 @@ public class TaskHandleController {
 
     @RequestMapping(value = "/queryTasks",method = RequestMethod.GET)
     @ResponseBody
-    public Result<EtlTaskCfg> getTaskByParams(@RequestParam(value = "taskId",defaultValue = "") Integer taskId,
+    public Result<EtlTaskCfg> getTaskByParams(@RequestParam(value = "taskId",defaultValue = "") String taskId,
                                               @RequestParam(value = "taskGroupId",defaultValue = "") Integer taskGroupId,
                                               @RequestParam(value = "owner",defaultValue = "") String owner,
                                               @RequestParam(value = "isValid",defaultValue = "")Integer isValid) {
@@ -130,7 +131,7 @@ public class TaskHandleController {
         taskQuery.setTaskGroupId(taskGroupId);
         taskQuery.setTaskId(taskId);
         taskQuery.setIsValid(isValid);
-        System.out.println(taskQuery);
+        logger.info(taskQuery);
         List<EtlTaskCfg> etlTaskCfgs = taskConfigService.getTaskByParams(taskQuery);
         if (etlTaskCfgs != null) {
             result.setIsSuccess(true);

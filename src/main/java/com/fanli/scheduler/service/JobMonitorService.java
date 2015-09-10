@@ -3,8 +3,10 @@ package com.fanli.scheduler.service;
 import com.fanli.scheduler.entity.EtlTaskStatus;
 import com.fanli.scheduler.entity.EtlTaskStatusExample;
 import com.fanli.scheduler.mapping.EtlTaskStatusMapper;
+import org.jsoup.helper.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,12 +20,17 @@ public class JobMonitorService {
     @Autowired
     private EtlTaskStatusMapper etlTaskStatusMapper;
 
-    public List<EtlTaskStatus> queryTaskStatuses(String startDate,String endDate,Integer taskId,String developer,Integer status) {
+    public List<EtlTaskStatus> queryTaskStatuses(String startDate,String endDate,String taskId,String developer,Integer status) {
         List<EtlTaskStatus> list = null;
         EtlTaskStatusExample etlTaskStatusExample = new EtlTaskStatusExample();
         EtlTaskStatusExample.Criteria criteria = etlTaskStatusExample.createCriteria();
-        if (taskId != null) criteria.andTaskIdEqualTo(taskId);
-        if (!developer.equals("")) criteria.andOwnerEqualTo(developer);
+        if (StringUtil.isNumeric(taskId)) {
+            criteria.andTaskIdEqualTo(Integer.parseInt(taskId));
+        } else {
+            if (StringUtils.hasLength(taskId))criteria.andTaskNameLike("%" +taskId + "%");
+        }
+
+        if (StringUtils.hasLength(developer)) criteria.andOwnerLike("%" + developer + "%");
         if (status != null&& status != 100) {
             if (status == 99) {
                 criteria.andStatusNotEqualTo(1);
