@@ -261,6 +261,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         $scope.step3 = true;
     }
 
+    $scope.setDefaultFreq = function () {
+        switch ($scope.conf_taskGroup) {
+            case 1:$scope.conf_frequency = '0 30 0 * * ?';break;
+            case 2:$scope.conf_frequency = '0 5 0 * * ?';break;
+            case 3:$scope.conf_frequency = '0 0 3 * * ?';break;
+            case 4:$scope.conf_frequency = '0 0 1 * * ?';break;
+            case 5:$scope.conf_frequency = '0 0 4 * * ?';break;
+            case 6:$scope.conf_frequency = '0 5 0 * * ?';break;
+        }
+    }
+
     function getCommonCreateTableSqlAndTransferSql() {
         if($scope.conf_src == 'hive') {
             $http.get("/fanli/domain/meta",{

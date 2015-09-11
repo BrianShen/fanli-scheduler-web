@@ -127,7 +127,7 @@ angular.module('component.service', []).
                 scope.$watchCollection('[table.predicate, table.reverse]', function () {
                     scope.table.displayedDataList = filter('orderBy')(scope.table.displayedDataList, scope.table.predicate, scope.table.reverse);
                 });
-                scope.$watchCollection('dataList', function () {
+                scope.$watchCollection('allTaskList', function () {
                     scope.table.displayedDataList = scope.allTaskList;
                     if (scope.table.query) {
                         scope.table.displayedDataList = filter('filter')(scope.table.displayedDataList, scope.table.query);

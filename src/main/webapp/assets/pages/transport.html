@@ -342,7 +342,7 @@
                 <label class="col-sm-1 control-label padding0 textRight">任务组</label>
 
                 <div class="col-sm-3">
-                    <select name="taskGroup" class="width-80" ng-model="conf_taskGroup"
+                    <select name="taskGroup" class="width-80" ng-model="conf_taskGroup" ng-change="setDefaultFreq()"
                             ng-options="group.ID as group.Text for group in taskGroupOptions">
                     </select>
                 </div>

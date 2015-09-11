@@ -56,6 +56,21 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
     var getJobByIndex = function(index) {
         return $scope.jobInstanses[index];
     }
+    $scope.reverse = true;
+    $scope.$watch('reverse',function() {
+        $scope.jobInstanses =  $filter('orderBy')($scope.jobInstanses, 'startTime',$scope.reverse);
+    })
+
+    $scope.getSortingClass = function () {
+            if ($scope.reverse) {
+                return 'sorting_asc';
+            }
+            else {
+                return 'sorting_desc';
+            }
+
+        return 'sorting';
+    };
 
 
     //重跑任务
