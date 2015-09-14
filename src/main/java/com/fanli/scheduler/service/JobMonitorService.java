@@ -20,7 +20,7 @@ public class JobMonitorService {
     @Autowired
     private EtlTaskStatusMapper etlTaskStatusMapper;
 
-    public List<EtlTaskStatus> queryTaskStatuses(String startDate,String endDate,String taskId,String developer,Integer status) {
+    public List<EtlTaskStatus> queryTaskStatuses(String startDate,String endDate,String taskId,String developer,Integer status,Integer isPre) {
         List<EtlTaskStatus> list = null;
         EtlTaskStatusExample etlTaskStatusExample = new EtlTaskStatusExample();
         EtlTaskStatusExample.Criteria criteria = etlTaskStatusExample.createCriteria();
@@ -59,6 +59,13 @@ public class JobMonitorService {
 
             criteria.andTriggerTimeBetween(sd.getTime(), ed.getTime());
         };
+        if (isPre != null) {
+            if (isPre == 1) {
+                criteria.andTaskStatusIdLike("pre%");
+            } else {
+                criteria.andTaskStatusIdNotLike("pre%");
+            }
+        }
         list = etlTaskStatusMapper.selectByExample(etlTaskStatusExample);
         return list;
     }

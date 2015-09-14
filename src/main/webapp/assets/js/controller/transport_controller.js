@@ -203,15 +203,15 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         }
         var conf_storage_pattern = $scope.conf_storage_pattern!=undefined?$scope.conf_storage_pattern:"";
         var conf_partition_desc = $scope.conf_partition_desc!=undefined?$scope.conf_partition_desc:"";
-        var conf_src_db_ab = $scope.conf_src_db_ab!=undefined?$scope.conf_src_db_ab:"";
+        //var conf_src_db_ab = $scope.conf_src_db_ab!=undefined?$scope.conf_src_db_ab:"";
         var conf_topic = $scope.conf_topic!=undefined?$scope.conf_topic:"";
         var conf_table_name_desc = $scope.conf_table_name_desc!=undefined?$scope.conf_table_name_desc:"";
         if($scope.conf_target=='hive'&&($scope.conf_target_db=='load'||$scope.conf_target_db == 'ods')) {
-            $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_src_db_ab+'_'+$scope.conf_src_table;
+            $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+$scope.conf_src_table;
         } else if($scope.conf_target=='hive'&&($scope.conf_target_db=='dw'||$scope.conf_target_db == 'dm')) {
             $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_topic+'_'+conf_table_name_desc;
         } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='dim') {
-            $scope.conf_targetTable ='s_'+ conf_src_db_ab+'_'+ $scope.conf_src_table;
+            $scope.conf_targetTable ='s_'+ $scope.conf_src_table;
         };
         console.log($scope.conf_targetTable);
     }

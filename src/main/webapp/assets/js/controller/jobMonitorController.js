@@ -19,20 +19,31 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
     $scope.endDate = initDate();
     $scope.executionStatusOptions = ConstantService.getJobMonitorStatus();
     $scope.jobStatus = $scope.executionStatusOptions[1].ID;
-
+    $scope.ifPreRun = false;
     $scope.submitSearch = function() {
         setAlert(false,'','');
+        setLoding(true);
         $http.get("/fanli/monitor/query",{params:{
             taskId:$scope.taskId,
             owner:$scope.developer,
             startTime:$scope.startDate,
             endTime:$scope.endDate,
-            status:$scope.jobStatus
+            status:$scope.jobStatus,
+            isPre:$scope.ifPreRun?1:0
         }}).success(function(data) {
-            $scope.jobInstanses = data.results;
-            console.log("success");
+            //$scope.jobInstanses = data.results;
+            //$scope.reverse = true;
+            $scope.jobInstanses =  $filter('orderBy')(data.results, 'startTime',$scope.reverse);
+            setLoding(false);
+        }).error(function() {
+            setAlert(true,'alert-danger','未知异常');
+            setLoding(false);
         })
     };
+
+    $scope.handleJobType = function() {
+        $scope.submitSearch();
+    }
 
     $scope.getExecutionCycleLabel = function (cycle) {
         return ConstantService.getCycleCss(cycle);
@@ -148,6 +159,10 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
         $scope.alertShow = a;
         $scope.alertType = b;
         $scope.AlertMsg = c;
+    }
+
+    var setLoding = function(a) {
+        $scope.isLoading = a;
     }
 
 

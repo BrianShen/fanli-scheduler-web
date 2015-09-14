@@ -32,10 +32,10 @@ public class JobMonitorController {
     public Result<EtlTaskStatus> queryTaskStatus(
             @RequestParam(value = "taskId",defaultValue = "") String taskid,@RequestParam(value = "owner",defaultValue = "")String owner,
             @RequestParam(value = "status",defaultValue = "")String status,@RequestParam(value = "startTime",defaultValue = "")String startTime,
-            @RequestParam(value = "endTime",defaultValue = "") String endTime) {
+            @RequestParam(value = "endTime",defaultValue = "") String endTime,@RequestParam(value = "isPre") Integer isPre) {
         Result<EtlTaskStatus> result = new Result<EtlTaskStatus>();
 
-        List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,taskid,owner,"".equals(status)?null:Integer.parseInt(status));
+        List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,taskid,owner,"".equals(status)?null:Integer.parseInt(status),isPre);
         result.setResults(list);
         logger.info(owner + "commit a query at " + new Date().toLocaleString() + " taskid: "+ taskid +
         " owner:" + owner + " status" + status + " startTime:" + startTime + " endTime:" + endTime);
