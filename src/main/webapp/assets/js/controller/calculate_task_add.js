@@ -198,6 +198,13 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
         //    $scope.dependenceTasks;
         //}
 
+        //周期变化触发
+        $scope.cycleChanged = function () {
+            if ($scope.cycle == 'W') {
+                $scope.conf_frequency = '0 5 0 * * MON';
+            }
+        };
+
         function getTableName(path) {
             var arr = path.split("/");
             var dol = arr[arr.length - 1];
@@ -456,7 +463,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             //    sql = data.result;
             //});
             var sql = "use " + $scope.db.name + ";\n" + "drop table if exists " + data.table + ";\n" +
-                "create table " + data.table + "(\n";
+                "create external table " + data.table + "(\n";
             var columns = data.columns;
             var partitions = data.partitions;
             for (var i = 0; i < columns.length - 1; i++) {

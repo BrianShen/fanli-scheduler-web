@@ -81,7 +81,7 @@ public class JobMonitorController {
                 result.setIsSuccess(true);
                 result.setMessages("成功将实例" + instanceId + "置为成功");
             }else {
-                result.setMessages("将实例" + instanceId + "置为成功是发生错误");
+                result.setMessages("将实例" + instanceId + "置为成功时发生错误");
                 result.setIsSuccess(false);
             }
         }catch (Exception e) {

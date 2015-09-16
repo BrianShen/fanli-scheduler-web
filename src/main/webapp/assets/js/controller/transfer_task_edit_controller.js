@@ -2,10 +2,12 @@
  * Created by wei.shen on 2015/8/6.
  */
 
-fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobManageService,ConstantService,DimService) {
+fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http,$resource,JobManageService,ConstantService,DimService) {
     initUI();
     function initUI() {
         //getDevelopers();
+        //设置网页标题为taskid
+        window.document.title = $routeParams.taskid;
         $scope.taskGroupOptions = ConstantService.getTaskGroupOption();
         $scope.cycleOptions = ConstantService.getCycleOptions();
         $scope.priorityOptions = ConstantService.getPriorityOption();
@@ -14,6 +16,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobMa
         $scope.recallIntervalOptions = ConstantService.getRecallIntervalOption();
         $scope.offsetOptions = ConstantService.getOffsetOption();
         $scope.timeoutOptions = ConstantService.getTimeOutOption();
+
+        $scope.sql_disable = true;
     }
 
     $scope.submitTaskCfg = function() {
@@ -55,8 +59,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobMa
 
         ret.$promise.then(function(data) {
             if(data.isSuccess) {
-                setLoading(false,'');
-                showAlert('修改成功')
+                submitSql();
+
             }
         },function() {
 
@@ -80,6 +84,22 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobMa
         $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
     }
 
+    var submitSql = function() {
+        $scope.paramMap.sql = $scope.sql;
+        var param = $resource('/fanli/load/sql',{taskid:'@taskid',paramMap:'@paramMap'});
+        param.save({},{
+            taskid:$routeParams.taskid,
+            paramMap:$scope.paramMap
+        },function(data) {
+            if(data.isSuccess) {
+                console.log("修改sql成功")
+                setLoading(false,'');
+                showAlert('修改成功')
+            }
+        })
+        console.log($scope.paramMap);
+    }
+
     //function getDevelopers (){
     //    var rep = DimService.queryAllDevelopers({},{});
     //    rep.$promise.then(function(data) {
@@ -98,11 +118,32 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobMa
             taskid:id
         }).$promise.then(function(data) {
             setValues(data);
+                getTransgerSql(id);
                 setLoading(false,'');
         },function() {
                 $scope.errorShow = true;
                 $scope.cfgMsg = '获取传输配置信息失败，请联系开发';
             })
+    }
+
+    function getTransgerSql(id) {
+        var ret = $http.get("/fanli/load/sql",{
+            params:{
+                taskid:id
+            }
+        });
+
+        ret.success(function(data) {
+            if(data.isSuccess) {
+                $scope.paramMap = JSON.parse(data.result);
+                var trans_sql = $scope.paramMap.sql;
+                $scope.sql = trans_sql;
+                setLoading(false,'');
+            }
+        }).error(function(data) {
+
+            setLoading(false,'');
+        })
     }
 
     function setValues(data) {
@@ -165,6 +206,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,JobMa
         }, function () {
         });
     };
+
+
 
     //配置依赖
     $scope.showDependenceDialog = function () {

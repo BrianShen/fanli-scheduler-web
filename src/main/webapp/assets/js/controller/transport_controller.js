@@ -157,6 +157,9 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                     setLoading(false,"");
                     setAlert(true,'alert-danger','建表失败');
                 }
+            }).error(function(data) {
+                setLoading(false,'');
+                setAlert(true,'alert-danger','建表失败');
             })
         } else if($scope.conf_target == 'hive') {
             var createTable = 'use ' + $scope.conf_target_db + ';' +'\n' + $scope.conf_create_table_sql + '\n';
@@ -169,6 +172,9 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                     setLoading(false,"");
                     $scope.buildBtn = true;
                     $scope.step4 = true;
+                } else {
+                    setLoading(false,"");
+                    setAlert(true,'alert-danger','建表失败');
                 }
 
             },function(){})
@@ -828,7 +834,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             dbname: $scope.conf_target_db,
             encoding: "UTF-8",
             concurrency: "1",
-            tableName: $scope.conf_targetTable,
+            tableName: $scope.conf_src_db + '.' + $scope.conf_targetTable,
             columns: getHiveColumns(),
             pre: preSql()
         }
@@ -836,7 +842,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
     function preSql() {
         if($scope.conf_target_table_type == 'full') {
-            return "delete from " + $scope.conf_targetTable;
+            return "delete from " + $scope.conf_src_db + '.' + $scope.conf_targetTable;
         }else {
             return "";
         }

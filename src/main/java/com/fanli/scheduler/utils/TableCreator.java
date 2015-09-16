@@ -63,7 +63,7 @@ public class TableCreator {
     }
 
     private static StringBuilder buildHead (StringBuilder builder, String name) {
-        return builder.append("CREATE TABLE ").append(name).append(" ( \n");
+        return builder.append("CREATE EXTERNAL TABLE ").append(name).append(" ( \n");
     }
 
     private static StringBuilder buildSqlserverBody (StringBuilder builder, String name, String type, String comment) {

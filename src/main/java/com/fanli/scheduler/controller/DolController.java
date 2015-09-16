@@ -50,6 +50,7 @@ public class DolController {
         String dolBaseDir = p.getProperty("DolBaseDir");
         if (path.charAt(0) != '/') path = "/" + path;
         String dolFullPath  = dolBaseDir + path;
+        logger.info("dol full path:" + dolFullPath);
         if (dolService.isExists(dolFullPath)) {
             if (dolService.importDol(dolFullPath)) {
                 result.setIsSuccess(true);
