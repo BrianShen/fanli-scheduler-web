@@ -22,8 +22,11 @@ public class DatebaseController {
     @RequestMapping(value = "/tables",method = RequestMethod.GET)
     public Result<String> getTables(@RequestParam("connectProp")String connectProp) {
         Result<String> result = new Result<String>();
-        result.setResults(databaseService.getTablesByConnectionProp(connectProp));
-        result.setIsSuccess(true);
+        if (databaseService.getTablesByConnectionProp(connectProp)!= null) {
+            result.setResults(databaseService.getTablesByConnectionProp(connectProp));
+            result.setIsSuccess(true);
+        } else result.setIsSuccess(false);
+
         return result;
     }
 

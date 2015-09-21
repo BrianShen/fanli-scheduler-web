@@ -3,6 +3,7 @@ package com.fanli.scheduler.service;
 import com.fanli.scheduler.bean.GeneralColumn;
 import com.fanli.scheduler.bean.GeneralTable;
 import com.fanli.scheduler.utils.ConnectMan;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ import java.util.List;
  */
 @Service
 public class DatabaseService {
+
+    private static Logger logger = Logger.getLogger(DatabaseService.class);
     public GeneralTable getDateTimeIncreaseField(String conn,String db,String table) {
         GeneralTable gt = getTableDetail(conn,db,table);
         List<GeneralColumn> list = gt.getColumns();
@@ -32,10 +35,9 @@ public class DatabaseService {
         List<String> list = null;
         try {
             list = ConnectMan.INSTANCE.getAllDatabases(prop);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage() + "  " + e.getMessage());
+
         }
         return list;
     }

@@ -72,7 +72,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         //setLoading(true,"正在查询...");
         console.log('target select is ' + $scope.conf_target);
         if($scope.conf_target == 'hive') {
-            $scope.target_database_options = ['load','ods','dim'];
+            $scope.target_database_options = ['load','ods','dim','tmpdb'];
         }else {
             var source= DimService.querySourceDB({
                 type:$scope.conf_target
@@ -218,6 +218,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             $scope.conf_targetTable = conf_storage_pattern+'_'+conf_partition_desc+'_'+conf_topic+'_'+conf_table_name_desc;
         } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='dim') {
             $scope.conf_targetTable ='s_'+ $scope.conf_src_table;
+        } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='tmpdb') {
+            $scope.conf_targetTable = $scope.conf_table_name_desc;
         };
         console.log($scope.conf_targetTable);
     }
@@ -683,7 +685,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 successCode:$scope.conf_successCode,
                 timeout:$scope.conf_timeout,
                 recallInterval:$scope.conf_recallInterval,
-                logFile:"/home/hadoop/applog",
+                logFile:"/data1/log/applog",
                 addUser:$scope.conf_developer.chName,
                 updateUser:$scope.conf_developer.chName,
                 type:1,
@@ -914,7 +916,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         if($scope.conf_target_db == 'tmpdb') {
             dir = "hdfs://namenode171:54310/tmp/tmp.db/" + $scope.conf_targetTable;
         } else{
-            dir = "hdfs://namenode171:54310/user/hive/bi_warehouse/" + $scope.conf_target_db.toUpperCase() + ".db/" + $scope.conf_targetTable;
+            //必须为小写toLowerCase() 否则查不到数据 原因暂不明
+            dir = "hdfs://namenode171:54310/user/hive/bi_warehouse/" + $scope.conf_target_db.toUpperCase() + ".db/" + $scope.conf_targetTable.toLowerCase();
         }
 
         var p = getPartitions();

@@ -59,7 +59,7 @@ public enum ConnectMan {
         }
     }
 
-    public Connection getConnetion(String connectProperty) throws SQLException, ClassNotFoundException {
+    public Connection getConnetion(String connectProperty) throws Exception {
         JdbcObject jdbcObject = getJdbcObject(connectProperty);
         String jdbcUri = getJdbcUri(connectProperty, jdbcObject);
 
@@ -82,7 +82,7 @@ public enum ConnectMan {
 
     }
 
-    public List<String> getAllDatabases (String connectProperty) throws SQLException, ClassNotFoundException {
+    public List<String> getAllDatabases (String connectProperty) throws Exception {
         Connection con = getConnetion(connectProperty);
         DatabaseMetaData meta = con.getMetaData();
         ResultSet rs = meta.getCatalogs();
@@ -106,9 +106,7 @@ public enum ConnectMan {
             if (rs.next()) {
                 return true;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }finally {
             assert rs != null;
@@ -133,9 +131,7 @@ public enum ConnectMan {
             while (rs.next()) {
                 list.add(rs.getString("TABLE_NAME"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }finally {
             assert rs != null;
@@ -171,9 +167,7 @@ public enum ConnectMan {
                 list.add(gc);
             }
             gt.setColumns(list);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }finally {
             assert rs != null;

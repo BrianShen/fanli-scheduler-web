@@ -189,7 +189,7 @@ angular.module("constant.service",[])
             },
             getPartitionByCycle:function() {
                 return {
-                    H:"/ds=${yyyy-MM-dd}/hour=${HH;P1H}",
+                    H:"/ds=${yyyy-MM-dd;P1H}/hour=${HH;P1H}",
                     D:"/ds=${yyyy-MM-dd;P1D}",
                     W:"/week=${yyyy-MM-dd;F1W}",
                     M:"/month=${yyyy-MM;P1M}",

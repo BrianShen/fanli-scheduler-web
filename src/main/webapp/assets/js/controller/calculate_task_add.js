@@ -294,7 +294,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                         successCode: $scope.conf_successCode,
                         timeout: $scope.conf_timeout,
                         recallInterval: $scope.conf_recallInterval,
-                        logFile: "/home/hadoop/applog",
+                        logFile: "/data1/log/applog",
                         addUser: $scope.conf_developer,
                         updateUser: $scope.conf_developer,
                         type: 2,
