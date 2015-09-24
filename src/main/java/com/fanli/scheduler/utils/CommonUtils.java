@@ -20,6 +20,16 @@ public class CommonUtils {
         return diff;
     }
 
+    public static String getThisDay(Date d) {
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.format(d);
+        }catch(Exception e){
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
     public static String getCurrentTimeStampStr() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String nowTimeStamp = simpleDateFormat.format(new Date());
@@ -176,6 +186,7 @@ public class CommonUtils {
         String last_day_last_month10 = CommonUtils.getLastDayLastMonth10(cal_dt, "${last_day_last_month10}");
 
         String this_hour = CommonUtils.getThisHour(init_date);
+        String this_day = CommonUtils.getThisDay(init_date);
 
         String Ndays_cal_dt = CommonUtils.getNdays_cal_dt(cal_dt,"${30days_cal_dt}");
 
@@ -200,7 +211,8 @@ public class CommonUtils {
                 .replace("${this_hour}", this_hour)
                 .replace("${30days_cal_dt}", Ndays_cal_dt)
                 .replace("${unix_timestamp}",unix_timestamp)
-                .replace("${date}",cal_dt);
+                .replace("${date}",cal_dt)
+                .replace("${this_day10}",this_day);
     }
 
     private static String getNCal_dt(String cal_dt,String pattern){

@@ -12,6 +12,7 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
     $scope.recallIntervalOptions = ConstantService.getRecallIntervalOption();
     $scope.offsetOptions = ConstantService.getOffsetOption();
     $scope.timeoutOptions = ConstantService.getTimeOutOption();
+    $scope.timePatternOptions = ConstantService.getTimePatterns();
     DimService.queryAllDevelopers().$promise.then(function(data) {
         $scope.developerOptions = data.results;
     });
@@ -35,6 +36,10 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
     $scope.conf_table_name = '';
     $scope.conf_src = '';
     $scope.conf_target = '';
+
+    $scope.setCommandTime = function() {
+        $scope.conf_para1 = $scope.conf_para1 + ' ' + $scope.time_pattern;
+    }
 
 
     $scope.$watch('[conf_table_name,conf_db_name]',function() {
@@ -120,7 +125,7 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
             logFile:"/data1/log/applog",
             addUser:$scope.conf_developer.chName,
             updateUser:$scope.conf_developer.chName,
-            type:$scope.conf_task_type == 'calculate'?2:1,
+            type:$scope.conf_task_type == 'transfer'?1:2,
             offset:$scope.conf_offset,
             recallLimit:$scope.conf_recallLimit,
             concurrency:1

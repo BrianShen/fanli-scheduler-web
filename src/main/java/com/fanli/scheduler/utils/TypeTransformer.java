@@ -14,7 +14,7 @@ public class TypeTransformer {
         fromHive.put("DOUBLE", "VARCHAR(255)");
         fromHive.put("STRING","TEXT");
         fromHive.put("TINYINT","TINYINT");
-        fromHive.put("INT","INT");
+        fromHive.put("INT","BIGINT");
         fromHive.put("SMALLINT","SMALLINT");
         fromHive.put("BIGINT","BIGINT");
         fromHive.put("DATE","VARCHAR(30)");

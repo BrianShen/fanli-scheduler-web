@@ -202,11 +202,15 @@
 
             <label class="col-sm-1 control-label padding0 textRight">执行命令</label>
 
-            <div class="col-sm-7">
-            <input type="text" class="width-95" ng-model="conf_para1" ng-trim="true">
-            <strong>*</strong>
-            <!--<textarea type="text" rows=5 class="width-90" name="freq" ng-model="command">-->
-            <!--</textarea>-->
+            <div class="col-sm-4">
+                <input type="text" class="width-100" ng-model="conf_para1" ng-trim="true">
+            </div>
+
+            <label class="col-sm-1 control-label padding0 textRight">时间替换符</label>
+            <div class="col-sm-1">
+                 <select  ng-model="time_pattern" ng-change="setCommandTime()" class="width-100"
+                         ng-options="ele.v as ele.name for ele in timePatternOptions">
+                 </select>
             </div>
         </div>
     </div>

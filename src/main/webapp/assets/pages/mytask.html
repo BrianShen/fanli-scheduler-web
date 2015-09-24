@@ -23,10 +23,11 @@
 					<input type="text" ng-model="jobDeveloper"
                            placeholder="不限"
                            title="支持模糊查询"
-                           typeahead=" developer as developer.Text for developer in developers | filter:$viewValue"
+                           typeahead=" developer as developer.Text for developer in developers"
                            class="width-80">
 				</span>
             </div>
+
             <label class="col-sm-1 inputFloat control-label textRight">任务名/ID:</label>
 
             <div class="col-sm-2">
@@ -92,6 +93,10 @@
                         <!--<th class="center"><label><input type="checkbox" class="ace" ng-model="isSelectAllJob"><span-->
                         <!--class="lbl"></span></label>-->
                         <!--</th>-->
+                        <th class="{{table.getSortingClass('taskGroupId')}}"
+                            ng-click="table.predicate = 'taskGroupId'; table.reverse=!table.reverse">任务组
+                        </th>
+
                         <th class="{{table.getSortingClass('taskId')}}"
                             ng-click="table.predicate = 'taskId'; table.reverse=!table.reverse">任务ID
                         </th>
@@ -101,18 +106,28 @@
                         <th class="{{table.getSortingClass('owner')}}"
                             ng-click="table.predicate = 'owner'; table.reverse=!table.reverse">开发者
                         </th>
-                        <th class="{{table.getSortingClass('prioLvl')}}"
-                            ng-click="table.predicate = 'prioLvl'; table.reverse=!table.reverse">优先级
+                        <th class="{{table.getSortingClass('cycle')}}"
+                            ng-click="table.predicate = 'cycle'; table.reverse=!table.reverse">周期
                         </th>
                         <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="job in table.displayedDataList.slice(table.startIndex-1, table.endIndex)">
+                        <td style="vertical-align: middle;">
+                            <span class="{{getTaskGroupCss(job.taskGroupId)}}" >
+                                <strong>{{getGroupIdText(job.taskGroupId)}}</strong>
+                            </span>
+                        </td>
                         <td style="vertical-align:middle">{{job.taskId}}</td>
                         <td style="vertical-align:middle">{{job.taskName}}</td>
                         <td style="vertical-align:middle">{{job.owner}}</td>
-                        <td style="vertical-align:middle">{{job.priority}}</td>
+                        <!--<td style="vertical-align:middle">{{job.priority}}</td>-->
+                        <td style="vertical-align:middle">
+                            <span class="label {{getExecutionCycleLabel(job.cycle)}} ">
+                                {{getCycleText(job.cycle)}}
+                            </span>
+                        </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
 

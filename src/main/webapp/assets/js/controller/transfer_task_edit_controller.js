@@ -52,6 +52,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
 
     }
     var updatePres = function() {
+
         var ret = JobManageService.updatePre({},{
             taskId: $routeParams.taskid,
             preId:preTasks()
@@ -85,6 +86,11 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
     }
 
     var submitSql = function() {
+        if(!$scope.sql) {
+            setLoading(false,'');
+            showAlert('修改成功');
+            return;
+        }
         $scope.paramMap.sql = $scope.sql;
         var param = $resource('/fanli/load/sql',{taskid:'@taskid',paramMap:'@paramMap'});
         param.save({},{
@@ -93,8 +99,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         },function(data) {
             if(data.isSuccess) {
                 console.log("修改sql成功")
-                setLoading(false,'');
-                showAlert('修改成功')
+
             }
         })
         console.log($scope.paramMap);

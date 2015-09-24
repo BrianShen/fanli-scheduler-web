@@ -32,7 +32,7 @@ public class DolService {
     }
 
     public Boolean isExists(String path) {
-        String command ="/home/hadoop/scheduler-core/bin/file_exists.sh " + path;
+        String command ="/home/hadoop/ETL_BIN/file_exists.sh " + path;
         try {
             return sshService.isRunSSHCommandSuccessful(command);
         } catch (JSchException e) {

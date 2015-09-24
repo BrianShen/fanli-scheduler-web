@@ -143,7 +143,8 @@
                                 <label class="col-sm-4 inputFloat control-label textRight">目标库名:</label>
                                 <div class="col-sm-8" >
                                     <select ng-model="conf_target_db" class=" form-control"
-                                            ng-options="value as value for value in target_database_options">
+                                            ng-options="value as value for value in target_database_options"
+                                            ng-change="getTargetTableName()">
                                     </select>
                                 </div>
 
@@ -160,22 +161,15 @@
                     </div>
                     <div class="space-10"></div>
                     <div class="row" >
-                        <div class="col-xs-3" ng-show="conf_target=='hive'&&conf_target_db!='dim'&&conf_target_db!='tmpdb'">
-                            <label class="col-sm-4 inputFloat control-label textRight">存储模式</label>
-                            <div class="col-sm-8">
-                                <select ng-model="conf_storage_pattern"  class="form-control" ng-change="getTargetTableName()"
-                                        ng-options="v.pattern as v.pattern  for v in storagePatternOptions">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-3" ng-show="conf_target=='hive'&&conf_target_db!='tmpdb'">
-                            <label class="col-sm-4 inputFloat control-label textRight">分区描述符</label>
-                            <div class="col-sm-8">
-                                <select ng-model="conf_partition_desc"  class="form-control" ng-change="getTargetTableName()"
-                                        ng-options="v.name  as v.name for v in partitionDescOptions">
-                                </select>
-                            </div>
-                        </div>
+                        <!--<div class="col-xs-3" ng-show="conf_target=='hive'&&conf_target_db!='dim'&&conf_target_db!='tmpdb'">-->
+                            <!--<label class="col-sm-4 inputFloat control-label textRight">存储模式</label>-->
+                            <!--<div class="col-sm-8">-->
+                                <!--<select ng-model="conf_storage_pattern"  class="form-control" ng-change="getTargetTableName()"-->
+                                        <!--ng-options="v.pattern as v.pattern  for v in storagePatternOptions">-->
+                                <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
                         <div class="col-xs-3" ng-show="conf_target=='hive'&&(conf_target_db=='dw'||conf_target_db=='dm')">
                             <label class="col-sm-4 inputFloat control-label textRight">业务主题</label>
                             <div class="col-sm-8">
@@ -197,27 +191,32 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="space-10"></div>
+                    <div  class="row">
+                        <div class="col-xs-3">
+                            <label class="col-sm-4 inputFloat control-label textRight">传输类型</label>
+                            <div class="col-sm-8">
+                                <select ng-model="conf_target_table_type"  class="form-control" ng-change="getIncrField()">
+                                    <option value="full">全量</option>
+                                    <option value="append">增量</option>
+                                    <option value="snapshot">快照</option>
+                                    <option value="append_only">只导增量</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-3" ng-show="conf_target_table_type=='append'||conf_target_table_type=='append_only'">
+                            <label class="col-sm-4 inputFloat control-label textRight">增量字段</label>
+                            <div class="col-sm-8">
+                                <select ng-model="conf_incr_field"  class="form-control" ng-change="incrFieldChange()"
+                                        ng-options="value.name as value.name for value in fieldOptions">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="space-10"></div>
                     <div class="row" >
-                        <!--<div class="col-xs-3" ng-show="conf_target=='hive'">-->
-                            <!--<label class="col-sm-4 inputFloat control-label textRight">hive分区:</label>-->
-                            <!--<div class="col-sm-8">-->
-                                <!--<textarea ng-model="conf_hive_partition" class="form-control" rows="2" placeholder="请输入分区，如有多个以逗号分隔"></textarea>-->
-                            <!--</div>-->
-                        <!--</div>-->
-
-                        <!--<div class="col-xs-3" ng-show="conf_target=='hive'">-->
-                            <!--<label class="col-sm-4 inputFloat control-label textRight">hive分区:</label>-->
-                            <!--<div class="col-sm-8">-->
-                                <!--<select ng-model="conf_hive_partition"  class="form-control" ng-options="value.partition as value.name for value in hivePartitionOptions">-->
-                                <!--</select>-->
-                                <!--&lt;!&ndash;<textarea ng-model="conf_hive_partition" class="form-control" rows="2" placeholder="请输入分区，如有多个以逗号分隔"></textarea>&ndash;&gt;-->
-                            <!--</div>-->
-                        <!--</div>-->
-
-
-
-
                         <div class="col-xs-3">
                             <label class="col-sm-4 inputFloat control-label textRight">传输周期</label>
                             <div class="col-sm-8">
@@ -227,22 +226,11 @@
                             </div>
                         </div>
 
-                        <div class="col-xs-3">
-                            <label class="col-sm-4 inputFloat control-label textRight">传输类型</label>
+                        <div class="col-xs-3" ng-show="conf_target=='hive'">
+                            <label class="col-sm-4 inputFloat control-label textRight">HIVE分区</label>
                             <div class="col-sm-8">
-                                <select ng-model="conf_target_table_type"  class="form-control" ng-change="getIncrField()">
-                                    <option value="full">全量</option>
-                                    <option value="append">增量</option>
-                                    <option value="snapshot">快照</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-3" ng-show="conf_target_table_type=='append'">
-                            <label class="col-sm-4 inputFloat control-label textRight">增量字段</label>
-                            <div class="col-sm-8">
-                                <select ng-model="conf_incr_field"  class="form-control" ng-change="incrFieldChange()"
-                                        ng-options="value.name as value.name for value in fieldOptions">
-
+                                <select ng-model="conf_partition_desc"  class="form-control" ng-change="getTargetTableName()"
+                                        ng-options="v.name  as v.desc for v in partitionDescOptions">
                                 </select>
                             </div>
                         </div>
@@ -277,6 +265,7 @@
                     </div>
                 </div>
                 <div class="row">
+                    <button class="btn btn-grey col-xs-1" style="float: right;margin: 20px" ng-click="returnStep2()">返回</button>
                     <button ng-click="ensureSql()" ng-disabled="buildBtn" class="btn btn-success col-xs-1" style="float: right;margin: 20px">建表
                     </button>
 

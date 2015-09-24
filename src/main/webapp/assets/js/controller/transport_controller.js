@@ -20,6 +20,44 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         })
     };
 
+    $scope.$watch('[conf_cycle,conf_target_table_type]',function() {
+        if($scope.conf_target_table_type == 'full') {
+            $scope.partitionDescOptions=[{id:0 ,name:'n',desc:'无分区'}];
+        } else{
+            switch ($scope.conf_cycle) {
+                case 'H':$scope.partitionDescOptions = [
+                    {id:1 ,name:'h',desc:'天(ds),小时(hour)'},
+                    {id:2 ,name:'d',desc:'天(ds)'}
+                ];break;
+                case 'D':$scope.partitionDescOptions = [
+                    {id:1 ,name:'d',desc:'天(ds)'}
+                ];break;
+                case 'W':$scope.partitionDescOptions = [
+                    {id:1 ,name:'w',desc:'周(week)'}
+                ];break;
+                case 'M':$scope.partitionDescOptions = [
+                    {id:1 ,name:'m',desc:'月(month)'}
+                ];break;
+                case 'Y':$scope.partitionDescOptions = [
+                    {id:1 ,name:'y',desc:'年(year)'}
+                ];break;
+            }
+            if($scope.conf_target_table_type == 'append_only') {
+                $scope.partitionDescOptions.push({id:0 ,name:'n',desc:'无分区'});
+            }
+        }
+
+    });
+
+    $scope.$watch('conf_target_table_type',function() {
+        $scope.getTargetTableName();
+    })
+
+    $scope.returnStep2 = function() {
+        $scope.step3 = false;
+        $scope.step2 = true;
+    }
+
     //配置依赖
     $scope.showDependenceDialog = function () {
         $scope.dependenceTasks = [];
@@ -121,7 +159,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     }
     $scope.target_domain_select = function() {
         if($scope.conf_target_domain == 'sqlserver_bi') {
-            $scope.target_database_options = ['dw'];
+            $scope.target_database_options = ['dw','dw_temp'];
             return;
         }
         setLoading(true,'正在获取表...');
@@ -183,7 +221,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     }
 
     function initTaskName() {
-        $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_targetTable;
+        $scope.conf_taskName = $scope.conf_src + '2' +$scope.conf_target + '##' + $scope.conf_target_db + '.'+ $scope.conf_targetTable;
     }
 
 
@@ -207,7 +245,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             $scope.conf_targetTable = $scope.conf_src_table;
             return;
         }
-        var conf_storage_pattern = $scope.conf_storage_pattern!=undefined?$scope.conf_storage_pattern:"";
+        var conf_storage_pattern = getStoragePattern();
         var conf_partition_desc = $scope.conf_partition_desc!=undefined?$scope.conf_partition_desc:"";
         //var conf_src_db_ab = $scope.conf_src_db_ab!=undefined?$scope.conf_src_db_ab:"";
         var conf_topic = $scope.conf_topic!=undefined?$scope.conf_topic:"";
@@ -224,10 +262,20 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         console.log($scope.conf_targetTable);
     }
 
+    function getStoragePattern() {
+        if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type == 'append_only') {
+            return 'incr';
+        } else if($scope.conf_target_table_type == 'full') {
+            return 'full';
+        } else if($scope.conf_target_table_type == 'snapshot'){
+            return 'snapshot';
+        }
+    }
+
     $scope.getIncrField = function() {
         if($scope.conf_target_table_type == 'full'||$scope.conf_target_table_type == 'snapshot') {
             return;
-        }else if($scope.conf_target_table_type == 'append') {
+        }else if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type == 'append_only') {
             $scope.fieldOptions = [];
             if($scope.conf_src=='hive') {
                 getHiveTablePartitionField();
@@ -269,7 +317,13 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         $scope.step3 = true;
     }
 
+
     $scope.setDefaultFreq = function () {
+        if($scope.conf_cycle == 'H') {
+            $scope.conf_frequency = '0 5 * * * ?';
+            return;
+        }
+
         switch ($scope.conf_taskGroup) {
             case 1:$scope.conf_frequency = '0 30 0 * * ?';break;
             case 2:$scope.conf_frequency = '0 5 0 * * ?';break;
@@ -371,7 +425,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             sql = sql + ' from ' + $scope.conf_src_db + '.' + $scope.conf_src_table;
         }
 
-        if($scope.conf_target_table_type == 'append') {
+        if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type == 'append_only') {
             var incr = getColumnInfo($scope.conf_incr_field);
             console.log('增量字段是:' + incr);
             var where = handleWhere($scope.conf_src,incr.type);
@@ -470,23 +524,46 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
     function getPartitions() {
         var pt = [];
-        if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type =='snapshot') {
+        if($scope.conf_target_table_type == 'append'||$scope.conf_target_table_type =='snapshot'||$scope.conf_target_table_type=='append_only') {
             switch ($scope.conf_cycle) {
                 case 'H':
-                    pt.push({name:'ds',type:'string',comment:''});
-                    pt.push({name:'hour',type:'string',comment:''});
+                    if($scope.conf_partition_desc == 'h') {
+                        pt.push({name:'ds',type:'string',comment:''});
+                        pt.push({name:'hour',type:'string',comment:''});
+                    } else if($scope.conf_partition_desc == 'd') {
+                        pt.push({name:'ds',type:'string',comment:''});
+                    } else if($scope.conf_partition_desc == 'n') {
+                        //no partitions
+                    }
                     break;
                 case 'D':
-                    pt.push({name:'ds',type:'string',comment:''});
+                    if($scope.conf_partition_desc == 'd') {
+                        pt.push({name:'ds',type:'string',comment:''});
+                    }else if($scope.conf_partition_desc == 'n') {
+                        //no partitions
+                    }
                     break;
                 case 'M':
-                    pt.push({name:'month',type:'string',comment:''});
+                    if($scope.conf_partition_desc == 'm') {
+                        pt.push({name:'month',type:'string',comment:''});
+                    }else if($scope.conf_partition_desc == 'n') {
+                        //no partitions
+                    }
                     break;
                 case 'Y':
-                    pt.push({name:'year',type:'string',comment:''});
+                    if($scope.conf_partition_desc == 'y') {
+                        pt.push({name:'year',type:'string',comment:''});
+                    }else if($scope.conf_partition_desc == 'n') {
+                        //no partitions
+                    }
                     break;
                 case 'W':
-                    pt.push({name:'week',type:'string',comment:''});
+                    if($scope.conf_partition_desc == 'w') {
+                        pt.push({name:'week',type:'string',comment:''});
+                    }else if($scope.conf_partition_desc == 'n') {
+                        //no partitions
+                    }
+
             }
         }
 
@@ -670,7 +747,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             var req = JobManageService.addTransferTask({},{
                 taskGroupId:$scope.conf_taskGroup,
                 taskName:$scope.conf_taskName,
-                resource:$scope.conf_src,
+                resource:$scope.conf_src == 'hive'?$scope.conf_target_domain:$scope.conf_src_domain,
                 command:'',
                 cycle:$scope.conf_cycle,
                 priority:$scope.conf_priority,
@@ -843,10 +920,20 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     }
 
     function preSql() {
-        if($scope.conf_target_table_type == 'full') {
+        if($scope.conf_target_table_type == 'full'||$scope.conf_target_table_type == 'append_only') {
             return "delete from " + $scope.conf_src_db + '.' + $scope.conf_targetTable;
-        }else {
-            return "";
+        }else if($scope.conf_target_table_type == 'append'){
+            var sql = "delete from " + $scope.conf_src_db + '.' + $scope.conf_targetTable + ' where ';
+            var where;
+            switch ($scope.conf_cycle){
+                case 'H':where = "ds='${yyyy-MM-dd}' and hour='${HH;P1H}'";break;
+                case 'D':where = $scope.conf_incr_field + "='${yyyy-MM-dd;P1D}'";break;
+                case 'M':where = $scope.conf_incr_field + ">='${yyyy-MM-01;P1M}' and " +$scope.conf_incr_field + "<'${yyyy-MM-01}'";break;
+                case 'W':where = $scope.conf_incr_field + ">='${yyyy-MM-dd;F1W}' and " + $scope.conf_incr_field + "<'${yyyy-MM-dd;F0W}'";break;
+                case 'Y':where = $scope.conf_incr_field + ">='${yyyy-01-01};P1Y' and " + $scope.conf_incr_field + "<'${yyyy-01-01}'";break;
+            }
+            sql = sql + where;
+            return sql;
         }
     }
 
@@ -901,7 +988,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         if (!hasPartitions()) return "";
         var  cond;
         switch ($scope.conf_cycle) {
-            case 'H':cond = "ds='${yyyy-MM-dd}',hour='${HH;P1H}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+            case 'H':
+                if($scope.conf_partition_desc == 'h') {
+                    cond = "ds='${yyyy-MM-dd}',hour='${HH;P1H}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+                } else{
+                    cond = "ds='${yyyy-MM-dd;P1D}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
+                }
             case 'D':cond = "ds='${yyyy-MM-dd;P1D}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
             case 'W':cond = "ds='${yyyy-MM-dd;F1W}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
             case 'M':cond = "ds='${yyyy-MM;P1M}'@" + $scope.conf_targetTable+ "." + $scope.conf_target_db;break;
@@ -924,7 +1016,12 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         var partitionDir = ConstantService.getPartitionByCycle();
         if(p.length > 0) {
             switch ($scope.conf_cycle) {
-                case 'H':dir = dir + partitionDir.H;break;
+                case 'H':
+                    if($scope.conf_partition_desc == 'h') {
+                        dir = dir + partitionDir.H;break;
+                    } else if($scope.conf_partition_desc == 'd'){
+                        dir = dir + partitionDir.HD;break;
+                    }
                 case 'D':dir = dir + partitionDir.D;break;
                 case 'W':dir = dir + partitionDir.W;break;
                 case 'M':dir = dir + partitionDir.M;break;

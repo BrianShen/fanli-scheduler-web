@@ -44,6 +44,42 @@ angular.module("constant.service",[])
                 }
             },
 
+            getTaskGroupCss:function(groupid) {
+              switch (groupid) {
+                  case 1:
+                      return 'label label-warning arrowed arrowed-right';
+                  case 2:
+                      return 'label arrowed';
+                  case 3:
+                      return 'label label-success arrowed-in arrowed-in-right';
+                  case 4:
+                      return 'label label-danger arrowed';
+                  case 5:
+                      return 'label label-info arrowed-right arrowed-in';
+                  case 6:
+                      return 'label label-yellow arrowed-in';
+              }
+            },
+
+            taskGroupIdToText:function(groupid) {
+              switch (groupid) {
+                  case 1:return 'ODS';
+                  case 2:return 'LOAD';
+                  case 3:return 'DM';
+                  case 4:return 'DW';
+                  case 5:return 'EXPORT';
+                  case 6:return 'DIM';
+              }
+            },
+
+            getTimePatterns:function() {
+              return [
+                  {id:1,name:'今天(YYYY-MM-DD)',v:'${this_day10}'},
+                  {id:2,name:'昨天(YYYY-MM-DD)',v:'${date}'},
+                  {id:3,name:'前一小时(YYYY-MM-DD HH:00:00)',v:'${this_hour}'}
+              ]
+            },
+
             getCycleOptions:function(){
                 return {
                     H: '时', D: '日', W: '周', M: '月', Y: '年'
@@ -170,13 +206,12 @@ angular.module("constant.service",[])
             },
             getPartitionDesc:function() {
                 return [
-                    {id:1 ,name:'h'},
-                    {id:2 ,name:'d'},
-                    {id:3 ,name:'w'},
-                    {id:4 ,name:'m'},
-                    {id:5 ,name:'y'},
-                    {id:6 ,name:'o'},
-                    {id:7 ,name:'n'}
+                    {id:1 ,name:'h',desc:'天(ds),小时(hour)'},
+                    {id:2 ,name:'d',desc:'天(ds)'},
+                    {id:3 ,name:'w',desc:'周(week)'},
+                    {id:4 ,name:'m',desc:'月(month)'},
+                    {id:5 ,name:'y',desc:'年(year)'},
+                    {id:7 ,name:'n',desc:'无分区'}
                 ]
             },
             getTopic:function() {
@@ -190,6 +225,7 @@ angular.module("constant.service",[])
             getPartitionByCycle:function() {
                 return {
                     H:"/ds=${yyyy-MM-dd;P1H}/hour=${HH;P1H}",
+                    HD:"/ds=${yyyy-MM-dd;P1D}",
                     D:"/ds=${yyyy-MM-dd;P1D}",
                     W:"/week=${yyyy-MM-dd;F1W}",
                     M:"/month=${yyyy-MM;P1M}",

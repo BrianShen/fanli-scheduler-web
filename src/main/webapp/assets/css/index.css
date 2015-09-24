@@ -123,3 +123,60 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+#feedback_content {
+    margin-top: 3%;
+    margin-left: 50px;
+    padding: 10px;
+}
+
+#feedback_content input {
+    line-height: 25px;
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-weight: bold;
+    font-family:黑体
+}
+
+.feedback_label {
+    width: 100%;
+    background-color: #00be67;
+    padding: 15px;
+    font-size: large;
+    color: white;
+}
+
+#feedback_content textarea {
+    width: 100%;
+}
+
+#feedback_content button {
+    width: 60px;
+    height: 40px;
+    margin-top: 10px;
+    float: right;
+}
+
+#talk_aera {
+    margin-left: 50px;
+    margin-top: 50px
+}
+
+#fb_comment {
+    margin-right: 50px;
+    float: right;
+    margin-top: 3%;
+    padding: 10px;
+}
+
+#fb_comment ul li a{
+    font-size: 16px;
+    color: #080808;
+}
+
+#fb_comment ul li{
+    list-style-type: none;
+}
+

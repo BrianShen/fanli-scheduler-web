@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/7/16.
  */
 
-fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService','component',function($scope,$filter,$modal,JobManageService,component) {
+fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService','component','ConstantService', function($scope,$filter,$modal,JobManageService,component,ConstantService) {
     $scope.taskGroupOptions= [
         {ID: 1, Text: 'ods'},
         {ID: 2, Text: 'load'},
@@ -235,6 +235,23 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
     //根据当前页的index获得实际的index
     function getSelectedIndex(index) {
         return  index + ($scope.table.startIndex - 1);
+    };
+
+    //获得周期的文字描述
+    $scope.getCycleText = function (cycle) {
+        return ConstantService.cycleToText(cycle);
+    };
+    //获得周期的css
+    $scope.getExecutionCycleLabel = function (cycle) {
+        return ConstantService.getCycleCss(cycle);
+    };
+
+    $scope.getGroupIdText = function(id) {
+        return ConstantService.taskGroupIdToText(id);
+    };
+
+    $scope.getTaskGroupCss = function(id) {
+        return ConstantService.getTaskGroupCss(id);
     }
 
 }]);
