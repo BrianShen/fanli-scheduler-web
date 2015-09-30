@@ -8,7 +8,7 @@
             location="C:\Users\wei.shen\.m2\repository\mysql\mysql-connector-java\5.1.26\mysql-connector-java-5.1.26.jar"/>
 
     <context id="MysqlTables" targetRuntime="MyBatis3">
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://192.168.100.107:3306/dev" userId="root" password="root"></jdbcConnection>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/dev" userId="root" password="root"></jdbcConnection>
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false" />
@@ -32,6 +32,8 @@
         <!--<table tableName="dim_target_hive_db" domainObjectName="DimTargetHiveDb"/>-->
         <!--<table tableName="etl_load_cfg" domainObjectName="EtlLoadCfg"/>-->
 
-
+        <!--<table tableName="etl_meta_table_base" domainObjectName="EtlMetaTableBase"/>-->
+        <!--<table tableName="etl_meta_hivetable" domainObjectName="EtlMetaHiveTable"/>-->
+        <!--<table tableName="etl_meta_column" domainObjectName="EtlMetaColumn"/>-->
     </context>
 </generatorConfiguration>
