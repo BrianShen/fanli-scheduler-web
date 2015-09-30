@@ -96,6 +96,24 @@ angular.module("constant.service",[])
               ];
             },
 
+            //根据周期获得偏移量的选项
+            getOffsetsByCycle: function (cycle) {
+                switch (cycle) {
+                    case 'H':
+                        return ['H0', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8', 'H9', 'H10', 'H11', 'H12', 'H13', 'H14', 'H15', 'H16',
+                            'H17', 'H18', 'H19', 'H20', 'H21', 'H22', 'H23', 'H24'
+                        ];
+                    case 'D':
+                        return ['D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13', 'D14', 'D15', 'D16',
+                            'D17', 'D18', 'D19', 'D20', 'D21', 'D22', 'D23', 'D24', 'D25', 'D26', 'D27', 'D28', 'D29', 'D30', 'D31'
+                        ];
+                    case 'W':
+                        return ['W0', 'W1', 'W2', 'W3', 'W4'];
+                    case 'M':
+                        return ['M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
+                }
+            },
+
             getPriorityOption:function() {
               return [
                   {ID: 1, Text: '高'},

@@ -739,6 +739,18 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         $scope.conf_timeout = 90;
         $scope.conf_para1 = '';
 
+        $scope.getOffsetOptions = function(cycle) {
+            return ConstantService.getOffsetsByCycle(cycle);
+        }
+
+        $scope.getCycleText = function(cycle) {
+            return ConstantService.cycleToText(cycle);
+        }
+
+        $scope.getExecutionCycleLabel = function(cycle) {
+            return ConstantService.getCycleCss(cycle);
+        }
+
 
 
         $scope.submitTaskCfg = function() {
@@ -783,13 +795,25 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         }
     }
 
+    function getPreList() {
+        var list = [];
+        if($scope.dependenceTasks.length > 0) {
+            for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                list.push({
+                    taskId:$scope.generatedTaskId,
+                    preId:$scope.dependenceTasks[i].taskId,
+                    offset:parseInt($scope.dependenceTasks[i].offset.substring(1))
+                })
+            }
+        }
+        console.log(list);
+        return list;
+    }
+
     function addPreRelaTaskToDatabase(taskid) {
         $scope.generatedTaskId = taskid;
         if ($scope.dependenceTasks.length > 0) {
-            $http.post("/fanli/taskManager/taskpreadd", {
-                taskId: $scope.generatedTaskId,
-                preId: getPreTasks()
-            }).success(function (data) {
+            $http.post("/fanli/taskManager/taskpreadd", JSON.stringify(getPreList())).success(function (data) {
                 if(data.isSuccess) {
                     addTransferParamToDatabase(taskid);
                 }

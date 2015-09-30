@@ -2,11 +2,9 @@ package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.TaskAdder;
 import com.fanli.scheduler.bean.TaskQuery;
-import com.fanli.scheduler.entity.EtlLoadCfg;
-import com.fanli.scheduler.entity.EtlTaskCfg;
+import com.fanli.scheduler.bean.TaskRelaDo;
+import com.fanli.scheduler.entity.*;
 import com.fanli.scheduler.bean.Result;
-import com.fanli.scheduler.entity.EtlTaskrelaCfg;
-import com.fanli.scheduler.entity.EtlTaskrelaCfgExample;
 import com.fanli.scheduler.mapping.EtlLoadCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
@@ -68,56 +66,95 @@ public class TaskHandleController {
 
     @RequestMapping(value = "/taskpreadd",method = RequestMethod.POST)
     @ResponseBody
-    public Result savePretask(@RequestBody TaskAdder taskAdder) {
+    public Result savePretask(@RequestBody List<EtlTaskrelaCfgKey> taskrelaCfgList) {
         Result result = new Result();
-        String[] pres= taskAdder.getPreId().split(",");
-        Integer[] pre = new Integer[pres.length];
-        for(int i = 0;i < pres.length;i ++) {
-            pre[i] = Integer.parseInt(pres[i]);
-        }
-        for(int i = 0;i < pre.length;i ++) {
-            EtlTaskrelaCfg etlTaskrelaCfg = new EtlTaskrelaCfg();
-            etlTaskrelaCfg.setTaskId(Integer.parseInt(taskAdder.getTaskId()));
-            etlTaskrelaCfg.setPreId(pre[i]);
-            etlTaskrelaCfg.setIfEnable(1);
-            etlTaskrelaCfg.setOffset(0);
-            Date date = new Date();
-            etlTaskrelaCfg.setTimeStamp(date);
-            etlTaskrelaCfg.setUpdatetime(date);
-            taskConfigService.insertTaskRela(etlTaskrelaCfg);
+        logger.info(taskrelaCfgList);
+        for (EtlTaskrelaCfgKey cfg:taskrelaCfgList) {
+            EtlTaskrelaCfg taskrelaCfg = new EtlTaskrelaCfg();
+            taskrelaCfg.setTaskId(cfg.getTaskId());
+            taskrelaCfg.setPreId(cfg.getPreId());
+            taskrelaCfg.setOffset(cfg.getOffset());
+            taskrelaCfg.setIfEnable(1);
+            Date date= new Date();
+            taskrelaCfg.setTimeStamp(date);
+            taskrelaCfg.setUpdatetime(date);
+            taskConfigService.insertTaskRela(taskrelaCfg);
         }
         result.setIsSuccess(true);
         return result;
     }
+
+//    @RequestMapping(value = "/taskpreadd",method = RequestMethod.POST)
+//    @ResponseBody
+//    public Result savePretask(@RequestBody TaskAdder taskAdder) {
+//        Result result = new Result();
+//        String[] pres= taskAdder.getPreId().split(",");
+//        Integer[] pre = new Integer[pres.length];
+//        for(int i = 0;i < pres.length;i ++) {
+//            pre[i] = Integer.parseInt(pres[i]);
+//        }
+//        for(int i = 0;i < pre.length;i ++) {
+//            EtlTaskrelaCfg etlTaskrelaCfg = new EtlTaskrelaCfg();
+//            etlTaskrelaCfg.setTaskId(Integer.parseInt(taskAdder.getTaskId()));
+//            etlTaskrelaCfg.setPreId(pre[i]);
+//            etlTaskrelaCfg.setIfEnable(1);
+//            etlTaskrelaCfg.setOffset(0);
+//            Date date = new Date();
+//            etlTaskrelaCfg.setTimeStamp(date);
+//            etlTaskrelaCfg.setUpdatetime(date);
+//            taskConfigService.insertTaskRela(etlTaskrelaCfg);
+//        }
+//        result.setIsSuccess(true);
+//        return result;
+//    }
 
     @RequestMapping(value = "/updateTaskRela",method = RequestMethod.POST)
     @ResponseBody
-    public Result editPre(@RequestBody TaskAdder taskAdder) {
-        taskConfigService.deleteTaskRela(Integer.parseInt(taskAdder.getTaskId()));
-        Result result = new Result();
-        String[] pres= null;
-        if (StringUtils.hasLength(taskAdder.getPreId())){
-            pres= taskAdder.getPreId().split(",");
-        } else pres = new String[0];
-
-        Integer[] pre = new Integer[pres.length];
-        for(int i = 0;i < pres.length;i ++) {
-            pre[i] = Integer.parseInt(pres[i]);
+    public Result editPre(@RequestBody List<EtlTaskrelaCfg> cfgs) {
+        if (cfgs.size() > 0) {
+            taskConfigService.deleteTaskRela(cfgs.get(0).getTaskId());
         }
-        for(int i = 0;i < pre.length;i ++) {
-            EtlTaskrelaCfg etlTaskrelaCfg = new EtlTaskrelaCfg();
-            etlTaskrelaCfg.setTaskId(Integer.parseInt(taskAdder.getTaskId()));
-            etlTaskrelaCfg.setPreId(pre[i]);
-            etlTaskrelaCfg.setIfEnable(1);
-            etlTaskrelaCfg.setOffset(0);
-            Date date = new Date();
-            etlTaskrelaCfg.setTimeStamp(date);
-            etlTaskrelaCfg.setUpdatetime(date);
-            taskConfigService.insertTaskRela(etlTaskrelaCfg);
+        Result result = new Result();
+        for (EtlTaskrelaCfg cfg:cfgs) {
+            Date date= new Date();
+            cfg.setIfEnable(1);
+            cfg.setTimeStamp(date);
+            cfg.setUpdatetime(date);
+            taskConfigService.insertTaskRela(cfg);
         }
         result.setIsSuccess(true);
         return result;
     }
+
+
+//    @RequestMapping(value = "/updateTaskRela",method = RequestMethod.POST)
+//    @ResponseBody
+//    public Result editPre(@RequestBody TaskAdder taskAdder) {
+//        taskConfigService.deleteTaskRela(Integer.parseInt(taskAdder.getTaskId()));
+//        Result result = new Result();
+//        String[] pres= null;
+//        if (StringUtils.hasLength(taskAdder.getPreId())){
+//            pres= taskAdder.getPreId().split(",");
+//        } else pres = new String[0];
+//
+//        Integer[] pre = new Integer[pres.length];
+//        for(int i = 0;i < pres.length;i ++) {
+//            pre[i] = Integer.parseInt(pres[i]);
+//        }
+//        for(int i = 0;i < pre.length;i ++) {
+//            EtlTaskrelaCfg etlTaskrelaCfg = new EtlTaskrelaCfg();
+//            etlTaskrelaCfg.setTaskId(Integer.parseInt(taskAdder.getTaskId()));
+//            etlTaskrelaCfg.setPreId(pre[i]);
+//            etlTaskrelaCfg.setIfEnable(1);
+//            etlTaskrelaCfg.setOffset(0);
+//            Date date = new Date();
+//            etlTaskrelaCfg.setTimeStamp(date);
+//            etlTaskrelaCfg.setUpdatetime(date);
+//            taskConfigService.insertTaskRela(etlTaskrelaCfg);
+//        }
+//        result.setIsSuccess(true);
+//        return result;
+//    }
 
     @RequestMapping(value = "/queryTasks",method = RequestMethod.GET)
     @ResponseBody
@@ -164,17 +201,40 @@ public class TaskHandleController {
         return result;
     }
 
+//    @ResponseBody
+//    @RequestMapping(value = "/queryPre",method = RequestMethod.GET)
+//    public Result<EtlTaskCfg> getPreTasks(@RequestParam("taskid") Integer taskid) {
+//        Result<EtlTaskCfg> result = new Result<EtlTaskCfg>();
+//        EtlTaskrelaCfgExample etlTaskrelaCfgExample = new EtlTaskrelaCfgExample();
+//        EtlTaskrelaCfgExample.Criteria criteria = etlTaskrelaCfgExample.createCriteria();
+//        if (taskid != null) criteria.andTaskIdEqualTo(taskid);
+//        List<EtlTaskrelaCfg> list =  etlTaskrelaCfgMapper.selectByExample(etlTaskrelaCfgExample);
+//        List<EtlTaskCfg> ret = new ArrayList<EtlTaskCfg>();
+//        for(int i = 0;i < list.size();i ++) {
+//            ret.add(etlTaskCfgMapper.selectByPrimaryKey(list.get(i).getPreId()));
+//        }
+//        result.setResults(ret);
+//        result.setIsSuccess(true);
+//        return result;
+//    }
+
     @ResponseBody
     @RequestMapping(value = "/queryPre",method = RequestMethod.GET)
-    public Result<EtlTaskCfg> getPreTasks(@RequestParam("taskid") Integer taskid) {
-        Result<EtlTaskCfg> result = new Result<EtlTaskCfg>();
+    public Result<TaskRelaDo> getPreTasks(@RequestParam("taskid") Integer taskid) {
+        Result<TaskRelaDo> result = new Result<TaskRelaDo>();
         EtlTaskrelaCfgExample etlTaskrelaCfgExample = new EtlTaskrelaCfgExample();
         EtlTaskrelaCfgExample.Criteria criteria = etlTaskrelaCfgExample.createCriteria();
         if (taskid != null) criteria.andTaskIdEqualTo(taskid);
         List<EtlTaskrelaCfg> list =  etlTaskrelaCfgMapper.selectByExample(etlTaskrelaCfgExample);
-        List<EtlTaskCfg> ret = new ArrayList<EtlTaskCfg>();
+        List<TaskRelaDo> ret = new ArrayList<TaskRelaDo>();
         for(int i = 0;i < list.size();i ++) {
-            ret.add(etlTaskCfgMapper.selectByPrimaryKey(list.get(i).getPreId()));
+            TaskRelaDo taskRela = new TaskRelaDo();
+            EtlTaskCfg cfg = etlTaskCfgMapper.selectByPrimaryKey(list.get(i).getPreId());
+            taskRela.setCycle(cfg.getCycle());
+            taskRela.setOffset(cfg.getCycle() + list.get(i).getOffset());
+            taskRela.setTaskName(cfg.getTaskName());
+            taskRela.setTaskId(cfg.getTaskId());
+            ret.add(taskRela);
         }
         result.setResults(ret);
         result.setIsSuccess(true);

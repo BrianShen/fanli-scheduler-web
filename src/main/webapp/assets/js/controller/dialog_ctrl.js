@@ -87,7 +87,7 @@ fanliApp.controller('TaskDependencyCtrl', function ($scope, $filter, $modalInsta
             taskName: job.taskName,
             cycle: job.cycle,
             owner: job.owner,
-            cycleGap: job.cycle + '0'
+            offset: job.cycle + '0'
         };
         //var isExists = false;
         //for(var i = 0;i < $scope.dependenceTasks.length;i ++) {

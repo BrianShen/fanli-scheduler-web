@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/8/4.
  */
 
-fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams,JobManageService){
+fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams,JobManageService,ConstantService){
     $scope.taskid = $routeParams.taskid;
     $scope.Loading = true;
     $scope.LoadingMsg = '加载中...';
@@ -117,7 +117,8 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
             waitCode:$scope.conf_waitCode,
             offset: $scope.conf_offset,
             timeout: $scope.conf_timeout,
-            command: $scope.conf_para1
+            command: $scope.conf_para1,
+            ifPre:hasPre()
         });
 
         updateResult.$promise.then(function(data) {
@@ -130,11 +131,29 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
 
     };
 
+    function hasPre() {
+        if($scope.dependenceTasks.length > 0) {
+            return 1;
+        } else return 0;
+    }
+
+    function getPreList() {
+        var list = [];
+        if($scope.dependenceTasks.length > 0) {
+            for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                list.push({
+                    taskId:$routeParams.taskid,
+                    preId:$scope.dependenceTasks[i].taskId,
+                    offset:parseInt($scope.dependenceTasks[i].offset.substring(1))
+                })
+            }
+        }
+        console.log(list);
+        return list;
+    }
+
     var updatePres = function() {
-        var ret = JobManageService.updatePre({},{
-            taskId: $routeParams.taskid,
-            preId:preTasks()
-        });
+        var ret = JobManageService.updatePre({},JSON.stringify(getPreList()));
 
         ret.$promise.then(function(data) {
             if(data.isSuccess) {
@@ -163,6 +182,18 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
             pre = pre + pres[pres.length - 1].taskId;
         }
         return pre;
+    }
+
+    $scope.getOffsetOptions = function(cycle) {
+        return ConstantService.getOffsetsByCycle(cycle);
+    }
+
+    $scope.getCycleText = function(cycle) {
+        return ConstantService.cycleToText(cycle);
+    }
+
+    $scope.getExecutionCycleLabel = function(cycle) {
+        return ConstantService.getCycleCss(cycle);
     }
 
 

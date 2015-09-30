@@ -306,10 +306,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                         if (data.isSuccess) {
                             $scope.generatedTaskId = data.result.taskId;
                             if ($scope.dependenceTasks.length > 0) {
-                                $http.post("/fanli/taskManager/taskpreadd", {
-                                    taskId: $scope.generatedTaskId,
-                                    preId: getPreTasks()
-                                }).success(function (data) {
+                                $http.post("/fanli/taskManager/taskpreadd", JSON.stringify(getPreList())).success(function (data) {
                                     $scope.saveSuccessMsg = "保存成功";
                                     $scope.showSaveSucess = true;
                                     setButtonClickable(true, true, false);
@@ -332,6 +329,33 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             });
 
         };
+
+        $scope.getOffsetOptions = function(cycle) {
+            return ConstantService.getOffsetsByCycle(cycle);
+        }
+
+        $scope.getCycleText = function(cycle) {
+            return ConstantService.cycleToText(cycle);
+        }
+
+        $scope.getExecutionCycleLabel = function(cycle) {
+            return ConstantService.getCycleCss(cycle);
+        }
+
+        function getPreList() {
+            var list = [];
+            if($scope.dependenceTasks.length > 0) {
+                for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                    list.push({
+                        taskId:$scope.generatedTaskId,
+                        preId:$scope.dependenceTasks[i].taskId,
+                        offset:parseInt($scope.dependenceTasks[i].offset.substring(1))
+                    })
+                }
+            }
+            console.log(list);
+            return list;
+        }
 
         function getCalCommand() {
             var command;

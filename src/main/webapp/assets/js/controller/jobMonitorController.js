@@ -59,6 +59,13 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
         return ConstantService.cycleToText(cycle);
     };
 
+    //响应回车事件
+    $scope.enterPress = function (keyEvent) {
+        if (keyEvent.which === 13) {
+            $scope.submitSearch();
+        }
+    };
+
     $scope.instanceInfo = function (index) {
         var job = getJobByIndex(index);
         window.open("#/job_log/" + job.taskStatusId );

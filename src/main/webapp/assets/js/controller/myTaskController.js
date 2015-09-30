@@ -253,6 +253,13 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
     $scope.getTaskGroupCss = function(id) {
         return ConstantService.getTaskGroupCss(id);
     }
+    //响应回车事件
+    $scope.enterPress = function (keyEvent) {
+        if (keyEvent.which === 13) {
+            $scope.submitQuery();
+        }
+    };
+
 
 }]);
 

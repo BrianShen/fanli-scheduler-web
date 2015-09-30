@@ -39,7 +39,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             recallInterval:$scope.conf_recallInterval,
             updateUser:$scope.conf_developer.chName,
             offset:$scope.conf_offset,
-            recallLimit:$scope.conf_recallLimit
+            recallLimit:$scope.conf_recallLimit,
+            ifPre:hasPre()
         });
 
         result.$promise.then(function(data) {
@@ -51,12 +52,30 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         },function() {})
 
     }
+
+    function getPreList() {
+        var list = [];
+        if($scope.dependenceTasks.length > 0) {
+            for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                list.push({
+                    taskId:$routeParams.taskid,
+                    preId:$scope.dependenceTasks[i].taskId,
+                    offset:parseInt($scope.dependenceTasks[i].offset.substring(1))
+                })
+            }
+        }
+        console.log(list);
+        return list;
+    }
+
+    function hasPre() {
+        if($scope.dependenceTasks.length > 0) {
+            return 1;
+        } else return 0;
+    };
     var updatePres = function() {
 
-        var ret = JobManageService.updatePre({},{
-            taskId: $routeParams.taskid,
-            preId:preTasks()
-        });
+        var ret = JobManageService.updatePre({},JSON.stringify(getPreList()));
 
         ret.$promise.then(function(data) {
             if(data.isSuccess) {
@@ -67,7 +86,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
 
         })
 
-    }
+    };
 
     var preTasks = function() {
         var pre = '';
@@ -98,6 +117,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             paramMap:$scope.paramMap
         },function(data) {
             if(data.isSuccess) {
+                setLoading(false,'');
+                showAlert('修改成功');
                 console.log("修改sql成功")
 
             }
@@ -236,6 +257,18 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         }, function () {
         });
     };
+
+    $scope.getOffsetOptions = function(cycle) {
+        return ConstantService.getOffsetsByCycle(cycle);
+    }
+
+    $scope.getCycleText = function(cycle) {
+        return ConstantService.cycleToText(cycle);
+    }
+
+    $scope.getExecutionCycleLabel = function(cycle) {
+        return ConstantService.getCycleCss(cycle);
+    }
 
     function showAlert(msg){
         $scope.showSaveSucess = true;

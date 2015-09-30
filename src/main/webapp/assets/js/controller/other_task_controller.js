@@ -107,7 +107,7 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
         var result = JobManageService.addTask({},{
             taskGroupId:$scope.conf_taskGroup,
             taskName:$scope.conf_taskName,
-            resource:$scope.conf_src,
+            resource:getResource(),
             command:$scope.conf_para1,
             cycle:$scope.conf_cycle,
             priority:$scope.conf_priority,
@@ -143,13 +143,47 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
         })
     };
 
+    function getResource() {
+        if($scope.conf_task_type == 'calculate') {
+            return 'shell';
+        } else if($scope.conf_task_type == 'transfer') {
+            return 'shell_transport';
+        }
+    }
+
+    function getPreList() {
+        var list = [];
+        if($scope.dependenceTasks.length > 0) {
+            for(var i = 0;i < $scope.dependenceTasks.length;i ++) {
+                list.push({
+                    taskId:$scope.generatedTaskId,
+                    preId:$scope.dependenceTasks[i].taskId,
+                    offset:parseInt($scope.dependenceTasks[i].offset.substring(1))
+                })
+            }
+        }
+        console.log(list);
+        return list;
+    }
+
+    $scope.getOffsetOptions = function(cycle) {
+        return ConstantService.getOffsetsByCycle(cycle);
+    }
+
+    $scope.getCycleText = function(cycle) {
+        return ConstantService.cycleToText(cycle);
+    }
+
+    $scope.getExecutionCycleLabel = function(cycle) {
+        return ConstantService.getCycleCss(cycle);
+    }
+
     function addPreRelaTaskToDatabase(taskid) {
         $scope.generatedTaskId = taskid;
         if ($scope.dependenceTasks.length > 0) {
-            $http.post("/fanli/taskManager/taskpreadd", {
-                taskId: $scope.generatedTaskId,
-                preId: getPreTasks()
-            }).success(function (data) {
+            $http.post("/fanli/taskManager/taskpreadd",
+                JSON.stringify(getPreList())
+            ).success(function (data) {
                 if(data.isSuccess) {
                     setLoading(false,'');
                     setAlert(true,'alert-success',"新增任务成功");
@@ -169,6 +203,33 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
             setAlert(true,'alert-success',"新增任务成功");
         }
     };
+
+    //function addPreRelaTaskToDatabase(taskid) {
+    //    $scope.generatedTaskId = taskid;
+    //    if ($scope.dependenceTasks.length > 0) {
+    //        $http.post("/fanli/taskManager/taskpreadd", {
+    //            taskId: $scope.generatedTaskId,
+    //            preId: getPreTasks()
+    //        }).success(function (data) {
+    //            if(data.isSuccess) {
+    //                setLoading(false,'');
+    //                setAlert(true,'alert-success',"新增任务成功");
+    //                $scope.taskConfSave = true;
+    //            } else {
+    //                setLoading(false,'');
+    //                setAlert(true,'alert-danger',"保存调度任务，但保存依赖信息失败");
+    //            }
+    //            scrollToTop();
+    //        }).error(function() {
+    //            setAlert(true,'alert-danger',"保存调度任务，但保存依赖信息失败");
+    //            setLoading(false,'');
+    //        })
+    //    } else {
+    //        $scope.taskConfSave = true;
+    //        setLoading(false,'');
+    //        setAlert(true,'alert-success',"新增任务成功");
+    //    }
+    //};
 
     var scrollToTop = function() {
         var x=document.body.scrollTop||document.documentElement.scrollTop;

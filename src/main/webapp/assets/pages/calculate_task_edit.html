@@ -170,8 +170,18 @@
                         <tr ng-repeat="dependenceTask in dependenceTasks">
                             <td>{{dependenceTask.taskId}}</td>
                             <td>{{dependenceTask.taskName}}</td>
-                            <td>{{dependenceTask.cycle}}</td>
-                            <td>{{dependenceTask.cycleGap}}</td>
+                            <!--<td>{{dependenceTask.cycle}}</td>-->
+                            <!--<td>{{dependenceTask.cycleGap}}</td>-->
+                            <td>
+                                <span class="label {{getExecutionCycleLabel(dependenceTask.cycle)}}">
+                                    {{getCycleText(dependenceTask.cycle)}}
+                                </span>
+                            </td>
+                            <td>
+                                <select class="width-80"  ng-model="dependenceTasks[$index].offset"
+                                        ng-options="offset for offset in {{getOffsetOptions(dependenceTask.cycle)}}">
+                                </select>
+                            </td>
                             <!--<td>-->
                             <!--<span class="label {{getExecutionCycleLabel(dependenceTask.cycle)}}">{{getCycleText(dependenceTask.cycle)}}-->
                             <!--</span>-->
