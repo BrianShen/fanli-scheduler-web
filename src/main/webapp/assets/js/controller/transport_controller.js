@@ -950,11 +950,11 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             var sql = "delete from " + $scope.conf_src_db + '.' + $scope.conf_targetTable + ' where ';
             var where;
             switch ($scope.conf_cycle){
-                case 'H':where = "ds='${yyyy-MM-dd}' and hour='${HH;P1H}'";break;
+                case 'H':where = "ds='${yyyy-MM-dd;P1H}' and hour='${HH;P1H}'";break;
                 case 'D':where = $scope.conf_incr_field + "='${yyyy-MM-dd;P1D}'";break;
                 case 'M':where = $scope.conf_incr_field + ">='${yyyy-MM-01;P1M}' and " +$scope.conf_incr_field + "<'${yyyy-MM-01}'";break;
                 case 'W':where = $scope.conf_incr_field + ">='${yyyy-MM-dd;F1W}' and " + $scope.conf_incr_field + "<'${yyyy-MM-dd;F0W}'";break;
-                case 'Y':where = $scope.conf_incr_field + ">='${yyyy-01-01};P1Y' and " + $scope.conf_incr_field + "<'${yyyy-01-01}'";break;
+                case 'Y':where = $scope.conf_incr_field + ">='${yyyy-01-01;P1Y}' and " + $scope.conf_incr_field + "<'${yyyy-01-01}'";break;
             }
             sql = sql + where;
             return sql;
