@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class TypeTransformer {
     public static Map<String, String> fromHive = new HashMap<String, String>();
+    public static Map<String, String> toHive = new HashMap<String, String>();
     static {
         fromHive.put("BOOLEAN", "VARCHAR(10)");
         fromHive.put("FLOAT", "VARCHAR(100)");
@@ -20,8 +21,17 @@ public class TypeTransformer {
         fromHive.put("DATE","VARCHAR(30)");
         fromHive.put("CHAR","VARCHAR(255)");
         fromHive.put("BINARY","VARBINARY");
-        fromHive.put("VARCHAR","VARCHAR(65535)");
+        fromHive.put("VARCHAR","VARCHAR(8000)");
         fromHive.put("TIMESTAMP","VARCHAR(255)");
+
+        toHive.put("INT","INT");
+        toHive.put("TINYINT","TINYINT");
+        toHive.put("SMALLINT","SMALLINT");
+        toHive.put("BIGINT","BIGINT");
+        toHive.put("INTEGER","INT");
+        toHive.put("FLOAT","FLOAT");
+        toHive.put("DOUBLE","DOUBLE");
+
     }
 
     public static String transformHive(String type) {
@@ -33,5 +43,16 @@ public class TypeTransformer {
             return type.toUpperCase();
         }
         return "TEXT";
+    }
+
+    public static String transTohive(String type) {
+        String val = toHive.get(type.toUpperCase());
+        if (null != val) {
+            return val.toLowerCase();
+        }
+        if (type.toUpperCase().contains("DECIMAL")) {
+            return type.toLowerCase();
+        }
+        return "string";
     }
 }

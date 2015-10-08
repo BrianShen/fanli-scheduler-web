@@ -3,6 +3,7 @@ package com.fanli.scheduler.utils;
 import com.fanli.scheduler.bean.GeneralColumn;
 import com.fanli.scheduler.bean.GeneralTable;
 
+import javax.sql.rowset.spi.TransactionalWriter;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class TableCreator {
         builder = buildHead(builder, generalTable.getName());
         for (GeneralColumn column : generalTable.getColumns()) {
             String columnName = column.getName();
-            String columnType = "string";
+            String columnType = TypeTransformer.transTohive(column.getType());
             String columnComment = column.getComment();
             builder = buildBody(builder, columnName, columnType, columnComment);
         }
