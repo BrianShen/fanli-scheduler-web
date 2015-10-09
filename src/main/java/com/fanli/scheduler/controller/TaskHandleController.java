@@ -1,6 +1,5 @@
 package com.fanli.scheduler.controller;
 
-import com.fanli.scheduler.bean.TaskAdder;
 import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.bean.TaskRelaDo;
 import com.fanli.scheduler.entity.*;
@@ -11,15 +10,12 @@ import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
 import com.fanli.scheduler.service.TaskRelaService;
 import com.fanli.scheduler.service.TaskService;
-import com.fanli.scheduler.utils.DateUtils;
 import org.apache.log4j.Logger;
-import org.jsoup.helper.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

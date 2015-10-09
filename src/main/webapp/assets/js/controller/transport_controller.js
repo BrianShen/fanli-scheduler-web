@@ -759,6 +759,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             var req = JobManageService.addTransferTask({},{
                 taskGroupId:$scope.conf_taskGroup,
                 taskName:$scope.conf_taskName,
+                tableName:$scope.conf_targetTable,
                 resource:$scope.conf_src == 'hive'?$scope.conf_target_domain:$scope.conf_src_domain,
                 command:'',
                 cycle:$scope.conf_cycle,

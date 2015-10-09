@@ -1,8 +1,5 @@
 package com.fanli.scheduler.bean;
 
-import com.fanli.scheduler.entity.EtlTaskCfg;
-import com.fanli.scheduler.entity.EtlTaskrelaCfg;
-
 /**
  * Created by wei.shen on 2015/9/28.
  */
