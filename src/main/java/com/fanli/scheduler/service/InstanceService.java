@@ -1,6 +1,7 @@
 package com.fanli.scheduler.service;
 
 import com.fanli.scheduler.constants.Const;
+import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.entity.EtlTaskStatus;
 import com.fanli.scheduler.utils.CommonUtils;
 import org.apache.log4j.Logger;

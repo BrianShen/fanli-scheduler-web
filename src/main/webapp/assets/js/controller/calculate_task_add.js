@@ -279,7 +279,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                         //taskId:2,
                         taskGroupId: $scope.conf_taskGroup,
                         taskName: $scope.conf_taskName,
-                        tableName:$scope.conf_targetTable,
+                        tableName:$scope.table_name,
                         resource: "hive",
                         command: getCalCommand(),
                         cycle: $scope.conf_cycle,

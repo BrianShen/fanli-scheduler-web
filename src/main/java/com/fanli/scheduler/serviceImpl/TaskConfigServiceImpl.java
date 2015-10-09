@@ -2,6 +2,7 @@ package com.fanli.scheduler.serviceImpl;
 
 import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.entity.*;
+import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
 import org.apache.log4j.Logger;

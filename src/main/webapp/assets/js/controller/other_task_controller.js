@@ -107,6 +107,7 @@ fanliApp.controller('OtherTaskCtrl',function($scope,$modal,$http,DimService,Cons
         var result = JobManageService.addTask({},{
             taskGroupId:$scope.conf_taskGroup,
             taskName:$scope.conf_taskName,
+            tableName:$scope.conf_table_name,
             resource:getResource(),
             command:$scope.conf_para1,
             cycle:$scope.conf_cycle,

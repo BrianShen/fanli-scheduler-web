@@ -1,6 +1,8 @@
 package com.fanli.scheduler.serviceImpl;
 
+import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.entity.EtlTaskStatus;
+import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskStatusMapper;
 import com.fanli.scheduler.service.InstanceService;
 import com.fanli.scheduler.service.TaskService;
