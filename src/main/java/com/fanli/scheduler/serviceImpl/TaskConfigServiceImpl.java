@@ -2,10 +2,8 @@ package com.fanli.scheduler.serviceImpl;
 
 import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.entity.*;
-import com.fanli.scheduler.mapping.EtlTaskCfgMapper;
 import com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper;
 import com.fanli.scheduler.service.TaskConfigService;
-import freemarker.template.utility.StringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

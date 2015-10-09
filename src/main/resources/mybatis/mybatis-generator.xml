@@ -28,6 +28,7 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
+        <!--<table tableName="etl_task_cfg" domainObjectName="EtlTaskCfg"/>-->
         <!--<table tableName="dim_data_developer" domainObjectName="DimDateDeveloper"/>-->
         <!--<table tableName="dim_target_hive_db" domainObjectName="DimTargetHiveDb"/>-->
         <!--<table tableName="etl_load_cfg" domainObjectName="EtlLoadCfg"/>-->
@@ -36,5 +37,6 @@
         <!--<table tableName="etl_meta_hivetable" domainObjectName="EtlMetaHiveTable"/>-->
         <!--<table tableName="etl_meta_column" domainObjectName="EtlMetaColumn"/>-->
         <!--<table tableName="etl_meta_partition" domainObjectName="EtlMetaPartition"/>-->
+
     </context>
 </generatorConfiguration>

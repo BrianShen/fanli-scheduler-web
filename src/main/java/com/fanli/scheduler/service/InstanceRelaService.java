@@ -1,7 +1,6 @@
 package com.fanli.scheduler.service;
 
 import com.fanli.scheduler.bean.Result;
-import com.fanli.scheduler.entity.EtlTaskCfg;
 import com.fanli.scheduler.entity.EtlTaskrelaStatus;
 import com.fanli.scheduler.entity.EtlTaskrelaStatusExample;
 import com.fanli.scheduler.exception.ParameterInvalidException;
