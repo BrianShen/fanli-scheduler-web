@@ -7,7 +7,7 @@ angular.module('component.service', []).
         getCustomizedTable: function (scope, filter) {
             function table(scope, filter) {
                 this.recordPerPageOptions = [5, 10, 25, 50, 100];
-                this.selectedRecordPerPage = this.recordPerPageOptions[1];
+                this.selectedRecordPerPage = this.recordPerPageOptions[2];
 
 
                 this.displayedDataList = scope.allTaskList;
