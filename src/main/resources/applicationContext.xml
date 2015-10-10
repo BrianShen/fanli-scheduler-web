@@ -66,6 +66,10 @@
         <property name="mapperInterface" value="com.fanli.scheduler.mapping.EtlTaskrelaCfgMapper"/>
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
     </bean>
+    <bean id="etlSystemFeedbackMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.fanli.scheduler.mapping.EtlSystemFeedbackMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
 
 
     <bean id="mdsItemtableMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
