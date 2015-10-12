@@ -9,22 +9,24 @@
 
 <div class="row">
     <div class="col-sm-7 col-xs-12">
-            <div id="feedback_content">
-                <div id="fb_title">
-                    <div>
-                        <label class="feedback_label">
-                            用户反馈
-                        </label>
+            <form>
+                <div id="feedback_content">
+                    <div id="fb_title">
+                        <div>
+                            <label class="feedback_label">
+                                用户反馈
+                            </label>
+                        </div>
+
+                        <input id="title" ng-model="feedback_title" required placeholder="请输入反馈标题">
                     </div>
-
-                    <input id="title" placeholder="请输入反馈标题">
+                    <div id="fb_text">
+                        <textarea id="fb_content" ng-model="feedback_content" rows="10" required></textarea>
+                    </div>
+                    <!--<button class="btn btn-grey">提交</button>-->
+                    <input ng-click="saveFeedback()" type="submit" class="btn btn-success" value="提交">
                 </div>
-                <div id="fb_text">
-                    <textarea id="fb_content" rows="10"></textarea>
-                </div>
-                <button class="btn btn-grey">提交</button>
-
-            </div>
+            </form>
 
 
 
@@ -184,80 +186,19 @@
             <h4 class="lighter smaller">最近反馈</h4>
         </div>
         <div style="padding: 3px">
-            <ul>
+            <ul ng-repeat="com in comments">
                 <li>
                     <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
+                        <a ng-click="">{{com.title}}</a>
                         <div style="margin-right: 10px;text-align: right">
                         <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
+                            <label style="font-size: 10px" ng-bind="com.updateTime|date:'yyyy-MM-dd HH:mm:ss'"></label>
+                            <label ng-bind="com.user" style="background-color: #00be67; font-size: 10px;color: white;padding: 2px"></label>
                         </span>
 
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
-                        <div style="margin-right: 10px;text-align: right">
-                        <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
-                        </span>
-
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
-                        <div style="margin-right: 10px;text-align: right">
-                        <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
-                        </span>
-
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
-                        <div style="margin-right: 10px;text-align: right">
-                        <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
-                        </span>
-
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
-                        <div style="margin-right: 10px;text-align: right">
-                        <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
-                        </span>
-
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div style="border-bottom: dashed;border-width: 1px">
-                        <a href="#">巴拉巴巴巴拉巴巴巴拉巴巴</a>
-                        <div style="margin-right: 10px;text-align: right">
-                        <span>
-                            <label style="font-size: 10px">2015-09-22 16:12:30</label>
-                            <label style="background-color: #00be67; font-size: 10px;color: white;padding: 2px">沈伟</label>
-                        </span>
-
-                        </div>
-                    </div>
-                </li>
-
 
             </ul>
         </div>

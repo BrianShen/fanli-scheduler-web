@@ -29,6 +29,7 @@
         </javaClientGenerator>
 
         <!--<table tableName="etl_task_cfg" domainObjectName="EtlTaskCfg"/>-->
+        <!--<table tableName="etl_system_feedback" domainObjectName="EtlSystemFeedback"/>-->
         <!--<table tableName="dim_data_developer" domainObjectName="DimDateDeveloper"/>-->
         <!--<table tableName="dim_target_hive_db" domainObjectName="DimTargetHiveDb"/>-->
         <!--<table tableName="etl_load_cfg" domainObjectName="EtlLoadCfg"/>-->
