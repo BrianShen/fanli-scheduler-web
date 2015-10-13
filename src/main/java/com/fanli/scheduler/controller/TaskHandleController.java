@@ -1,5 +1,6 @@
 package com.fanli.scheduler.controller;
 
+import com.fanli.scheduler.bean.TaskPreUpdater;
 import com.fanli.scheduler.bean.TaskQuery;
 import com.fanli.scheduler.bean.TaskRelaDo;
 import com.fanli.scheduler.entity.*;
@@ -106,18 +107,45 @@ public class TaskHandleController {
 
     @RequestMapping(value = "/updateTaskRela",method = RequestMethod.POST)
     @ResponseBody
-    public Result editPre(@RequestBody List<EtlTaskrelaCfg> cfgs) {
-        if (cfgs.size() > 0) {
-            taskConfigService.deleteTaskRela(cfgs.get(0).getTaskId());
-        }
+    public Result editPre(@RequestBody TaskPreUpdater updater) {
+        List<EtlTaskrelaCfg> cfgs =  updater.getCfgs();
+        Integer taskId = updater.getTaskId();
+        EtlTaskrelaCfgExample exp = new EtlTaskrelaCfgExample();
+        EtlTaskrelaCfgExample.Criteria cra = exp.createCriteria();
+        cra.andTaskIdEqualTo(taskId);
+        EtlTaskrelaCfg config = new EtlTaskrelaCfg();
+        config.setIfEnable(0);
+        etlTaskrelaCfgMapper.updateByExampleSelective(config,exp);
         Result result = new Result();
-        for (EtlTaskrelaCfg cfg:cfgs) {
-            Date date= new Date();
-            cfg.setIfEnable(1);
-            cfg.setTimeStamp(date);
-            cfg.setUpdatetime(date);
-            taskConfigService.insertTaskRela(cfg);
+        try {
+            for (EtlTaskrelaCfg cfg:cfgs) {
+                EtlTaskrelaCfgKey key = new EtlTaskrelaCfgKey();
+                key.setOffset(cfg.getOffset());
+                key.setTaskId(cfg.getTaskId());
+                key.setPreId(cfg.getPreId());
+
+                    EtlTaskrelaCfg ret = etlTaskrelaCfgMapper.selectByPrimaryKey(key);
+                    if (ret == null) {
+                        Date date= new Date();
+                        cfg.setIfEnable(1);
+                        cfg.setTimeStamp(date);
+                        cfg.setUpdatetime(date);
+                        taskConfigService.insertTaskRela(cfg);
+                    } else{
+                        Date date= new Date();
+                        cfg.setUpdatetime(date);
+                        cfg.setIfEnable(1);
+                        etlTaskrelaCfgMapper.updateByPrimaryKeySelective(cfg);
+                    }
+                }
+
+
+
+        }catch (Exception e) {
+            logger.error(e.getMessage());
+            result.setIsSuccess(false);
         }
+
         result.setIsSuccess(true);
         return result;
     }
@@ -221,6 +249,7 @@ public class TaskHandleController {
         EtlTaskrelaCfgExample etlTaskrelaCfgExample = new EtlTaskrelaCfgExample();
         EtlTaskrelaCfgExample.Criteria criteria = etlTaskrelaCfgExample.createCriteria();
         if (taskid != null) criteria.andTaskIdEqualTo(taskid);
+        criteria.andIfEnableEqualTo(1);
         List<EtlTaskrelaCfg> list =  etlTaskrelaCfgMapper.selectByExample(etlTaskrelaCfgExample);
         List<TaskRelaDo> ret = new ArrayList<TaskRelaDo>();
         for(int i = 0;i < list.size();i ++) {
