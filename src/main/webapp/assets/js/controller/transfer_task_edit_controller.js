@@ -128,7 +128,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             }
         })
         console.log($scope.paramMap);
-    }
+    };
 
     //function getDevelopers (){
     //    var rep = DimService.queryAllDevelopers({},{});

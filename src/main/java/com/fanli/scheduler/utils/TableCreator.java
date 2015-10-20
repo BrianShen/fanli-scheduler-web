@@ -113,11 +113,7 @@ public class TableCreator {
         builder.append("\n").append(")");
         if (type.equals(TYPE_HIVE)) {
             builder.append("\n").append("ROW FORMAT DELIMITED").append("\n")
-                    .append("FIELDS TERMINATED BY '\\005'").append("\n")
-                    .append("COLLECTION ITEMS TERMINATED BY '\\002'").append("\n")
-                    .append("MAP KEYS TERMINATED BY '\\003'").append("\n")
-                    .append("LINES TERMINATED BY '\\n'").append("\n")
-                    .append("STORED AS RCFILE");
+                    .append("FIELDS TERMINATED BY '\\t'");
         }
         return builder;
     }
