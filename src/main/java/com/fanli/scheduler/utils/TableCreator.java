@@ -113,7 +113,7 @@ public class TableCreator {
         builder.append("\n").append(")");
         if (type.equals(TYPE_HIVE)) {
             builder.append("\n").append("ROW FORMAT DELIMITED").append("\n")
-                    .append("FIELDS TERMINATED BY '\\t';");
+                    .append("FIELDS TERMINATED BY '\\t'");
         }
         return builder;
     }

@@ -76,7 +76,9 @@ angular.module("constant.service",[])
               return [
                   {id:1,name:'今天(YYYY-MM-DD)',v:'${this_day10}'},
                   {id:2,name:'昨天(YYYY-MM-DD)',v:'${date}'},
-                  {id:3,name:'前一小时(YYYY-MM-DD HH:00:00)',v:'${this_hour}'}
+                  {id:3,name:'当前小时(YYYY-MM-DD HH:00:00)',v:'${this_hour}'},
+                  {id:4,name:'UNIX_TIMESTAMP',v:'${unix_timestamp}'},
+                  {id:5,name:'前一小时(YYYY-MM-DD HH:00:00)',v:'${last_hour}'}
               ]
             },
 

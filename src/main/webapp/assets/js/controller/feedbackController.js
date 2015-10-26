@@ -35,9 +35,9 @@ fanliApp.controller('feedbackCtrl',function($scope,$resource) {
         );
     }
 
-    $scope.getUrl = function(index) {
-        var fed = $scope.comments[index];
-        return
-    }
+    //$scope.getUrl = function(index) {
+    //    var fed = $scope.comments[index];
+    //    return
+    //}
 
 })

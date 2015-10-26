@@ -31,6 +31,7 @@ public class TypeTransformer {
         toHive.put("INTEGER","INT");
         toHive.put("FLOAT","FLOAT");
         toHive.put("DOUBLE","DOUBLE");
+        toHive.put("TIMESTAMP","TIMESTAMP");
 
     }
 

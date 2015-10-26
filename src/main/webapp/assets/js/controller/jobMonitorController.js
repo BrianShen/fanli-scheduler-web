@@ -41,6 +41,26 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,ConstantS
         })
     };
 
+    $scope.getTimeid = function(id,cycle) {
+        if(id.indexOf('pre') >= 0) {
+            if(cycle == 'D') {
+                return id.substring(10,14) + '-' + id.substring(14,16) + '-' + id.substring(16,18);
+            } else if(cycle == 'H'){
+                return id.substring(10,14) + '-' + id.substring(14,16) + '-' + id.substring(16,18) + '  ' + id.substring(18,20);
+            } else {
+                return id;
+            }
+        } else {
+            if(cycle == 'D') {
+                return id.substring(6,10) + '-' + id.substring(10,12) + '-' + id.substring(12,14);
+            } else if(cycle == 'H'){
+                return id.substring(6,10) + '-' + id.substring(10,12) + '-' + id.substring(12,14) + '  ' +
+                    '' + id.substring(14,16);
+            } else return id;
+        }
+        return id;
+    }
+
     $scope.handleJobType = function() {
         $scope.submitSearch();
     }

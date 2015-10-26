@@ -153,8 +153,11 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
     }
 
     var updatePres = function() {
-        var ret = JobManageService.updatePre({},JSON.stringify(getPreList()));
-
+        //var ret = JobManageService.updatePre({},JSON.stringify(getPreList()));
+        var ret = JobManageService.updatePre({},{
+            taskId:$routeParams.taskid,
+            cfgs:getPreList()
+        });
         ret.$promise.then(function(data) {
             if(data.isSuccess) {
                 showMsg('保存成功')

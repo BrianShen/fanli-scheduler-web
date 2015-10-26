@@ -106,6 +106,7 @@
                     <thead>
                     <tr role="row">
                         <th class=" width-10">任务实例ID</th>
+                        <th class="width-10">时间批次</th>
                         <th>任务ID</th>
                         <th class="width-20">任务名</th>
                         <th>周期</th>
@@ -119,6 +120,7 @@
                     <tbody>
                     <tr ng-repeat="jobInstance in jobInstanses|orderBy:'startTime':reverse" >
                         <td style="word-break:break-all; word-wrap:break-word;">{{jobInstance.taskStatusId}}</td>
+                        <td>{{getTimeid(jobInstance.taskStatusId,jobInstance.cycle)}}</td>
                         <td>{{jobInstance.taskId}}</td>
                         <td style="word-break:break-all; word-wrap:break-word;">{{jobInstance.taskName}}</td>
                         <td>
@@ -151,6 +153,12 @@
                                     <i class="icon-ok bigger-130"></i>
                                     <span>置为成功</span>
                                 </button>
+                                <!--<button class="btn-link red" ng-click="showRelaTree($index)"-->
+                                        <!--tooltip-placement="top"-->
+                                        <!--tooltip="血缘树">-->
+                                    <!--<i class="icon-ok bigger-130"></i>-->
+                                    <!--<span>血缘树</span>-->
+                                <!--</button>-->
                                 <!--<button class="btn-link green" ng-click="reRunJobCascaded($index)"-->
                                         <!--ng-show="(canReRun(jobInstance.status) && user.isAdmin)"-->
                                         <!--tooltip-placement="top" tooltip="级联重跑">-->
