@@ -184,7 +184,24 @@
             <textarea class="col-sm-10" ng-model="sql" rows="10"></textarea>
             <button class="btn btn-success btn-minier" style="margin-left: 10px" ng-click="edit=!edit"><i class="icon-check"></i></button>
         </div>
-
+    </div>
+    <div class="col-xs-12  col-sm-12">
+        <h4 class="header smaller lighter blue">
+            <span>
+                <strong>传输前置sql</strong>
+            </span>
+        </h4>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+        <div class="col-sm-12" style="font-size: 12px;color: blue;margin-bottom: 5px">*目前只有hive2sqlserver需要配置前置sql</div>
+        <div class="row width-100" ng-show="!preEdit">
+            <pre  class="prettyprint linenums col-sm-10 marginL18">{{preSql}}</pre>
+            <button class="btn btn-success btn-minier" style="margin-left: 10px" ng-click="preEdit=!preEdit"><i class="icon-edit"></i></button>
+        </div>
+        <div class="row width-100" ng-show="preEdit">
+            <textarea class="col-sm-10" ng-model="preSql" rows="10"></textarea>
+            <button class="btn btn-success btn-minier" style="margin-left: 10px" ng-click="submitWriterParam()"><i class="icon-check"></i></button>
+        </div>
     </div>
     <div class="alert alert-danger col-xs-12" ng-show="errorShow">
         <!--<button type="button" class="close" data-dismiss="alert">-->

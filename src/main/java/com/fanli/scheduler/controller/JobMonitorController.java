@@ -1,5 +1,6 @@
 package com.fanli.scheduler.controller;
 
+import com.fanli.scheduler.bean.InstanceRelaNode;
 import com.fanli.scheduler.bean.Result;
 import com.fanli.scheduler.entity.EtlTaskStatus;
 import com.fanli.scheduler.entity.EtlTaskrelaStatus;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wei.shen on 2015/7/29.
@@ -106,5 +109,17 @@ public class JobMonitorController {
             logger.error("get direct influence instances error", e);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/instanceTree/{instanceId}")
+    @ResponseBody
+    public Map<String,Object> getRelaTreeByInstanceId(@PathVariable("instanceId") String instanceId) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        InstanceRelaNode node = instanceRelaService.handleGetRelaInstanceTreeStatusByInstanceId(instanceId);
+        if (node != null) {
+            map.put("code",200);
+            map.put("tree",node);
+        }
+        return map;
     }
 }

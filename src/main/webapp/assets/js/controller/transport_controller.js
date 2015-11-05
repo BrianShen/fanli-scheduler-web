@@ -448,7 +448,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         var ret;
         if(src == 'hive') {
             switch ($scope.conf_cycle){
-                case 'H':ret = "ds='${yyyy-MM-dd}' and hour='${HH;P1H}'";break;
+                case 'H':ret = "ds='${yyyy-MM-dd;P1H}' and hour='${HH;P1H}'";break;
                 case 'D':ret = $scope.conf_incr_field + "='${yyyy-MM-dd;P1D}'";break;
                 case 'M':ret = $scope.conf_incr_field + ">='${yyyy-MM-01;P1M}' and " +$scope.conf_incr_field + "<'${yyyy-MM-01}'";break;
                 case 'W':ret = $scope.conf_incr_field + ">='${yyyy-MM-dd;F1W}' and " + $scope.conf_incr_field + "<'${yyyy-MM-dd;F0W}'";break;

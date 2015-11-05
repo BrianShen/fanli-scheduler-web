@@ -24,9 +24,25 @@ public class EtlLoadService {
         return etlLoadCfg.getParameterMap();
     }
 
+    public String getWriterCfg(Integer taskid) {
+        EtlLoadCfgExample etlLoadCfgExample = new EtlLoadCfgExample();
+        etlLoadCfgExample.or().andTaskIdEqualTo(taskid).andTypeEqualTo("writer").andIsValidEqualTo(1);
+        EtlLoadCfg etlLoadCfg = etlLoadCfgMapper.selectByExample(etlLoadCfgExample).get(0);
+        return etlLoadCfg.getParameterMap();
+    }
+
     public int modifyTransferSql(Integer taskid,String paramMap) {
         EtlLoadCfgExample etlLoadCfgExample = new EtlLoadCfgExample();
         etlLoadCfgExample.or().andTaskIdEqualTo(taskid).andTypeEqualTo("reader").andIsValidEqualTo(1);
+        EtlLoadCfg etlLoadCfg = new EtlLoadCfg();
+        etlLoadCfg.setParameterMap(paramMap);
+        int ret = etlLoadCfgMapper.updateByExampleSelective(etlLoadCfg, etlLoadCfgExample);
+        return ret;
+    }
+
+    public int modifyPreSql(Integer taskid,String paramMap) {
+        EtlLoadCfgExample etlLoadCfgExample = new EtlLoadCfgExample();
+        etlLoadCfgExample.or().andTaskIdEqualTo(taskid).andTypeEqualTo("writer").andIsValidEqualTo(1);
         EtlLoadCfg etlLoadCfg = new EtlLoadCfg();
         etlLoadCfg.setParameterMap(paramMap);
         int ret = etlLoadCfgMapper.updateByExampleSelective(etlLoadCfg,etlLoadCfgExample);

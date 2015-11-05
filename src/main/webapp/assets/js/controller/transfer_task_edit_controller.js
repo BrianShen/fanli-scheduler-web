@@ -115,6 +115,7 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             return;
         }
         $scope.paramMap.sql = $scope.sql;
+
         var param = $resource('/fanli/load/sql',{taskid:'@taskid',paramMap:'@paramMap'});
         param.save({},{
             taskid:$routeParams.taskid,
@@ -126,9 +127,31 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
                 console.log("修改sql成功")
 
             }
-        })
+        });
         console.log($scope.paramMap);
     };
+
+    $scope.submitWriterParam =  function () {
+
+        if(!$scope.preSql) {
+            $scope.preEdit=!$scope.preEdit;
+            return;
+        }
+        $scope.paramMap.pre = $scope.preSql;
+        var param = $resource('/fanli/load/pre',{taskid:'@taskid',paramMap:'@paramMap'});
+        param.save({},{
+            taskid:$routeParams.taskid,
+            paramMap:$scope.paramMap
+        },function(data) {
+            if(data.isSuccess) {
+                $scope.preEdit=!$scope.preEdit
+                console.log("pre sql update successfully!")
+            }
+        },function(data) {
+            alert("pre sql update failed!")
+        });
+    }
+
 
     //function getDevelopers (){
     //    var rep = DimService.queryAllDevelopers({},{});
@@ -149,11 +172,30 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         }).$promise.then(function(data) {
             setValues(data);
                 getTransgerSql(id);
+                getPresql(id);
                 setLoading(false,'');
         },function() {
                 $scope.errorShow = true;
                 $scope.cfgMsg = '获取传输配置信息失败，请联系开发';
             })
+    }
+
+    function getPresql(id) {
+        $http.get("/fanli/load/pre",{
+            params:{
+                taskId:id
+            }
+        }).success(function(data) {
+            if(data.isSuccess) {
+                $scope.paramMap = JSON.parse(data.result);
+                var pre_sql = $scope.paramMap.pre;
+                $scope.preSql = pre_sql;
+                setLoading(false,'');
+            }
+        }).error(function(data) {
+
+            setLoading(false,'');
+        })
     }
 
     function getTransgerSql(id) {

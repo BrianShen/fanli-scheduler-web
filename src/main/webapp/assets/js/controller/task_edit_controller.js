@@ -6,14 +6,7 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
     $scope.taskid = $routeParams.taskid;
     $scope.Loading = true;
     $scope.LoadingMsg = '加载中...';
-    $scope.taskGroupOptions= [
-        {ID: 1, Text: 'ods'},
-        {ID: 2, Text: 'load'},
-        {ID: 3, Text: 'dm'},
-        {ID: 4, Text: 'dw'},
-        {ID: 5, Text: 'rpt'},
-        {ID: 6, Text: 'dim'}
-    ];
+    $scope.taskGroupOptions= ConstantService.getTaskGroupOption();
     $scope.cycleOptions  = {
         mi: '分', H: '时', D: '日', W: '周', M: '月', Y: '年'
     };

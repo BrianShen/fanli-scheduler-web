@@ -33,12 +33,34 @@ public class WormholeLoadController {
         result.setIsSuccess(true);
         return result;
     }
+    @ResponseBody
+    @RequestMapping(value = "/pre",method = RequestMethod.GET)
+    public Result<String> getPreSql(@RequestParam("taskId") Integer taskId) {
+        Result<String> result = new Result<String>();
+        if (taskId == null) {
+            throw new RuntimeException("taskid can not be null");
+        }
+        result.setResult(etlLoadService.getWriterCfg(taskId));
+        result.setIsSuccess(true);
+        return result;
+    }
 
     @ResponseBody
     @RequestMapping(value = "/sql",method = RequestMethod.POST)
     public Result updateTransferSql(@RequestParam("taskid") Integer taskid,@RequestParam("paramMap") String paramMap) {
         Result result = new Result();
         int row = etlLoadService.modifyTransferSql(taskid,paramMap);
+        if (row == 1) {
+            result.setIsSuccess(true);
+        } else result.setIsSuccess(false);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/pre",method = RequestMethod.POST)
+    public Result updatePreSql(@RequestParam("taskid") Integer taskid,@RequestParam("paramMap") String paramMap) {
+        Result result = new Result();
+        int row = etlLoadService.modifyPreSql(taskid,paramMap);
         if (row == 1) {
             result.setIsSuccess(true);
         } else result.setIsSuccess(false);

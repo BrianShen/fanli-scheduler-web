@@ -47,6 +47,9 @@ fanliApp.config(function ($routeProvider) {
         }).when('/compatible',{
             templateUrl: 'other_task.html',
             controller: 'OtherTaskCtrl'
-        });
+        }).when('/instance_status_tree/:instanceId',{
+            templateUrl: 'instance_status.html',
+            controller: 'instanceStatusCtrl'
+        }) ;
 
 });

@@ -3,14 +3,7 @@
  */
 
 fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService','component','ConstantService', function($scope,$filter,$modal,JobManageService,component,ConstantService) {
-    $scope.taskGroupOptions= [
-        {ID: 1, Text: 'ods'},
-        {ID: 2, Text: 'load'},
-        {ID: 3, Text: 'dm'},
-        {ID: 4, Text: 'dw'},
-        {ID: 5, Text: 'export'},
-        {ID: 6, Text: 'dim'}
-    ];
+    $scope.taskGroupOptions= ConstantService.getTaskGroupOption();
 
     initPageParams();
 

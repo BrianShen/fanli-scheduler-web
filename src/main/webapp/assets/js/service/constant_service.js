@@ -69,6 +69,7 @@ angular.module("constant.service",[])
                   case 4:return 'DW';
                   case 5:return 'EXPORT';
                   case 6:return 'DIM';
+                  case 7:return 'ONLINE'
               }
             },
 
@@ -94,7 +95,8 @@ angular.module("constant.service",[])
                   {ID: 3, Text: 'dm'},
                   {ID: 4, Text: 'dw'},
                   {ID: 5, Text: 'export'},
-                  {ID: 6, Text: 'dim'}
+                  {ID: 6, Text: 'dim'},
+                  {ID: 7, Text: 'online'}
               ];
             },
 
