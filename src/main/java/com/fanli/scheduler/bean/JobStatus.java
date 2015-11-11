@@ -7,6 +7,15 @@ public class JobStatus {
     private Integer taskId;
     private String instanceId;
     private Integer status;
+    private String taskName;
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
     public Integer getTaskId() {
         return taskId;

@@ -215,6 +215,48 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
         });
     };
 
+    $scope.deleteJob = function(index) {
+        var job = getJobByIndex(index);
+        $scope.message = {
+            headerText: '警告: 以下任务将会受到影响，请确认是否删除任务' + job.taskId + '?',
+            actionButtonStyle: 'btn-danger',
+            taskId: job.taskId
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/influencedTasksDialog.html',
+            controller: InfluencedTaskCtrl,
+            windowClass: 'taskQueryDialog',
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            var result = JobManageService.deleteTask({
+                'taskId': job.taskId
+            });
+            $scope.isLoading = true;
+            $scope.closeAlert();
+            result.$promise.then(function(data) {
+                if(data.isSuccess) {
+
+                    $scope.isLoading = false;
+                    $scope.showAlert('alert-success','成功将任务' + job.taskName + '从调度删除，如要恢复，请找开发同学');
+                    $scope.submitQuery();
+                } else {
+                    $scope.isLoading = false;
+                    $scope.showAlert('alert-danger','删除失败！');
+                }
+            },function(data) {
+                $scope.isLoading = false;
+                $scope.showAlert('alert-danger','删除失败！');
+            })
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
+    }
+
 
     // * *******************************************************任务操作***************************************************************
 

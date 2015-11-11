@@ -28,7 +28,7 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
         var title = {
             text: '树图'
         }
-        title.subtext = tree.self.instanceId  + "的血缘树";
+        title.subtext = tree.self.instanceId + ':' + tree.self.taskName  + "的血缘树";
         option.title = title;
 
 
@@ -62,7 +62,7 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
                 type: 'tree',
                 orient: 'vertical',  // vertical horizontal
                 rootLocation: {x: 'center', y: 'center'}, // 根节点位置  {x: 100, y: 'center'}
-                nodePadding: 150,
+                nodePadding: 200,
                 roam: 'scale',
                 direction: 'inverse',
                 symbol: 'rectangle',
@@ -100,7 +100,7 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
     function getTreeDataRecursion(tree) {
         var base = {};
         if(tree.self) {
-            base.name = tree.self.instanceId;
+            base.name = tree.self.taskName;
             base.itemStyle = {
 
                 normal:{
@@ -134,6 +134,7 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
             case 5:return '#EEAD0E';
             case 6:return '#FFFCC7';
             case 7:return '#0000FF';
+            case -1:return '#FF3030';
             default :return '#ffffff';
         }
     }

@@ -162,6 +162,13 @@
                                     <i class="icon-pause bigger-130"></i>
                                     <span>上线</span>
                                 </button>
+                                <button class="btn-link red" ng-click="deleteJob($index)"
+                                tooltip-placement="top"
+                                tooltip="删除"
+                                        ng-show="isValid==false">
+                                <i class="icon-remove bigger-130"></i>
+                                    <span>删除</span>
+                                </button>
 
                                 <!--<a class="blue" href="#/jobView/{{job.taskId}}" target="_BLANK"-->
                                    <!--tooltip-placement="top"-->

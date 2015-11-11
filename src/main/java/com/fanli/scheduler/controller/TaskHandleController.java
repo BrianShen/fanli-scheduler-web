@@ -372,6 +372,20 @@ public class TaskHandleController {
         return result;
     }
 
+    @RequestMapping(value = "/deleteTask",method = RequestMethod.POST)
+    @ResponseBody
+    public Result deleteTask(@RequestParam(value = "taskId", defaultValue = "") String taskId) {
+        Result result = new Result();
+        try {
+            Date date = new Date();
+            result.setIsSuccess(taskService.deleteTask(Integer.parseInt(taskId),date));
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     /**
      * 根据taskid查询直接孩子
      */

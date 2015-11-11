@@ -89,6 +89,13 @@ angular.module('job_manage.service', ['ngResource'])
                             taskId: '@taskId'
                         }
                     },
+                    deleteTask:{
+                        method:'POST',
+                        params:{
+                            action:'deleteTask',
+                            taskId:'@taskId'
+                        }
+                    },
                     getInfluencedTasksByTaskId:{
                       method:'GET',
                         params:{

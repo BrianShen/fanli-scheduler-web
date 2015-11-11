@@ -66,6 +66,7 @@ public class InstanceRelaService {
         jobStatus.setTaskId(self.getTaskId());
         jobStatus.setInstanceId(self.getTaskStatusId());
         jobStatus.setStatus(self.getStatus());
+        jobStatus.setTaskName(self.getTaskName());
         node.setSelf(jobStatus);
 
         if (list.size() == 0) {

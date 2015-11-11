@@ -1,5 +1,5 @@
 /**
- * Created by wei.shen on 2015/7/11.
+ * Created by wei.shen on 2015/7/11. 1234567
  */
 var fanliApp = angular.module("fanliApp", [
     'ngRoute',

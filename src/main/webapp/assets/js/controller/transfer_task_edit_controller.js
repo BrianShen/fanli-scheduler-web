@@ -132,16 +132,15 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
     };
 
     $scope.submitWriterParam =  function () {
-
         if(!$scope.preSql) {
             $scope.preEdit=!$scope.preEdit;
             return;
         }
-        $scope.paramMap.pre = $scope.preSql;
+        $scope.writerParamMap.pre = $scope.preSql;
         var param = $resource('/fanli/load/pre',{taskid:'@taskid',paramMap:'@paramMap'});
         param.save({},{
             taskid:$routeParams.taskid,
-            paramMap:$scope.paramMap
+            paramMap:$scope.writerParamMap
         },function(data) {
             if(data.isSuccess) {
                 $scope.preEdit=!$scope.preEdit
@@ -187,8 +186,8 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             }
         }).success(function(data) {
             if(data.isSuccess) {
-                $scope.paramMap = JSON.parse(data.result);
-                var pre_sql = $scope.paramMap.pre;
+                $scope.writerParamMap = JSON.parse(data.result);
+                var pre_sql = $scope.writerParamMap.pre;
                 $scope.preSql = pre_sql;
                 setLoading(false,'');
             }
