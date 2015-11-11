@@ -180,3 +180,7 @@
     list-style-type: none;
 }
 
+.headerText {
+    font-size: 30px;
+    color: white;
+}
