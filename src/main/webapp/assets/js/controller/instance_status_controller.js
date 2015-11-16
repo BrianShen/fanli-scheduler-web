@@ -62,8 +62,8 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
                 type: 'tree',
                 orient: 'vertical',  // vertical horizontal
                 rootLocation: {x: 'center', y: 'center'}, // 根节点位置  {x: 100, y: 'center'}
-                nodePadding: 200,
-                roam: 'scale',
+                nodePadding: 150,
+                roam: true,
                 direction: 'inverse',
                 symbol: 'rectangle',
                 symbolSize:30,

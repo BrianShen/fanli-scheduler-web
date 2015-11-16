@@ -1823,8 +1823,8 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
                 type: 'tree',
                 orient: 'vertical',  // vertical horizontal
                 rootLocation: {x: 'center', y: 'center'}, // 根节点位置  {x: 100, y: 'center'}
-                nodePadding: 200,
-                roam: 'scale',
+                nodePadding: 150,
+                roam: true,
                 direction: 'inverse',
                 symbol: 'rectangle',
                 symbolSize:30,
@@ -2020,7 +2020,7 @@ fanliApp.controller('instanceStatusCtrl',function($scope,$resource,$routeParams)
  * Created by wei.shen on 2015/7/29.
  */
 
-fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource,ConstantService,JobMonitorService) {
+fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource,component,ConstantService,JobMonitorService) {
     var dateToStr = function (x, y) {
         var z = {M: x.getMonth() + 1, d: x.getDate(), h: x.getHours(), m: x.getMinutes(), s: x.getSeconds()};
         y = y.replace(/(M+|d+|h+|m+|s+)/g, function (v) {
@@ -2035,6 +2035,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
     }
     $scope.startDate = initDate();
     $scope.endDate = initDate();
+    $scope.hideTable = true;
     $scope.executionStatusOptions = ConstantService.getJobMonitorStatus();
     $scope.jobStatus = $scope.executionStatusOptions[1].ID;
     $scope.ifPreRun = false;
@@ -2051,7 +2052,11 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
         }}).success(function(data) {
             //$scope.jobInstanses = data.results;
             //$scope.reverse = true;
-            $scope.jobInstanses =  $filter('orderBy')(data.results, 'startTime',$scope.reverse);
+            //$scope.jobInstanses =  $filter('orderBy')(data.results, 'startTime',$scope.reverse);
+            $scope.allTaskList = data.results;
+            $scope.table = component.getCustomizedTable($scope, $filter);
+            $scope.hideTable = false;
+            console.log($scope.table);
             setLoding(false);
         }).error(function() {
             setAlert(true,'alert-danger','未知异常');
@@ -2109,9 +2114,17 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
         window.open("#/job_log/" + job.taskStatusId );
     };
 
-    var getJobByIndex = function(index) {
-        return $scope.jobInstanses[index];
+
+    //根据实际的index获得job
+    function getJobByIndex(index) {
+        var selectIndex = getSelectedIndex(index);
+        return $scope.table.displayedDataList[selectIndex]; //需要设置的任务
     }
+
+    //根据当前页的index获得实际的index
+    function getSelectedIndex(index) {
+        return  index + ($scope.table.startIndex - 1);
+    };
     $scope.reverse = true;
     $scope.$watch('reverse',function() {
         $scope.jobInstanses =  $filter('orderBy')($scope.jobInstanses, 'startTime',$scope.reverse);
@@ -2137,6 +2150,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
 
     //重跑任务
     $scope.reRunJob = function (index) {
+        console.log(index)
         var job = getJobByIndex(index);
         $scope.message = {
             headerText: '提示',
@@ -2161,7 +2175,8 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
             $scope.isLoading = true;
             result.$promise.then(function(data) {
                 $scope.isLoading = false;
-                $scope.jobInstanses[index].status = 0;
+                //$scope.jobInstanses[index].status = 0;
+                $scope.table.displayedDataList[getSelectedIndex(index)].status = 0;
                 setAlert(true,'alert-success','成功添加重跑任务' + job.taskStatusId + ':' + job.taskName);
 
             },function(){})
@@ -2199,7 +2214,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
                     setAlert(true,'alert-success',data.messages);
                     $scope.isLoading = false;
                     if (data.isSuccess) {
-                        $scope.jobInstanses[index].status = 1;
+                        $scope.table.displayedDataList[getSelectedIndex(index)].status = 1;
                     }
                 });
         }, function () {

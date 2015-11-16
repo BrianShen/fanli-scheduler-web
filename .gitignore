@@ -5,6 +5,7 @@
 .svn/
 .DS_Store
 .idea/
+node_modules/
 
 **/temp/**
 **/build/**
