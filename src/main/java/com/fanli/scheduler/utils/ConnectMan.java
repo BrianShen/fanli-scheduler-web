@@ -31,6 +31,36 @@ public enum ConnectMan {
         }
     }
 
+    public GeneralTable getPrimaries(String conn,String db,String table) {
+        GeneralTable generalTable = new GeneralTable();
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            connection = getConnetion(conn);
+            //rs = connection.getMetaData().getColumns(db, null, table, null);
+            rs = connection.getMetaData().getPrimaryKeys(db, null, table);
+            List<GeneralColumn> list = new ArrayList<GeneralColumn>();
+            while (rs.next()) {
+                GeneralColumn gc = new GeneralColumn();
+                gc.setName(rs.getString("COLUMN_NAME"));
+                list.add(gc);
+            }
+            generalTable.setColumns(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            assert rs != null;
+            try {
+                rs.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        generalTable.setName(table);
+        return generalTable;
+    }
+
     private JdbcObject getJdbcObject(String connectProperty) {
         String ip = config.getProperty(connectProperty +".ip");
         String port = config.getProperty(connectProperty + ".port");

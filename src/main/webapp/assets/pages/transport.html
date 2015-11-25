@@ -158,7 +158,7 @@
                             <!--</div>-->
                         </form>
                     </div>
-                    <div class="space-10"></div>
+                    <!--<div class="space-10"></div>-->
                     <div class="row" >
                         <!--<div class="col-xs-3" ng-show="conf_target=='hive'&&conf_target_db!='dim'&&conf_target_db!='tmpdb'">-->
                             <!--<label class="col-sm-4 inputFloat control-label textRight">存储模式</label>-->
@@ -209,6 +209,24 @@
                             <div class="col-sm-8">
                                 <select ng-model="conf_incr_field"  class="form-control" ng-change="incrFieldChange()"
                                         ng-options="value.name as value.name for value in fieldOptions">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-3" ng-show="conf_target=='hive'">
+                            <label class="col-sm-4 inputFloat control-label textRight">是否按主键</label>
+                            <div class="col-sm-8">
+                                <select ng-model="conf_if_primarykey"  class="form-control" ng-change="getPrimaryKey()">
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-3" ng-show="conf_if_primarykey=='1'">
+                            <label class="col-sm-4 inputFloat control-label textRight">选择主键</label>
+                            <div class="col-sm-8">
+                                <select ng-model="conf_primary_key"  class="form-control"
+                                        ng-options="value.name as value.name for value in primaryOptions">
 
                                 </select>
                             </div>

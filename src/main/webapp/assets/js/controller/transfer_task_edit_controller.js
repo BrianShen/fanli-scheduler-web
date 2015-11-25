@@ -114,7 +114,19 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
             showAlert('修改成功');
             return;
         }
+        var sql = $scope.sql.trim();
+        var columns = sql.split('select')[1].trim().split('from')[0];
+        var where = '';
+        if(sql.indexOf('where') >= 0) {
+            where = sql.split('where')[1].trim();
+        }
+        if(columns == '' || columns == undefined || columns == null) {
+            return;
+        }
         $scope.paramMap.sql = $scope.sql;
+        $scope.paramMap.columns = columns;
+        if(where == ''|| where == undefined) delete $scope.paramMap.where;
+        else $scope.paramMap.where = where;
 
         var param = $resource('/fanli/load/sql',{taskid:'@taskid',paramMap:'@paramMap'});
         param.save({},{

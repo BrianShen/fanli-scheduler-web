@@ -508,10 +508,10 @@ var PreRunTaskCtrl = function ($scope, $filter, $modalInstance, msg) {
                     break;
                 case 'M':
                     //计算返回的时间值
-                    $scope.returnBackTime.startDate = $scope.time.startYear + '-' + $scope.time.startMonth + '-01';
+                    $scope.returnBackTime.startDate = $scope.time.startYear + '-' + $scope.time.startMonth + '-01' + ' 00:00:00';
                     endTimeForCalcu = new Date($scope.time.endYear, $scope.time.endMonth - 1, "01");
                     endTimeForCalcu.setMonth(endTimeForCalcu.getMonth() + 1);
-                    $scope.returnBackTime.endDate = $filter("dateFormat")(endTimeForCalcu, "yyyy-MM-dd", 1);
+                    $scope.returnBackTime.endDate = $filter("dateFormat")(endTimeForCalcu, "yyyy-MM-dd 00:00:00", 1);
                     break;
             }
             var starttime = new Date(

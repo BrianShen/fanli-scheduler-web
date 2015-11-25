@@ -42,7 +42,7 @@ public class DatebaseController {
     @RequestMapping(value = "/tableInfo",method = RequestMethod.GET)
     public Result<String> getTableByName(@RequestParam("connectProp")String connectProp,@RequestParam("db")String db,@RequestParam("tableName") String tableName) {
         Result<String> result = new Result<String>();
-        result.setResults(databaseService.getTableInfo(connectProp,db,tableName));
+        result.setResults(databaseService.getTableInfo(connectProp, db, tableName));
         result.setIsSuccess(true);
         return result;
     }
@@ -52,6 +52,16 @@ public class DatebaseController {
     public Result<GeneralTable> getJdbcIncreaseField(@RequestParam("connectProp")String connectProp,@RequestParam("db")String db,@RequestParam("tableName") String tableName) {
         Result<GeneralTable> result = new Result<GeneralTable>();
         result.setResult(databaseService.getDateTimeIncreaseField(connectProp, db, tableName));
+        result.setIsSuccess(true);
+        return result;
+    }
+
+    @RequestMapping(value = "/primaryKey",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<GeneralTable> getPrimaryKey(@RequestParam("connectProp")String connectProp,
+                                              @RequestParam("db")String db,@RequestParam("tableName") String tableName){
+        Result<GeneralTable> result = new Result<GeneralTable>();
+        result.setResult(databaseService.getPrimaryKey(connectProp,db,tableName));
         result.setIsSuccess(true);
         return result;
     }

@@ -50,6 +50,10 @@ public class DatabaseService {
         return ConnectMan.INSTANCE.getTablesInfo(conn, db, table);
     }
     public int build(String conn,String db,String sql) {
-       return ConnectMan.INSTANCE.createTable(conn,db,sql);
+       return ConnectMan.INSTANCE.createTable(conn, db, sql);
+    }
+
+    public GeneralTable getPrimaryKey(String conn,String db,String table) {
+        return ConnectMan.INSTANCE.getPrimaries(conn, db, table);
     }
 }

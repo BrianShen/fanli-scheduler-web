@@ -108,7 +108,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
     $scope.targetSelect  = function () {
         //setLoading(true,"正在查询...");
-        console.log('target select is ' + $scope.conf_target);
+        //console.log('target select is ' + $scope.conf_target);
         if($scope.conf_target == 'hive') {
             $scope.target_database_options = ['load','ods','dim','tmpdb'];
         }else {
@@ -127,7 +127,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
     $scope.sourceSelect = function() {
         //setLoading(true,"正在查询...");
-        console.log('src select is :' + $scope.conf_src);
+        //console.log('src select is :' + $scope.conf_src);
         $scope.src_database_options = [];
         if($scope.conf_src == 'hive') {
             $scope.src_database_options = ['load','ods','dw','dm','dim','tmpdb'];
@@ -228,6 +228,36 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     $scope.incrFieldChange = function() {
 
     }
+
+    $scope.getPrimaryKey = function() {
+        $http.get("/fanli/db/primaryKey", {
+            params:{
+                tableName:$scope.conf_src_table.trim(),
+                connectProp:$scope.conf_src_domain,
+                db:$scope.conf_src_db
+            }
+        }).success(function(data) {
+            if(data.isSuccess) {
+                $scope.primaryOptions = data.result.columns;
+            }
+            }).error(function() {
+                alert("error get primary key")
+            })
+    }
+
+    function getJdbcColumns() {
+        $http.get("/fanli/db/columns",{
+            params:{
+                tableName:$scope.conf_src_table.trim(),
+                connectProp:$scope.conf_src_domain,
+                db:$scope.conf_src_db
+            }
+        }).success(function(data) {
+            if(data.isSuccess) {
+                $scope.fieldOptions = data.result.columns;
+            }
+        })
+    }
     $scope.submitForm = function() {
         setAlertMessage(false,'');
         if(!checkForm()) {
@@ -235,7 +265,6 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         }
         $scope.getTargetTableName();
         getSourceTableInfo();
-
         //checkSourceTableExists();
 
     }
@@ -259,7 +288,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         } else if($scope.conf_target=='hive'&&$scope.conf_target_db=='tmpdb') {
             $scope.conf_targetTable = $scope.conf_table_name_desc;
         };
-        console.log($scope.conf_targetTable);
+        //console.log($scope.conf_targetTable);
     }
 
     function getStoragePattern() {
@@ -400,18 +429,27 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     function getTransferSql() {
         var col = $scope.commonColumn;
         var sql = 'select ';
+        //writer的columns字段
+        $scope.columns = '';
+        $scope.where = '';
         if($scope.conf_src == 'sqlserver') {
             sql = sql +'[' + col[0].name + ']';
+            $scope.columns = $scope.columns + '[' + col[0].name + ']';
             for(var i = 1;i < col.length;i ++) {
                 sql = sql + ','+'['+ col[i].name + ']';
+                $scope.columns = $scope.columns + ',' + '[' + col[i].name + ']';
             }
-            sql = sql + ',getdate(),getdate()';
+            sql = sql + ',getdate() as ins_date,getdate() as upd_date';
+            $scope.columns = $scope.columns + ',getdate() as ins_date,getdate() as upd_date'
         } else if($scope.conf_src == 'mysql') {
             sql = sql +'`' + col[0].name + '`';
+            $scope.columns = $scope.columns + '`' + col[0].name + '`';
             for(var i = 1;i < col.length;i ++) {
                 sql = sql + ','+'`'+ col[i].name + '`';
+                $scope.columns = $scope.columns + ',' + '`' + col[i].name + '`';
             }
-            sql = sql + ',now(),now()';
+            sql = sql + ',now() as ins_date,now() as upd_date';
+            $scope.columns = $scope.columns + ',now() as ins_date,now() as upd_date';
         }else {
             sql = sql +'`' + col[0].name + '`';
             for(var i = 1;i < col.length;i ++) {
@@ -430,6 +468,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             console.log('增量字段是:' + incr);
             var where = handleWhere($scope.conf_src,incr.type);
             sql = sql  + where;
+            $scope.where = where.split('where')[1].trim();
         }
         $scope.conf_transfer_sql = sql;
         console.log('查询sql是：' + sql);
@@ -509,9 +548,6 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         }
     }
 
-    function getSourceColumns() {
-
-    }
 
     function mergeHiveColumns(p,c) {
         var merged = c;
@@ -874,10 +910,15 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                         showAlert('新增传输成功');
                         $scope.suceessAndDisable = true;
                         setLoading(false,'');
+                        notifyToMonitorDialog();
                     }
                 },function(){setAlert(true,'alert-danger',"保存写参数失败！")})
             }
         },function(){setAlert(true,'alert-danger',"保存读参数失败！")})
+    }
+
+    function notifyToMonitorDialog() {
+
     }
 
 
@@ -897,11 +938,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             plugin: "sqlserverreader",
             connectProps:$scope.conf_src_domain ,
             dbname:$scope.conf_src_db,
+            tableName:$scope.conf_src_table.trim(),
+            columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
             concurrency: "1",
-            needSplit: "false"
+            needSplit: "true"
         };
+        if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
+            $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
+        }
+        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
         $scope.writer = {
             plugin: "hdfswriter",
             dir: getHiveDir(),
@@ -984,16 +1031,34 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
         //})
     }
 
+    function getSplitOption() {
+        if($scope.conf_if_primarykey == "1") {
+            return "true";
+        } else {
+            return "false"
+        }
+    }
+
+
+
     function getMysqlToHiveReaderAndWriter() {
         $scope.reader = {
             plugin: "mysqlreader",
             connectProps: $scope.conf_src_domain,
             dbname:$scope.conf_src_db,
+            tableName:$scope.conf_src_table.trim(),
+            columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
             concurrency: "1",
-            needSplit: "false"
+            autoIncKey:$scope.conf_primary_key,
+            needSplit: "true"
         };
+        if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
+            $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
+        }
+        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
+        console.log($scope.reader);
         $scope.writer = {
             plugin: "hdfswriter",
             dir: getHiveDir(),
