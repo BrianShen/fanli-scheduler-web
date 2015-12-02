@@ -5,12 +5,14 @@
 
 .tag {
     /*width: 70%;*/
-    height: 23px;
+    /*height: 23px;*/
     border: solid 1px white;
-    border-radius: 0px;
+    border-radius: 4px;
     display: block;
 }
-
+.jobTooltip .tooltip {
+    width: auto;
+}
 .textRight {
     text-align: right;
 }

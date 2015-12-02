@@ -1,0 +1,234 @@
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            数据质量监控
+            <small>
+                <i class="icon-double-angle-right"></i>
+                配置>>{{taskId}}
+            </small>
+        </h1>
+    </div><!-- /.page-header -->
+    <div class="alert alert-success col-xs-12" ng-show="saveSuccess">
+        <button type="button" class="close" data-dismiss="alert">
+            <i class="icon-remove"></i>
+        </button>
+        <strong>保存成功</strong>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="form-field-select-1"> owner </label>
+
+                    <div class="col-sm-9">
+                        <select ng-model="owner" ng-show="op=='new'"
+                                id="form-field-select-1" class="width-80"
+                                ng-options="dev as dev.cnName for dev in developerOptions"
+                                ng-change="generateInitConfig()">
+                        </select>
+                        <label ng-show="op=='edit'">{{owner.cnName}}</label>
+                    </div>
+                </div>
+
+                <div class="space-4"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="form-field-2"> 监控主题 </label>
+
+                    <div class="col-sm-9">
+                        <input type="text" ng-model="mail_suject" id="form-field-2" placeholder="请输入主题" class="col-xs-10 col-sm-5" required/>
+                        <span class="help-inline">
+                            <span class="middle red"> *用于邮件和手机告警标题 </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-4"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="mail-input-to"> 邮件发送给 </label>
+
+                    <div class="col-sm-9">
+                        <input type="text"  name="tags"  id="mail-input-to"  placeholder="Enter emails ..." />
+                        <span class="help-inline">
+                            <span class="middle red"> *必填 </span>
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="space-4"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="msg-input"> 短信发送给 </label>
+
+                    <div class="col-sm-9">
+                        <input type="text"  name="tags" id="msg-input"  placeholder="Enter phone number ..." />
+                        <span class="help-inline">
+                            <span class="middle blue"> *可选 </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-4"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="mail-input-cc"> 邮件抄送给 </label>
+
+                    <div class="col-sm-9">
+                        <input type="text"  name="tags" id="mail-input-cc"  placeholder="Enter email CC ..." />
+                        <span class="help-inline">
+                            <span class="middle blue"> *可选 </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="mail_content"> 邮件内容 </label>
+
+                    <div class="col-sm-9">
+                        <textarea ng-model="mail_content" class="col-sm-6" id="mail_content" placeholder="Enter email content ..." ></textarea>
+                        <span class="help-inline">
+                            <span class="middle blue"> *可选 </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-4"></div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="mail_content"> 对比项设置 </label>
+                    <div class="col-sm-9">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th> 差值类型 </th>
+                                <th> 告警临界值 </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <select ng-model="diff_type" required>
+                                        <option value="numerical">数值</option>
+                                        <option value="percentage">百分比</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <label>
+                                        <input type="text" ng-model="min_diff" placeholder="min" required>  =< 源 - 目标 =<
+                                        <input type="text" ng-model="max_diff" placeholder="max" required>
+                                        <span class="help-button" data-placement="right" data-toggle="tooltip"
+                                              title="源数据记录行数减目标表记录行数,如百分比">?</span>
+                                    </label>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <button class="btn btn-success btn-large" type="submit" ng-click="submitMonitorConfig()" style="float: right">submit</button>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label class="col-sm-3 control-label no-padding-right" for="mail_content"> 对比项设置 </label>-->
+                    <!--<div class="col-sm-9"  style="padding-top: 10px">-->
+                        <!--<div class="table-header">查询结果</div>-->
+                        <!--<div class="table-responsive">-->
+                            <!--<div class="dataTables_wrapper jobTooltip" role="grid">-->
+
+                                <!--<table class="table table-striped table-bordered table-hover dataTable">-->
+                                    <!--<tr>-->
+                                        <!--<th class="col-sm-2">源字段</th>-->
+                                        <!--<th class="col-sm-2">目标字段</th>-->
+                                        <!--<th class="col-sm-2">比较项</th>-->
+                                        <!--<th class="col-sm-1">差值类型</th>-->
+                                        <!--<th class="col-sm-1">差值范围</th>-->
+                                        <!--<th class="col-sm-1">操作</th>-->
+                                    <!--</tr>-->
+                                    <!--<tr ng-repeat="option in options">-->
+                                        <!--<td><input type="text" ng-model="option.src"></td>-->
+                                        <!--<td><input type="text" ng-model="option.target"></td>-->
+                                        <!--<td>-->
+                                            <!--<select ng-model="compareType">-->
+                                                <!--<option value="sum">sum</option>-->
+                                                <!--<option value="count">count</option>-->
+                                                <!--<option value="min">min</option>-->
+                                                <!--<option value="max">max</option>-->
+                                                <!--<option value="avg">avg</option>-->
+                                            <!--</select>-->
+                                        <!--</td>-->
+                                        <!--<td>-->
+                                            <!--<select ng-model="diff_type">-->
+                                                <!--<option value="numerical">数值</option>-->
+                                                <!--<option value="percentage">百分比</option>-->
+                                            <!--</select>-->
+                                        <!--</td>-->
+                                        <!--<td>-->
+                                            <!--<label>-->
+                                                <!--<input type="text" ng-model="min_diff" placeholder="min" style="max-width: 20px">-->
+                                                <!--<input type="text" ng-model="max_diff" placeholder="max">-->
+                                            <!--</label>-->
+
+                                        <!--</td>-->
+                                        <!--<td>-->
+                                            <!--<input type="checkbox" ng-model="isSelected" style="height: 20px" >-->
+
+                                        <!--</td>-->
+                                    <!--</tr>-->
+                                <!--</table>-->
+
+                                <!--<div class="row">-->
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<div class="dataTables_filter">-->
+                                            <!--<label>源查询条件:-->
+                                                <!--<input type="text" ng-model="src_where">-->
+                                                <!--<span class="blue">*可选</span>-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+
+                                    <!--</div>-->
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<div class="dataTables_filter">-->
+                                            <!--<label>目标查询条件:-->
+                                                <!--<input type="text" ng-model="target_where">-->
+                                                <!--<span class="blue">*可选</span>-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+
+                                    <!--</div>-->
+
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<div class="dataTables_filter">-->
+                                            <!--<label>源group by: <input type="text" ng-model="groupBy"><span class="blue">*可选</span> </label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+
+                                    <!--<div class="col-sm-6">-->
+                                        <!--<div class="dataTables_filter">-->
+                                            <!--<label>目标group by: <input type="text" ng-model="groupBy"><span class="blue">*可选</span></label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                <!--</div>-->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+

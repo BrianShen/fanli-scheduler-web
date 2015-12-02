@@ -1,6 +1,7 @@
 package com.fanli.scheduler.controller;
 
 import com.fanli.scheduler.bean.Result;
+import com.fanli.scheduler.entity.CtlOwnerInfo;
 import com.fanli.scheduler.entity.DimDateDeveloper;
 import com.fanli.scheduler.entity.DimTargetHiveDb;
 import com.fanli.scheduler.entity.EtlSourceDim;
@@ -27,9 +28,9 @@ public class DimentionController {
 
     @ResponseBody
     @RequestMapping(value = "/developers",method = RequestMethod.GET)
-    public Result<DimDateDeveloper> getDevelopers() {
-        Result<DimDateDeveloper> result = new Result<DimDateDeveloper>();
-        List<DimDateDeveloper> list =  dimService.getAllDevelopers();
+    public Result<CtlOwnerInfo> getDevelopers() {
+        Result<CtlOwnerInfo> result = new Result<CtlOwnerInfo>();
+        List<CtlOwnerInfo> list =  dimService.getAllDevelopers();
         result.setResults(list);
         result.setIsSuccess(true);
         return result;

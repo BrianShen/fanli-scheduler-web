@@ -3,10 +3,9 @@ package com.fanli.scheduler.service;
 import com.jcraft.jsch.*;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wei.shen on 2015/7/29.
@@ -71,6 +70,50 @@ public class SSHService {
             channel.disconnect();
             session.disconnect();
             return true;
+        }
+    }
+
+    public Map<String,Object> runSSHCommandWithLogAndResult(String command) throws JSchException, IOException {
+        Map<String,Object> map = new HashMap<String, Object>();
+        Session session = initSSH();
+        Channel channel = session.openChannel("exec");
+        ((ChannelExec) channel).setCommand(command);
+        channel.setInputStream(null);
+        ((ChannelExec) channel).setErrStream(System.err);
+        InputStream in = channel.getInputStream();
+        InputStream err = ((ChannelExec) channel).getErrStream();
+        channel.connect();
+        StringBuffer sb = new StringBuffer();
+        String buf;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        while ((buf = reader.readLine()) != null) {
+            sb.append(buf.trim()).append("\n");
+        }
+        if (channel.getExitStatus() != 0 ) {
+            map.put("isSuccess", false);
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(err));
+            //readAll(reader, sb);
+        } else {
+            map.put("isSuccess", true);
+            //BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+           // readAll(reader, sb);
+        }
+        map.put("returnCode",channel.getExitStatus());
+        map.put("log",sb.toString());
+        if (channel != null) {
+            channel.disconnect();
+        }
+
+        if (session != null) {
+            session.disconnect();
+        }
+        return map;
+    }
+
+    private void readAll(BufferedReader reader,StringBuffer result) throws IOException {
+        String buf;
+        while ((buf = reader.readLine()) != null) {
+            result.append(buf.trim()).append("\n");
         }
     }
 }

@@ -50,6 +50,12 @@ fanliApp.config(function ($routeProvider) {
         }).when('/instance_status_tree/:instanceId',{
             templateUrl: 'instance_status.html',
             controller: 'instanceStatusCtrl'
+        }).when('/data_monitor/:op/:taskId',{
+            templateUrl:'dataMonitor.html',
+            controller:'dataMonitorCtrl'
+        }).when('/tableAccess',{
+            templateUrl:'tableAccess.html',
+            controller:'tableAccessCtrl'
         }) ;
 
 });

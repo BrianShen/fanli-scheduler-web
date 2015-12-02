@@ -25,6 +25,7 @@
     this.element = $(element)
     this.options = $.extend(true, {}, $.fn.tag.defaults, options)
     this.values = $.grep($.map(this.element.val().split(','), $.trim), function ( value ) { return value.length > 0 })
+    console.log(this.values)
     this.show()
   }
 

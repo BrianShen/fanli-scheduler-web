@@ -212,7 +212,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                     $scope.step4 = true;
                 } else {
                     setLoading(false,"");
-                    setAlert(true,'alert-danger','建表失败');
+                    setAlert(true,'alert-danger',data.log);
                 }
 
             },function(){})
@@ -805,15 +805,15 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 ifPre:hasPre(),
                 ifEnable:1,
                 freq:$scope.conf_frequency,
-                owner:$scope.conf_developer.chName,
+                owner:$scope.conf_developer.cnName,
                 waitCode:$scope.conf_waitCode,
                 recallCode:"",
                 successCode:$scope.conf_successCode,
                 timeout:$scope.conf_timeout,
                 recallInterval:$scope.conf_recallInterval,
                 logFile:"/data1/log/applog",
-                addUser:$scope.conf_developer.chName,
-                updateUser:$scope.conf_developer.chName,
+                addUser:$scope.conf_developer.cnName,
+                updateUser:$scope.conf_developer.cnName,
                 type:1,
                 offset:$scope.conf_offset,
                 recallLimit:$scope.conf_recallLimit,
@@ -822,6 +822,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
 
             req.$promise.then(function(data) {
                 if(data.isSuccess) {
+                    $scope.taskId = data.result.taskId;
                     var taskid = data.result.taskId;
                     updateCommand(taskid);
                     addPreRelaTaskToDatabase(taskid);
@@ -918,7 +919,26 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
     }
 
     function notifyToMonitorDialog() {
-
+        $scope.message = {
+            headerText: '提示',
+            bodyText: '新增传输成功！是否配置任务的监控: ' + $scope.taskId + " ?",
+            actionButtonStyle: 'btn-danger',
+            showCancel: true
+        };
+        var modalInstance = $modal.open({
+            templateUrl: '/assets/pages/dialog/messageEnsure.html',
+            controller: MessageCtrl,
+            resolve: {
+                msg: function () {
+                    return $scope.message;
+                }
+            }
+        });
+        modalInstance.result.then(function (data) {
+            location.href = '#/data_monitor/new/' + $scope.taskId;
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
+        });
     }
 
 
@@ -985,7 +1005,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             dbname: $scope.conf_target_db,
             encoding: "UTF-8",
             concurrency: "1",
-            tableName: $scope.conf_src_db + '.' + $scope.conf_targetTable,
+            tableName: $scope.conf_src_db + '.' + $scope.conf_targetTable, //$scope.conf_src_db对应sqlserver的schema
             columns: getHiveColumns(),
             pre: preSql()
         }

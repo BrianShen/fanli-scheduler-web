@@ -12,7 +12,8 @@ module.exports = function(grunt) {
                     ["src/main/webapp/assets/js/*.js",
                         "src/main/webapp/assets/js/controller/*.js",
                         "src/main/webapp/assets/js/service/*.js",
-                        "src/main/webapp/assets/js/filter/*.js"],
+                        "src/main/webapp/assets/js/filter/*.js",
+                        "src/main/webapp/assets/js/directive/*.js"],
                 dest: "src/main/webapp/assets/dest/js/<%= pkg.name %>.js"
             }
         },

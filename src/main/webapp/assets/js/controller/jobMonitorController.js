@@ -132,7 +132,7 @@ fanliApp.controller("MonitorCtrl",function($scope,$http,$filter,$modal,$resource
 
     //重跑任务
     $scope.reRunJob = function (index) {
-        console.log(index)
+        //console.log(index)
         var job = getJobByIndex(index);
         $scope.message = {
             headerText: '提示',

@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/7/16.
  */
 
-fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService','component','ConstantService', function($scope,$filter,$modal,JobManageService,component,ConstantService) {
+fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','$http','JobManageService','component','ConstantService', function($scope,$filter,$modal,$http,JobManageService,component,ConstantService) {
     $scope.taskGroupOptions= ConstantService.getTaskGroupOption();
 
     initPageParams();
@@ -94,6 +94,19 @@ fanliApp.controller("myTaskCtrl",['$scope','$filter','$modal','JobManageService'
         else
             window.open("#/transfer_task_edit/" + job.taskId);
     };
+
+    //设置数据监控
+    $scope.setJobMonitor = function(index) {
+        var job = getJobByIndex(index);
+        $http.get("/fanli/dataMonitor/"+job.taskId)
+            .success(function(data) {
+                if(data == '') {
+                    window.open('#/data_monitor/new/' + job.taskId);
+                } else {
+                    window.open('#/data_monitor/edit/' + job.taskId);
+                }
+            })
+    }
 
     //预跑任务
     $scope.preRunJob = function (index) {

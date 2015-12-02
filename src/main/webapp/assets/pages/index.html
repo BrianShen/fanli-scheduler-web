@@ -38,6 +38,7 @@
 	<link rel="stylesheet" href="/assets/lib/ace/css/ace.min.css" />
 	<link rel="stylesheet" href="/assets/lib/ace/css/ace-rtl.min.css" />
 	<link rel="stylesheet" href="/assets/lib/ace/css/ace-skins.min.css" />
+	<!--<link rel="stylesheet" href="/assets/lib/ace/css/prettify.css">-->
 
 	<!--[if lte IE 8]>
 	<link rel="stylesheet" href="/assets/lib/ace/css/ace-ie.min.css" />
@@ -165,6 +166,14 @@
 						<span class="menu-text"> 任务管理 </span>
 					</a>
 				</li>
+
+				<li ng-class="{active:isActive('/tableAccess')}">
+					<a href="#/tableAccess">
+						<i class="icon-table"></i>
+						<span class="menu-text"> 建表工具 </span>
+					</a>
+				</li>
+
 				<li>
 					<a href="http://192.168.3.217:9999/mq/monitor/joblist.do" target="_blank">
 						<i class="icon-bullseye"></i>
@@ -332,13 +341,14 @@
 <script src="/assets/lib/ace/js/date-time/daterangepicker.min.js"></script>
 <script src="/assets/lib/ace/js/bootstrap-colorpicker.min.js"></script>
 <script src="/assets/lib/ace/js/jquery.knob.min.js"></script>
+<script src="/assets/lib/run_prettify.js"></script>
 <!--<script src="/assets/lib/ace/js/jquery.hotkeys.min.js"></script>-->
 <!--<script src="/assets/lib/ace/js/bootstrap-wysiwyg.min.js"></script>-->
 <!--<script src="/assets/lib/ace/js/bootbox.min.js"></script>-->
 <script src="/assets/lib/ace/js/jquery.autosize.min.js"></script>
 <script src="/assets/lib/ace/js/jquery.inputlimiter.1.3.1.min.js"></script>
 <!--<script src="/assets/lib/ace/js/jquery.maskedinput.min.js"></script>-->
-<script src="/assets/lib/ace/js/bootstrap-tag.min.js"></script>
+<script src="/assets/lib/ace/js/uncompressed/bootstrap-tag.js"></script>
 <!--<script src="/assets/lib/ace/js/tooltip.js"></script>-->
 
 <script src="/assets/lib/ace/js/jquery.dataTables.min.js"></script>
@@ -635,6 +645,7 @@
 <script src="/assets/lib/angular.min.js"></script>
 <script src="/assets/lib/angular-route.min.js"></script>
 <script src="/assets/lib/angular-resource.min.js"></script>
+<!--<script src="/assets/lib/bootstrap-tagsinput-angular.min.js"></script>-->
 <script src="/assets/lib/ui-bootstrap-tpls.js"></script>
 <script>
 	document.write("<script src='/assets/dest/js/scheduler.js?rdm=" + Math.random() + "'></s" + "cript>")
@@ -666,6 +677,7 @@
 <!--<script src="/assets/js/controller/feedbackController.js"></script>-->
 <!--<script src="/assets/js/controller/other_task_controller.js"></script>-->
 <!--<script src="/assets/js/controller/instance_status_controller.js"></script>-->
+
 <div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
 </body>
 </html>

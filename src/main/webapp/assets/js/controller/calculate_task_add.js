@@ -117,7 +117,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                 })
         }
         $scope.change = function () {
-            console.log($scope.developer.chName);
+            console.log($scope.developer.cnName);
         }
 
         $scope.setDefaultFreq = function () {
@@ -213,7 +213,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
 
         function initConfUI() {
             $scope.conf_taskName = "hive##" + $scope.db.name + "." + $scope.table_name;
-            $scope.conf_developer = $scope.developer.chName;
+            $scope.conf_developer = $scope.developer.cnName;
             $scope.conf_frequency = '0 5 0 * * ?';
             $scope.conf_taskGroup = $scope.taskGroupOptions[1].ID;
             $scope.conf_cycle = 'D';

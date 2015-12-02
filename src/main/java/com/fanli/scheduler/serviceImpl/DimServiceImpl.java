@@ -1,6 +1,7 @@
 package com.fanli.scheduler.serviceImpl;
 
 import com.fanli.scheduler.entity.*;
+import com.fanli.scheduler.mapping.CtlOwnerInfoMapper;
 import com.fanli.scheduler.mapping.DimDateDeveloperMapper;
 import com.fanli.scheduler.mapping.DimTargetHiveDbMapper;
 import com.fanli.scheduler.mapping.EtlSourceDimMapper;
@@ -18,7 +19,7 @@ import java.util.List;
 public class DimServiceImpl implements DimService {
 
     @Autowired
-    private DimDateDeveloperMapper dimDateDeveloperMapper;
+    private CtlOwnerInfoMapper ctlOwnerInfoMapper;
 
     @Autowired
     private DimTargetHiveDbMapper dimTargetHiveDbMapper;
@@ -27,9 +28,9 @@ public class DimServiceImpl implements DimService {
     private EtlSourceDimMapper etlSourceDimMapper;
 
     @Override
-    public List<DimDateDeveloper> getAllDevelopers() {
+    public List<CtlOwnerInfo> getAllDevelopers() {
 
-        return dimDateDeveloperMapper.selectByExample(new DimDateDeveloperExample());
+        return ctlOwnerInfoMapper.selectByExample(new CtlOwnerInfoExample());
     }
 
     @Override

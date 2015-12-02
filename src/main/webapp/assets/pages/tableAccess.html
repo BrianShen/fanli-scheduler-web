@@ -1,0 +1,47 @@
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            建表工具
+            <small>
+                <i class="icon-double-angle-right"></i>
+                建表
+            </small>
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row" style="margin-top: 30px">
+        <div class="form-group col-xs-12">
+            <label class="col-sm-2 control-label padding0 textRight">DDL脚本路径</label>
+
+            <div class="col-xs-12  col-sm-6">
+                <input ng-model="ddlPath" data-placement="bottom" data-toggle="tooltip" type="text" id="form-field-6"
+                       title="ddl文件相对fanli_dw文件路径，如/dw/schema/xxx.sql"
+                        class="width-100"/>
+            </div>
+            <button type="submit" ng-click="getDdlContent()" class="btn btn-sm btn-primary" >查看脚本</button>
+
+        </div>
+    </div>
+    <div class="col-xs-12 text-center" ng-show="isLoading">
+        <div class="loading" style="color: #000000;width: auto">{{loadingMsg}}</div>
+    </div>
+    <div class="row" ng-show="ddlShow">
+        <pre class="col-sm-offset-1 col-sm-8 prettyprint linenums lang-sql">{{ddl}}</pre>
+    </div>
+    <div class="col-sm-4 col-sm-offset-4">
+        <button class="btn btn-sm btn-success" ng-click="excuteDDL()" ng-show="ddlShow"> excute </button>
+        <span class="green marginL10" ng-show="exeSuccess">操作成功</span>
+    </div>
+    <!--<div class="row">-->
+        <!--<pre class="col-sm-offset-1 col-sm-8 prettyprint linenums lang-sql">{{ddl}}</pre>-->
+    <!--</div>-->
+    <!--<div class="col-sm-4 col-sm-offset-4">-->
+        <!--<button class="btn btn-sm btn-success" ng-click="excuteDDL()"> excute </button>-->
+        <!--<span class="green marginL10" >操作成功!</span>-->
+    <!--</div>-->
+</div>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
