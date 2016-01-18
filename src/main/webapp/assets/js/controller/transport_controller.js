@@ -200,7 +200,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 setAlert(true,'alert-danger','建表失败');
             })
         } else if($scope.conf_target == 'hive') {
-            var createTable = 'use ' + $scope.conf_target_db + ';' +'\n' + $scope.conf_create_table_sql + '\n';
+            var createTable =  $scope.conf_create_table_sql + '\n';
             console.log(createTable);
             var res = TableService.buildHiveTable({},{
                 sql:createTable
@@ -212,7 +212,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                     $scope.step4 = true;
                 } else {
                     setLoading(false,"");
-                    setAlert(true,'alert-danger',data.log);
+                    setAlert(true,'alert-danger',"建表失败");
                 }
 
             },function(){})
@@ -414,7 +414,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.SRCColumn,
             partitions:getPartitions(),
             dbType:$scope.conf_target,
-            schema:getSchema()
+            schema:getSchema(),
+            db:$scope.conf_target_db
         });
         buildSql.$promise.then(function(data) {
             $scope.conf_create_table_sql = data.result;
@@ -962,13 +963,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
-            concurrency: "1",
-            needSplit: "true"
+            concurrency: "1"
         };
         if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
             $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
         }
-        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
+        if($scope.conf_if_primarykey == "1"){
+            $scope.reader.autoIncKey = $scope.conf_primary_key;
+            $scope.reader.needSplit = "true"
+        }  else {
+            $scope.reader.needSplit = "false"
+        }
         $scope.writer = {
             plugin: "hdfswriter",
             dir: getHiveDir(),
@@ -1070,14 +1075,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
-            concurrency: "1",
-            autoIncKey:$scope.conf_primary_key,
-            needSplit: "true"
+            concurrency: "1"
         };
         if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
             $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
         }
-        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
+        if($scope.conf_if_primarykey == "1"){
+            $scope.reader.autoIncKey = $scope.conf_primary_key;
+            $scope.reader.needSplit = "true"
+        }  else {
+            $scope.reader.needSplit = "false"
+        }
         console.log($scope.reader);
         $scope.writer = {
             plugin: "hdfswriter",

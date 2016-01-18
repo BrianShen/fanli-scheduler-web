@@ -258,7 +258,7 @@ fanliApp.controller('dataMonitorCtrl',function($scope,$resource,$routeParams,Dim
             }
             var sql = 'select count(1) as cnt from ';
             if(writeParam.plugin == 'hdfswriter') {
-                tableName = writeParam.dir.match(/\.db\/(.+?)\//)[1].trim();
+                tableName = writeParam.dir.match(/\.db\/([^\/]+)/)[1].trim();
                 var dbPath = writeParam.dir.match(/.*\/(.*)\.db\/.*/)[1].trim();
                 if(dbPath == 'tmp') {
                     dbName = 'tmpdb'

@@ -229,7 +229,7 @@ public enum ConnectMan {
             ret = stmt.executeUpdate(sql);
             logger.info("execute create table return code is :" + ret);
         }catch (Exception e) {
-            logger.error("create table failed,the error is :" + e.getMessage());
+            logger.error("create table failed,the error is :",e);
         }finally {
             try{
                 if(stmt!=null)

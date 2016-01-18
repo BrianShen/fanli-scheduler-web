@@ -45,4 +45,16 @@ public class DimServiceImpl implements DimService {
         if (type != null && !"".equals(type)) criteria.andSourceTypeEqualTo(type);
         return etlSourceDimMapper.selectByExample(etlSourceDimExample);
     }
+
+    @Override
+    public String getDomainByConnectionProperty(String prop) {
+        EtlSourceDimExample example = new EtlSourceDimExample();
+        if (prop == null) {
+            return "";
+        }
+        example.or().andConnectPropertyEqualTo(prop);
+        List<EtlSourceDim> dims =  etlSourceDimMapper.selectByExample(example);
+        if (dims.size() != 1) return "";
+        return dims.get(0).getSourceDomain();
+    }
 }

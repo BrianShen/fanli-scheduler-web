@@ -36,7 +36,7 @@ public class DatabaseService {
         try {
             list = ConnectMan.INSTANCE.getAllDatabases(prop);
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage() + "  " + e.getMessage());
+            e.printStackTrace();
 
         }
         return list;

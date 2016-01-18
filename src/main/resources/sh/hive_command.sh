@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
+source /etc/profile
+source ~/.bash_profile
+echo "hello"
 COMMAND=$1
-#export HADOOP_HOME=/hadoop/hadoop-2.4.1
-
-#/hadoop/apache-hive-0.13.1-cdh5.2.1-bin/bin/hive -e "$COMMAND";
-
-hive -e "$COMMAND"
+echo $COMMAND
+hivehome=`which hive`
+echo $hivehome
+cmd="$hivehome -f $COMMAND"
+echo $cmd
+eval $cmd

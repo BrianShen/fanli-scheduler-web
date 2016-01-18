@@ -119,10 +119,12 @@
                                 </td>
                                 <td>
                                     <label>
-                                        <input type="text" ng-model="min_diff" placeholder="min" required>  =< 源 - 目标 =<
+                                        <input type="text" ng-model="min_diff" placeholder="min" required>
+                                        <span ng-show="diff_type=='percentage'" style="color: red;font-size: 18px">%</span>  =< 源 - 目标 =<
                                         <input type="text" ng-model="max_diff" placeholder="max" required>
+                                        <span ng-show="diff_type=='percentage'" style="color: red;font-size: 18px">%</span>
                                         <span class="help-button" data-placement="right" data-toggle="tooltip"
-                                              title="源数据记录行数减目标表记录行数,如百分比">?</span>
+                                              title="源数据记录行数减目标表记录行数,如百分比只需输入分子">?</span>
                                     </label>
                                 </td>
                             </tr>

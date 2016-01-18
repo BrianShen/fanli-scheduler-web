@@ -31,7 +31,8 @@ public class TaskServiceImpl  implements TaskService {
     private InstanceService instanceService;
 
     @Override
-    public List<Integer> getChildrenByTaskid(Integer taskid) {
+    public List<Integer> getTaskTreeById(Integer taskid) {
+
         return null;
     }
 
@@ -67,7 +68,7 @@ public class TaskServiceImpl  implements TaskService {
             if (beginDate.after(endDate)) break;
             EtlTaskStatus etlTaskStatus = instanceService.generateInstances(beginDate,triggerDate,etlTaskCfg);
             list.add(etlTaskStatus.getTaskStatusId());
-            logger.info(etlTaskStatus);
+            //logger.info(etlTaskStatus);
             try {
                 if (etlTaskStatusMapper.insert(etlTaskStatus) == 1) {
                     num ++;
@@ -76,7 +77,7 @@ public class TaskServiceImpl  implements TaskService {
                 return null;
             }
         }
-        logger.info("successlly generate " + num + " instances of " + taskid );
+        //logger.info("successlly generate " + num + " instances of " + taskid );
         map.put("num",num);
         map.put("instanceids",list);
         return map;
@@ -93,7 +94,7 @@ public class TaskServiceImpl  implements TaskService {
             cfg.setUpdateTime(updateTime);
             num += etlTaskCfgMapper.updateByPrimaryKeySelective(cfg);
         }
-        logger.info(num + " tasks are set to invalid tasks,the total tasks to set is " + taskids.size());
+        //logger.info(num + " tasks are set to invalid tasks,the total tasks to set is " + taskids.size());
 
         if (num == taskids.size()) return true;
         else return false;

@@ -176,6 +176,15 @@
         </h4>
     </div>
     <div class="col-xs-12 col-sm-12">
+        <div class="row conf_item">
+            <div class="col-sm-1">源域名: </div>
+            <div class="col-sm-3"><span class="red">{{src_domain}}</span> </div>
+        </div>
+        <div class="row conf_item">
+            <div class="col-sm-1">源数据库: </div>
+            <div class="col-sm-3"><span class="red">{{src_db}}</span> </div>
+        </div>
+
         <div class="row width-100" ng-show="!edit">
             <pre  class="prettyprint linenums col-sm-10 marginL18">{{sql}}</pre>
             <button class="btn btn-success btn-minier" style="margin-left: 10px" ng-click="edit=!edit"><i class="icon-edit"></i></button>

@@ -62,17 +62,17 @@ public class DolParserService {
 
     public static String getTargetTableName(String path) throws IOException, JSchException {
         String remoteFile = Const.HADOOP_USER + "@" + Const.HADOOP_CLIENT_HOST;
-        logger.info("remote file is :" + remoteFile);
+        //logger.info("remote file is :" + remoteFile);
         String dolName = StringUtils.getFilename(path);
         String localFileDir = Const.LOCAL_DOL_TMP_DIR;
         String command = "scp " +  remoteFile + ":" +  path + " " + localFileDir;
-        logger.info("copy file command is :" + command);
+        //logger.info("copy file command is :" + command);
         String table = "";
         LocalExcuterService localExcuterService = new LocalExcuterService();
         String [] cmd = new String[]{"scp",remoteFile + ":" +  path,localFileDir};
         int returnCode = localExcuterService.executeCMD(cmd);
         if (returnCode == 0) {
-            logger.info("The dol file is existing in " + localFileDir + ":?" + new File(localFileDir + File.separator + dolName).exists());
+            //logger.info("The dol file is existing in " + localFileDir + ":?" + new File(localFileDir + File.separator + dolName).exists());
             String dol = getStringDol(new File(localFileDir + File.separator + dolName));
             Pattern pattern = Pattern.compile(REG_TARGET_TABLE, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(dol);

@@ -22,11 +22,11 @@ public class TableMetaService {
         TableMeta meta = null;
         try {
             String url = META_SERVICE_HOST + "/" + dbname + "/" + tablename;
-            logger.info("Url of request to mds is : " + url);
+            //logger.info("Url of request to mds is : " + url);
             //String metaStr = Jsoup.connect(url).header("Content-Type","application/json;charset=UTF-8").get().toString();
             String metaStr = Jsoup.connect(url).ignoreContentType(true).execute().body();
             if (metaStr != null) {
-                logger.info("Get Table MetaData info ,dbname = " + dbname + ",tablename= " + tablename  +"; the returned json is " + metaStr);
+                //logger.info("Get Table MetaData info ,dbname = " + dbname + ",tablename= " + tablename  +"; the returned json is " + metaStr);
             } else logger.error("Failed to get Table MetaData info ,dbname = " + dbname + ",tablename= " + tablename +" ,error");
             Gson gson = new Gson();
             meta = gson.fromJson(metaStr, TableMeta.class);

@@ -52,7 +52,7 @@ public class TypeTransformer {
             return val.toLowerCase();
         }
         if (type.toUpperCase().contains("DECIMAL")) {
-            return type.toLowerCase();
+            return "decimal(20,0)";
         }
         return "string";
     }

@@ -14,7 +14,7 @@ import java.util.Map;
 public class SSHService {
     public static final String USER = "hadoop";
     public static final String PASSWORD = "hadoop!2345678";
-    public static final String IP = "192.168.3.227";
+    public static final String IP = "192.168.3.177";
 
     private Session initSSH() throws JSchException {
         JSch jsch = new JSch();
@@ -51,6 +51,8 @@ public class SSHService {
             session.disconnect();
             return stringBuffer.toString();
         } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            e.printStackTrace();
             return "";
         }
     }
@@ -61,7 +63,7 @@ public class SSHService {
         InputStream in = channel.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String buf;
-        while ((buf = reader.readLine()) != null) {}
+        while ((buf = reader.readLine()) != null) {System.out.println(buf);}
         if (channel.getExitStatus() != 0 ) {
             channel.disconnect();
             session.disconnect();

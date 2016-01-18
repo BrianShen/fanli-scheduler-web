@@ -52,9 +52,10 @@ public class DolController {
         String dolFullPath  = dolBaseDir + path;
         logger.info("dol full path:" + dolFullPath);
         if (dolService.isExists(dolFullPath)) {
-            if (dolService.importDol(dolFullPath)) {
-                result.setIsSuccess(true);
-            }else result.setIsSuccess(false);
+//            if (dolService.importDol(dolFullPath)) {
+//                result.setIsSuccess(true);
+//            }else result.setIsSuccess(false);
+            result.setIsSuccess(true);
         } else {
             result.setIsSuccess(false);
             result.setMessages("文件不存在");

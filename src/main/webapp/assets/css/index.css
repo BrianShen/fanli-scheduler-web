@@ -186,3 +186,12 @@
     font-size: 30px;
     color: white;
 }
+
+.conf_item {
+    padding: 5px;
+}
+
+.conf_item:hover {
+    background-color: blue;
+    color: white !important;
+}

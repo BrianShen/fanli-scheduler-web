@@ -95,6 +95,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             $scope.loadingMsg = "loading...";
             $scope.isLoading = true;
 
+            //parseTargetTable();
             $http.get("/fanli/dol/importDol", {params: {dolPath: $scope.dolPath}})
                 .success(function (response) {
                     if (response.isSuccess) {
@@ -134,7 +135,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
         function parseTargetTable() {
             console.log("dol name:" + getDolName());
             var table = DolService.parseDolToGetTable({
-                dolName: getDolName()
+                dolName: $scope.dolPath.trim()
             });
             table.$promise.then(function (data) {
                 if (data.isSuccess) {
@@ -144,7 +145,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                     $scope.isLoading = false;
                     $scope.showImportMsg = true;
                     $scope.alertType = 'alert-success';
-                    $scope.importMsg = "dol导入成功";
+                    $scope.importMsg = "dol解析成功";
                     setButtonClickable(false, false, true);
                     $scope.showConfig = true;
                 } else {
@@ -360,11 +361,12 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
 
         function getCalCommand() {
             var command;
-            var dol = getDolName();
+            //var dol = getDolName();
+            var dol = $scope.dolPath.trim();
             if ($scope.conf_cycle == 'H') {
-                command = "canaan -dol " + dol + " -t " + "${unix_timestamp} ";
+                command = "sh /home/hadoop/canaan/canaan -dol " + dol + " -t " + "${unix_timestamp} ";
             } else {
-                command = "canaan -dol " + dol + " -d " + "${date}";
+                command = "sh /home/hadoop/canaan/canaan -dol " + dol + " -d " + "${date}";
             }
             return command;
         };
@@ -482,19 +484,22 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
 
         }
 
-        var getBuildTableSql = function (data) {
-
-            //$http.get("/fanli/table/buildTable",data).success(function(data) {
-            //    sql = data.result;
-            //});
-            var sql = "use " + $scope.db.name + ";\n" + "drop table if exists " + data.table + ";\n" +
-                "create external table " + data.table + "(\n";
+        function getBuildTableSql(data) {
+            var sql = "create external table if not exists " + $scope.db.name + '.'+data.table + "(\n";
             var columns = data.columns;
             var partitions = data.partitions;
-            for (var i = 0; i < columns.length - 1; i++) {
-                sql = sql + columns[i].name + " " + columns[i].type + ",\n";
+            for(var i = 0;i < columns.length;i ++) {
+                if (columns[i].comment != null) {columns[i].comment = columns[i].comment.replace(/;/g,' ');}
+
             }
-            sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + ")\n";
+            for (var i = 0; i < columns.length - 1; i++) {
+                var com = '';
+                if (columns[i].comment != null) {com = columns[i].comment};
+                sql = sql + columns[i].name + " " + columns[i].type + " comment '" +com + "',\n";
+            }
+            var com1 = '';
+            if (columns[columns.length - 1].comment!=null) {com1 = columns[columns.length - 1].comment};
+            sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + " comment '" +com1+"')\n";
             if (partitions.length > 0) {
                 sql = sql + "PARTITIONED BY(";
                 for (var i = 0; i < partitions.length - 1; i++) {
@@ -505,6 +510,28 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             sql = sql + "STORED AS ORC;";
             return sql;
         };
+        //var getBuildTableSql = function (data) {
+        //
+        //    //$http.get("/fanli/table/buildTable",data).success(function(data) {
+        //    //    sql = data.result;
+        //    //});
+        //    var sql = "create external table if not exists " + $scope.db.name + '.'+data.table + "(\n";
+        //    var columns = data.columns;
+        //    var partitions = data.partitions;
+        //    for (var i = 0; i < columns.length - 1; i++) {
+        //        sql = sql + columns[i].name + " " + columns[i].type + " comment '" +columns[i].comment==null?'':columns[i].comment + "',\n";
+        //    }
+        //    sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + " comment '" +columns[columns.length - 1].comment==null?'':columns[columns.length - 1]+"')\n";
+        //    if (partitions.length > 0) {
+        //        sql = sql + "PARTITIONED BY(";
+        //        for (var i = 0; i < partitions.length - 1; i++) {
+        //            sql = sql + partitions[i].name + " " + partitions[i].type + ","
+        //        }
+        //        sql = sql + partitions[partitions.length - 1].name + " " + partitions[partitions.length - 1].type + ")\n"
+        //    }
+        //    sql = sql + "STORED AS ORC;";
+        //    return sql;
+        //};
 
         var getColumnDesc = function (data) {
             var col = [];

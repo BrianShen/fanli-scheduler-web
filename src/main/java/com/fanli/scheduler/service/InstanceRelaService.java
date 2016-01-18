@@ -46,7 +46,7 @@ public class InstanceRelaService {
         EtlTaskrelaStatusExample.Criteria criteria = example.createCriteria();
         criteria.andPreStatusIdEqualTo(instanceid);
         List<EtlTaskrelaStatus> list = etlTaskrelaStatusMapper.selectByExample(example);
-        logger.info("The influenced instances are :" + list);
+        //logger.info("The influenced instances are :" + list);
         result.setResults(list);
         result.setIsSuccess(true);
         result.setMessages("");

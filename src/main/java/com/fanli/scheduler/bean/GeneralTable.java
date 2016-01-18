@@ -11,6 +11,15 @@ public class GeneralTable {
     private List<GeneralColumn> partitions;
     private String dbType;
     private String schema;
+    private String db;
+
+    public String getDb() {
+        return db;
+    }
+
+    public void setDb(String db) {
+        this.db = db;
+    }
 
     public String getSchema() {
         return schema;

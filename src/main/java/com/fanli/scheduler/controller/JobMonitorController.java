@@ -40,8 +40,8 @@ public class JobMonitorController {
 
         List<EtlTaskStatus> list = jobMonitorService.queryTaskStatuses(startTime,endTime,taskid,owner,"".equals(status)?null:Integer.parseInt(status),isPre);
         result.setResults(list);
-        logger.info(owner + "commit a query at " + new Date().toLocaleString() + " taskid: "+ taskid +
-        " owner:" + owner + " status" + status + " startTime:" + startTime + " endTime:" + endTime);
+        //logger.info(owner + "commit a query at " + new Date().toLocaleString() + " taskid: "+ taskid +
+        //" owner:" + owner + " status" + status + " startTime:" + startTime + " endTime:" + endTime);
         result.setIsSuccess(true);
         return result;
 
@@ -54,7 +54,7 @@ public class JobMonitorController {
     public
     @ResponseBody
     Result recallInstance(@RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
-        logger.info(" recall instance: instanceId(" + instanceId + ")");
+        //logger.info(" recall instance: instanceId(" + instanceId + ")");
         Result result = new Result();
         try {
             int row = jobMonitorService.handleRerun(instanceId);
@@ -76,7 +76,7 @@ public class JobMonitorController {
     @RequestMapping(value = "successInstance",method = RequestMethod.POST)
     @ResponseBody
     public Result successInstance(@RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
-        logger.info(" success instance: instanceId(" + instanceId + ")");
+        //logger.info(" success instance: instanceId(" + instanceId + ")");
         Result result = new Result();
         try {
             int row = jobMonitorService.handSuccessJob(instanceId);
@@ -102,7 +102,7 @@ public class JobMonitorController {
     @ResponseBody
     Result<EtlTaskrelaStatus> getDirectInfluencedInstancesByInstanceId(
             @RequestParam(value = "instanceId", defaultValue = "") String instanceId) {
-        logger.info("get direct influence instances: instanceId(" + instanceId + ")");
+        //logger.info("get direct influence instances: instanceId(" + instanceId + ")");
         try {
             return instanceRelaService.handleGetDirectInfluencedInstancesByInstanceId(instanceId);
         } catch (Exception e) {

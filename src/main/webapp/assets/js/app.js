@@ -14,6 +14,10 @@ var fanliApp = angular.module("fanliApp", [
     'table.service'
 ]);
 
+fanliApp.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+}]);
+
 fanliApp.config(function ($routeProvider) {
     $routeProvider.
         when('/', {

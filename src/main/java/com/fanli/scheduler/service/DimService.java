@@ -14,4 +14,5 @@ public interface DimService {
     List<CtlOwnerInfo> getAllDevelopers();
     List<DimTargetHiveDb> getAllTargetDbs();
     List<EtlSourceDim> getSourceByType(String type);
+    String getDomainByConnectionProperty(String prop);
 }

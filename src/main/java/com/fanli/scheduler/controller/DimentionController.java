@@ -54,5 +54,14 @@ public class DimentionController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/domain",method = RequestMethod.GET)
+    public Result<String> getDomainByConnectionProperty(@RequestParam("prop")String prop) {
+        Result<String> result = new Result<String>();
+        result.setResult(dimService.getDomainByConnectionProperty(prop));
+        result.setIsSuccess(true);
+        return result;
+    }
+
 
 }

@@ -14,6 +14,10 @@ var fanliApp = angular.module("fanliApp", [
     'table.service'
 ]);
 
+fanliApp.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+}]);
+
 fanliApp.config(function ($routeProvider) {
     $routeProvider.
         when('/', {
@@ -156,6 +160,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             $scope.loadingMsg = "loading...";
             $scope.isLoading = true;
 
+            //parseTargetTable();
             $http.get("/fanli/dol/importDol", {params: {dolPath: $scope.dolPath}})
                 .success(function (response) {
                     if (response.isSuccess) {
@@ -195,7 +200,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
         function parseTargetTable() {
             console.log("dol name:" + getDolName());
             var table = DolService.parseDolToGetTable({
-                dolName: getDolName()
+                dolName: $scope.dolPath.trim()
             });
             table.$promise.then(function (data) {
                 if (data.isSuccess) {
@@ -205,7 +210,7 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
                     $scope.isLoading = false;
                     $scope.showImportMsg = true;
                     $scope.alertType = 'alert-success';
-                    $scope.importMsg = "dol导入成功";
+                    $scope.importMsg = "dol解析成功";
                     setButtonClickable(false, false, true);
                     $scope.showConfig = true;
                 } else {
@@ -421,11 +426,12 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
 
         function getCalCommand() {
             var command;
-            var dol = getDolName();
+            //var dol = getDolName();
+            var dol = $scope.dolPath.trim();
             if ($scope.conf_cycle == 'H') {
-                command = "canaan -dol " + dol + " -t " + "${unix_timestamp} ";
+                command = "sh /home/hadoop/canaan/canaan -dol " + dol + " -t " + "${unix_timestamp} ";
             } else {
-                command = "canaan -dol " + dol + " -d " + "${date}";
+                command = "sh /home/hadoop/canaan/canaan -dol " + dol + " -d " + "${date}";
             }
             return command;
         };
@@ -543,19 +549,22 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
 
         }
 
-        var getBuildTableSql = function (data) {
-
-            //$http.get("/fanli/table/buildTable",data).success(function(data) {
-            //    sql = data.result;
-            //});
-            var sql = "use " + $scope.db.name + ";\n" + "drop table if exists " + data.table + ";\n" +
-                "create external table " + data.table + "(\n";
+        function getBuildTableSql(data) {
+            var sql = "create external table if not exists " + $scope.db.name + '.'+data.table + "(\n";
             var columns = data.columns;
             var partitions = data.partitions;
-            for (var i = 0; i < columns.length - 1; i++) {
-                sql = sql + columns[i].name + " " + columns[i].type + ",\n";
+            for(var i = 0;i < columns.length;i ++) {
+                if (columns[i].comment != null) {columns[i].comment = columns[i].comment.replace(/;/g,' ');}
+
             }
-            sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + ")\n";
+            for (var i = 0; i < columns.length - 1; i++) {
+                var com = '';
+                if (columns[i].comment != null) {com = columns[i].comment};
+                sql = sql + columns[i].name + " " + columns[i].type + " comment '" +com + "',\n";
+            }
+            var com1 = '';
+            if (columns[columns.length - 1].comment!=null) {com1 = columns[columns.length - 1].comment};
+            sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + " comment '" +com1+"')\n";
             if (partitions.length > 0) {
                 sql = sql + "PARTITIONED BY(";
                 for (var i = 0; i < partitions.length - 1; i++) {
@@ -566,6 +575,28 @@ fanliApp.controller("taskAddCtrl", ['$scope', '$http', '$modal', '$filter', 'Con
             sql = sql + "STORED AS ORC;";
             return sql;
         };
+        //var getBuildTableSql = function (data) {
+        //
+        //    //$http.get("/fanli/table/buildTable",data).success(function(data) {
+        //    //    sql = data.result;
+        //    //});
+        //    var sql = "create external table if not exists " + $scope.db.name + '.'+data.table + "(\n";
+        //    var columns = data.columns;
+        //    var partitions = data.partitions;
+        //    for (var i = 0; i < columns.length - 1; i++) {
+        //        sql = sql + columns[i].name + " " + columns[i].type + " comment '" +columns[i].comment==null?'':columns[i].comment + "',\n";
+        //    }
+        //    sql = sql + columns[columns.length - 1].name + " " + columns[columns.length - 1].type + " comment '" +columns[columns.length - 1].comment==null?'':columns[columns.length - 1]+"')\n";
+        //    if (partitions.length > 0) {
+        //        sql = sql + "PARTITIONED BY(";
+        //        for (var i = 0; i < partitions.length - 1; i++) {
+        //            sql = sql + partitions[i].name + " " + partitions[i].type + ","
+        //        }
+        //        sql = sql + partitions[partitions.length - 1].name + " " + partitions[partitions.length - 1].type + ")\n"
+        //    }
+        //    sql = sql + "STORED AS ORC;";
+        //    return sql;
+        //};
 
         var getColumnDesc = function (data) {
             var col = [];
@@ -960,7 +991,7 @@ fanliApp.controller('dataMonitorCtrl',function($scope,$resource,$routeParams,Dim
             }
             var sql = 'select count(1) as cnt from ';
             if(writeParam.plugin == 'hdfswriter') {
-                tableName = writeParam.dir.match(/\.db\/(.+?)\//)[1].trim();
+                tableName = writeParam.dir.match(/\.db\/([^\/]+)/)[1].trim();
                 var dbPath = writeParam.dir.match(/.*\/(.*)\.db\/.*/)[1].trim();
                 if(dbPath == 'tmp') {
                     dbName = 'tmpdb'
@@ -3370,19 +3401,21 @@ fanliApp.controller('tableAccessCtrl',function($scope,$http) {
 
     $scope.excuteDDL = function() {
 
-        if($scope.ddl.toLowerCase().indexOf('drop') > 0) {
-            alert('ddl语句中不能有drop');
-            return;
-        }
+        //if($scope.ddl.toLowerCase().indexOf('drop') > 0) {
+        //    alert('ddl语句中不能有drop');
+        //    return;
+        //}
         setLoading(true,'正在执行...');
         $scope.exeSuccess = false;
         $http.get("/fanli/table/hiveCommand",{params:{path:$scope.ddlPath}})
             .success(function(data) {
-                $scope.ddl +="\n";
-                $scope.ddl += data.log;
-                $scope.exeSuccess = true;
+                if(data.isSuccess) {
+                    $scope.ddl +="\n";
+                    //$scope.ddl += data.result;
+                    $scope.exeSuccess = true;
+                } else alert("excute ddl failed");
                 setLoading(false,'');
-            }).error(function(data) {alert("excute ddl failed");setLoading(false,'');})
+            }).error(function(data) {setLoading(false,'');})
     }
 
     function setLoading(a,b) {
@@ -3637,7 +3670,7 @@ fanliApp.controller('taskEditCtrl',function($scope,$resource,$modal,$routeParams
  * Created by wei.shen on 2015/8/6.
  */
 
-fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http,$resource,JobManageService,ConstantService,DimService) {
+fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http,$resource,JobManageService,ConstantService,DimService,restfulService) {
     initUI();
     function initUI() {
         //getDevelopers();
@@ -3651,7 +3684,14 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         $scope.recallIntervalOptions = ConstantService.getRecallIntervalOption();
         $scope.offsetOptions = ConstantService.getOffsetOption();
         $scope.timeoutOptions = ConstantService.getTimeOutOption();
-
+        restfulService.reader.get({taskid:$routeParams.taskid}).$promise.then(function(data) {
+            var map = JSON.parse(data.result);
+            $scope.src_db = map.dbname;
+            restfulService.domain.get({prop:map.connectProps}).$promise.then(function(data) {
+                $scope.src_domain = data.result;
+            })
+        })
+        $scope.src_domain =
         $scope.sql_disable = true;
     }
 
@@ -4174,7 +4214,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                 setAlert(true,'alert-danger','建表失败');
             })
         } else if($scope.conf_target == 'hive') {
-            var createTable = 'use ' + $scope.conf_target_db + ';' +'\n' + $scope.conf_create_table_sql + '\n';
+            var createTable =  $scope.conf_create_table_sql + '\n';
             console.log(createTable);
             var res = TableService.buildHiveTable({},{
                 sql:createTable
@@ -4186,7 +4226,7 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
                     $scope.step4 = true;
                 } else {
                     setLoading(false,"");
-                    setAlert(true,'alert-danger',data.log);
+                    setAlert(true,'alert-danger',"建表失败");
                 }
 
             },function(){})
@@ -4388,7 +4428,8 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.SRCColumn,
             partitions:getPartitions(),
             dbType:$scope.conf_target,
-            schema:getSchema()
+            schema:getSchema(),
+            db:$scope.conf_target_db
         });
         buildSql.$promise.then(function(data) {
             $scope.conf_create_table_sql = data.result;
@@ -4936,13 +4977,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
-            concurrency: "1",
-            needSplit: "true"
+            concurrency: "1"
         };
         if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
             $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
         }
-        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
+        if($scope.conf_if_primarykey == "1"){
+            $scope.reader.autoIncKey = $scope.conf_primary_key;
+            $scope.reader.needSplit = "true"
+        }  else {
+            $scope.reader.needSplit = "false"
+        }
         $scope.writer = {
             plugin: "hdfswriter",
             dir: getHiveDir(),
@@ -5044,14 +5089,17 @@ fanliApp.controller('transportTaskAddCtrl',function($scope,$http,$modal,TableSer
             columns:$scope.columns,
             encoding: "UTF-8",
             sql: $scope.conf_transfer_sql,
-            concurrency: "1",
-            autoIncKey:$scope.conf_primary_key,
-            needSplit: "true"
+            concurrency: "1"
         };
         if($scope.conf_transfer_sql.split('where')[1] != ''&& $scope.conf_transfer_sql.split('where')[1]!= undefined) {
             $scope.reader.where = $scope.conf_transfer_sql.split('where')[1].trim();
         }
-        if($scope.conf_if_primarykey == "1") $scope.reader.autoIncKey = $scope.conf_primary_key;
+        if($scope.conf_if_primarykey == "1"){
+            $scope.reader.autoIncKey = $scope.conf_primary_key;
+            $scope.reader.needSplit = "true"
+        }  else {
+            $scope.reader.needSplit = "false"
+        }
         console.log($scope.reader);
         $scope.writer = {
             plugin: "hdfswriter",
@@ -5956,7 +6004,7 @@ angular.module("constant.service",[])
             getPartitionByCycle:function() {
                 return {
                     H:"/ds=${yyyy-MM-dd;P1H}/hour=${HH;P1H}",
-                    HD:"/ds=${yyyy-MM-dd;P1D}",
+                    HD:"/ds=${yyyy-MM-dd}",
                     D:"/ds=${yyyy-MM-dd;P1D}",
                     W:"/week=${yyyy-MM-dd;F1W}",
                     M:"/month=${yyyy-MM;P1M}",
@@ -6281,6 +6329,23 @@ angular.module('job_monitor.service', ['ngResource'])
                 });
         }
     ]);
+/**
+ * Created by wei.shen on 2015/12/10.
+ */
+
+
+fanliApp.factory('restfulService',function($resource,$http,$q){
+    return {
+        reader : $resource("/fanli/load/sql",{tableid:'@tableid'}),
+
+        writer : $resource("/fanli/load/pre",{taskId:'@taskId'}),
+
+        domain : $resource("/fanli/dim/domain",{prop:'@prop'}),
+
+        columnsComment : $resource("/meta/columns",{tableId:'@tableId',columnIds:'@columnIds',columnComments:'@columnComments'})
+    }
+})
+
 /**
  * Created by wei.shen on 2015/7/24.
  */

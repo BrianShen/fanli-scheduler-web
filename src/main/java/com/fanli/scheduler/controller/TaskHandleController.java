@@ -65,7 +65,7 @@ public class TaskHandleController {
     @ResponseBody
     public Result savePretask(@RequestBody List<EtlTaskrelaCfgKey> taskrelaCfgList) {
         Result result = new Result();
-        logger.info(taskrelaCfgList);
+        //logger.info(taskrelaCfgList);
         for (EtlTaskrelaCfgKey cfg:taskrelaCfgList) {
             EtlTaskrelaCfg taskrelaCfg = new EtlTaskrelaCfg();
             taskrelaCfg.setTaskId(cfg.getTaskId());
@@ -192,7 +192,7 @@ public class TaskHandleController {
         taskQuery.setTaskGroupId(taskGroupId);
         taskQuery.setTaskId(taskId);
         taskQuery.setIsValid(isValid);
-        logger.info(taskQuery);
+        //logger.info(taskQuery);
         List<EtlTaskCfg> etlTaskCfgs = taskConfigService.getTaskByParams(taskQuery);
         if (etlTaskCfgs != null) {
             result.setIsSuccess(true);
@@ -318,7 +318,7 @@ public class TaskHandleController {
             @RequestParam(value = "startTime", defaultValue = "") String startTime,
             @RequestParam(value = "endTime", defaultValue = "") String endTime,
             @RequestParam(value = "taskId", defaultValue = "") String taskId) {
-        logger.info("pre run task with startTime:" + startTime + ", endTime: " + endTime + ",taskid;" + taskId);
+        //logger.info("pre run task with startTime:" + startTime + ", endTime: " + endTime + ",taskid;" + taskId);
         Result result = new Result();
         Map<String,Object> map = taskService.generateInstance(startTime,endTime, Integer.parseInt(taskId));
         if (map != null) {
@@ -401,7 +401,7 @@ public class TaskHandleController {
         List<Integer> taskids = taskRelaService.getRelaChildTaskByTaskid(Integer.parseInt(taskId));
         List<EtlTaskCfg> tasks = null;
         if (taskids != null) {
-            logger.info("taskid " + taskId + " has these children:" + taskids);
+            //logger.info("taskid " + taskId + " has these children:" + taskids);
             tasks = taskConfigService.getTasksByIds(taskids);
         }
         if (tasks != null){

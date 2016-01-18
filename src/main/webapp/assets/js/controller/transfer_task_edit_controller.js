@@ -2,7 +2,7 @@
  * Created by wei.shen on 2015/8/6.
  */
 
-fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http,$resource,JobManageService,ConstantService,DimService) {
+fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http,$resource,JobManageService,ConstantService,DimService,restfulService) {
     initUI();
     function initUI() {
         //getDevelopers();
@@ -16,7 +16,14 @@ fanliApp.controller('transferEditCtrl',function($scope,$routeParams,$modal,$http
         $scope.recallIntervalOptions = ConstantService.getRecallIntervalOption();
         $scope.offsetOptions = ConstantService.getOffsetOption();
         $scope.timeoutOptions = ConstantService.getTimeOutOption();
-
+        restfulService.reader.get({taskid:$routeParams.taskid}).$promise.then(function(data) {
+            var map = JSON.parse(data.result);
+            $scope.src_db = map.dbname;
+            restfulService.domain.get({prop:map.connectProps}).$promise.then(function(data) {
+                $scope.src_domain = data.result;
+            })
+        })
+        $scope.src_domain =
         $scope.sql_disable = true;
     }
 

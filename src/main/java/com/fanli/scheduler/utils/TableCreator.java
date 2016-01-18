@@ -29,7 +29,7 @@ public class TableCreator {
 
     private static String genHiveCreateTableSentence(GeneralTable generalTable) {
         StringBuilder builder = new StringBuilder();
-        builder = buildHead(builder, generalTable.getName());
+        builder = buildHead(builder,generalTable.getDb(),generalTable.getName());
         for (GeneralColumn column : generalTable.getColumns()) {
             String columnName = column.getName();
             String columnType = TypeTransformer.transTohive(column.getType());
@@ -63,8 +63,8 @@ public class TableCreator {
         return builder.append("CREATE TABLE [").append(schema).append("].[").append(name).append("] (\n");
     }
 
-    private static StringBuilder buildHead (StringBuilder builder, String name) {
-        return builder.append("CREATE EXTERNAL TABLE ").append(name).append(" ( \n");
+    private static StringBuilder buildHead (StringBuilder builder, String db,String name) {
+        return builder.append("CREATE EXTERNAL TABLE ").append(db).append(".").append(name).append(" ( \n");
     }
 
     private static StringBuilder buildSqlserverBody (StringBuilder builder, String name, String type, String comment) {
@@ -93,6 +93,9 @@ public class TableCreator {
 
 
     private static StringBuilder buildBody (StringBuilder builder, String name, String type, String comment) {
+        if (comment != null) {
+            comment = comment.replace(";"," ").replace("："," ");
+        }
         return builder.append("    ").append(name).append(" ")
                 .append(type).append(" ")
                 .append("COMMENT '").append(comment==null?"":comment).append("'").append(",\n");
